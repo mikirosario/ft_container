@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/10/29 18:04:15 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/10/29 19:00:28 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ namespace ft
 					//Constructible
 					Iterator(pointer ptr) : _m_ptr(ptr) {};
 
+					//Comparison Operator Overloads
 					bool	operator==(const Iterator & rhs) const {
 						return (this->_m_ptr == rhs._m_ptr);
 					}
@@ -50,6 +51,23 @@ namespace ft
 					bool	operator!=(const Iterator & rhs) const {
 						return (!operator==(rhs));
 					}
+
+					bool	operator>(const Iterator & rhs) const {
+						return (this->_m_ptr > rhs._m_ptr);
+					}
+
+					bool	operator<(const Iterator & rhs) const {
+						return (!operator>(rhs));
+					}
+
+					bool	operator >=(const Iterator & rhs) const {
+						return (operator>(rhs) | operator==(rhs));
+					}
+
+					bool	operator <=(const Iterator & rhs) const {
+						return (operator<(rhs) | operator==(rhs));
+					}
+
 					private:
 						pointer	_m_ptr;
 

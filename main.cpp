@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/10/30 02:57:46 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/10/31 00:46:18 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@ int	main(void)
 
 	ft::vector<int>::iterator it(&a[0]);
 	ft::vector<int>::iterator it2(&a[1]);
+
+	// //const_iterator test, uncomment to test.
+	// //Compiler will allow *it = 0, but not *cit = 0 :)
+	// ft::vector<int>::const_iterator cit(&a[0]);
+	// *it = 0;
+	// *cit = 0;
 
 	//TODO ESTO PARA DECIR	(&a == &b) :_( :_(
 	std::cout << std::boolalpha << (it == it2) << " " << (it != it2) << std::endl;

@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/10/31 10:11:43 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/10/31 23:08:23 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,14 @@ namespace ft
 			{
 
 				//Constructible
-				Iterator(typename Iterator::pointer ptr) : _m_ptr(ptr) {};
-
+				Iterator(void) : _m_ptr(NULL) {}
+				Iterator(typename Iterator::pointer ptr) : _m_ptr(ptr) {}
+				Iterator(Iterator const & src) : _m_ptr(src._m_ptr) {}
+				//Assignment Operator Overload
+				Iterator &	operator=(Iterator const & rhs) {
+					this->_m_ptr = rhs._m_ptr;
+					return (*this);
+				}
 				//Comparison Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
 					return (this->_m_ptr == rhs._m_ptr);
@@ -52,47 +58,43 @@ namespace ft
 				bool	operator<=(Iterator const & rhs) const {
 					return (operator<(rhs) | operator==(rhs));
 				}
-				//Assignment Operator Overload
-				Iterator &	operator=(Iterator const & rhs) {
-					this->_m_ptr = rhs->_m_ptr;
-					return (*this);
-				}
+
 				//Arithmetic Operator Overloads
-				Iterator &	operator++(void) {
+				Iterator &							operator++(void) {
 					++this->_m_ptr;
 					return (*this);
 				}
-				Iterator	operator++(int) {
+				Iterator							operator++(int) {
 					Iterator	ret(this->_m_ptr);
 					++this->_m_ptr;
 					return (ret);
 				}
-				Iterator & operator--(void) {
+				Iterator & 							operator--(void) {
 					--this->_m_ptr;
 					return (*this);
 				}
-				Iterator	operator--(int) {
+				Iterator							operator--(int) {
 					Iterator	ret(this->_m_ptr);
 					--this->_m_ptr;
 					return (ret);
 				}
-				Iterator &	operator+=(int inc) {
+				Iterator &							operator+=(int inc) {
 					this->_m_ptr += inc;
 					return (*this);
 				}
-				Iterator &	operator-=(int dec) {
+				Iterator &							operator-=(int dec) {
 					this->_m_ptr -= dec;
 					return (*this);
 				}
-				Iterator	operator+(int const & rhs) const {
+				Iterator							operator+(int const & rhs) const {
 					Iterator	sum(*this);
 					return (sum += rhs);
 				}
-				Iterator	operator-(int const & rhs) const {
+				Iterator							operator-(int const & rhs) const {
 					Iterator	dif(*this);
 					return (dif -= rhs);
 				}
-				Iterator::difference_type	operator-(Iterator const & rhs) const {
+				typename Iterator::difference_type	operator-(Iterator const & rhs) const {
 					return (this->_m_ptr - rhs._m_ptr);
 				}
 				//Referencing Operators
@@ -103,13 +105,14 @@ namespace ft
 				typename Iterator::reference	operator*(void) const {
 					return(*this->_m_ptr);
 				}
-				typename Iterator::reference	operator[](int pos) const {
+				typename Iterator::reference	operator[](typename Iterator::difference_type pos) const {
 					return (*(this->_m_ptr + pos));
 				}
+				//aaaaah!!!! -> . ... claro!!!! :D
 				typename Iterator::pointer		operator->(void) const {
 					return (this->_m_ptr);
 				}
-				private:
+				protected:
 					typename Iterator::pointer	_m_ptr;
 			};
 

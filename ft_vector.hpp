@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/10/31 00:39:20 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/10/31 10:11:43 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,23 +92,19 @@ namespace ft
 					Iterator	dif(*this);
 					return (dif -= rhs);
 				}
-				//Referencing Operators
-				//The references/pointers will be consted by the vector
-				//instantiation for const_iterators, which uses a const T. 
-				typename Iterator::reference	operator*(void) {
-					return(*this->_m_ptr);
+				Iterator::difference_type	operator-(Iterator const & rhs) const {
+					return (this->_m_ptr - rhs._m_ptr);
 				}
+				//Referencing Operators
+				//The const references/pointers will be consted by the vector
+				//instantiation for const_iterators, which uses a const T. 
+				//The function is always consted, as it itself doesn't modify
+				//any class member.
 				typename Iterator::reference	operator*(void) const {
 					return(*this->_m_ptr);
 				}
-				typename Iterator::reference	operator[](int pos) {
-					return (*(this->_m_ptr + pos));
-				}
 				typename Iterator::reference	operator[](int pos) const {
 					return (*(this->_m_ptr + pos));
-				}
-				typename Iterator::pointer		operator->(void) {
-					return (this->_m_ptr);
 				}
 				typename Iterator::pointer		operator->(void) const {
 					return (this->_m_ptr);
@@ -126,10 +122,8 @@ namespace ft
 			typedef const value_type&							const_reference;
 			typedef value_type*									pointer;
 			typedef const value_type*							const_pointer;
-
-
-		typedef Iterator<T>									iterator;
-		typedef Iterator<const T>							const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef Iterator<T>									iterator;
+			typedef Iterator<const T>							const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 
 	};
 };

@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/10/31 00:46:18 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/10/31 09:40:10 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ int	main(void)
 
 	// //const_iterator test, uncomment to test.
 	// //Compiler will allow *it = 0, but not *cit = 0 :)
-	// ft::vector<int>::const_iterator cit(&a[0]);
+	ft::vector<int>::const_iterator cit(&a[0]);
+	ft::vector<int>::iterator *it_p = &it;
+	it_p->operator[](0) = 9;
+	//it[0] = 8;
 	// *it = 0;
 	// *cit = 0;
 

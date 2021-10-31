@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/10/31 23:21:37 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/01 00:23:21 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,17 @@ int	main(void)
 	std::cout << *ft_rit << std::endl;
 	std::cout << rit[1] << std::endl;
 	std::cout << ft_rit[1] << std::endl;
+	std::cout << *(rit + 2) << std::endl;
+	std::cout << *(ft_rit + 2) << std::endl;
+	std::cout << *(++rit - 1) << std::endl;
+	std::cout << *(++ft_rit - 1) << std::endl;
+
+	std::cout << *rit << std::endl;
+	std::cout << *ft_rit << std::endl;
+	std::cout << *(rit += 1) << std::endl;
+	std::cout << *(ft_rit += 1) << std::endl;
+	std::cout << *(rit -= 2) << std::endl;
+	std::cout << *(ft_rit -= 2) << std::endl;
 	//TODO ESTO PARA DECIR	(&a == &b) :_( :_(
 	std::cout << std::boolalpha << (it == it2) << " " << (it != it2) << std::endl;
 	std::cout << std::boolalpha << (it > it2) << " " << (it < it2) << std::endl;

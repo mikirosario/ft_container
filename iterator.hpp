@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/10/31 23:38:33 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/01 00:19:11 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,9 @@ namespace ft
 		typedef value_type *							pointer;
 		typedef value_type &							reference;
 	};
-
-	//reverse_iterator inherits from normal iterator (which inherits from iterator_traits)
 	//a copy of the base constructor is stored as current, and retrievable via the base getter
 	template<class Iter>
+	//could inherit from iterator_traits to define traits more locally??
 	struct reverse_iterator {
 		reverse_iterator(void) : current(Iter::_m_ptr) {}
 		reverse_iterator(Iter const & normal_iterator) : current(normal_iterator) {}
@@ -51,7 +50,7 @@ namespace ft
 			return (&(*this->current - 1));
 			//return (&(*this->Iter::operator-(1)));
 		}
-		typename Iter::reference	operator[](typename Iter::difference_type n) const {
+		typename Iter::reference	operator[](typename Iter::difference_type const & n) const {
 			return (current[-n-1]); //!?
 		}
 		reverse_iterator &			operator++() {
@@ -71,6 +70,22 @@ namespace ft
 			reverse_iterator	ret(this->current);
 			this->current.operator++();
 			return (ret);
+		}
+		reverse_iterator			operator+(typename Iter::difference_type const n) const
+		{
+			return (reverse_iterator(this->current - n));
+		}
+		reverse_iterator			operator-(typename Iter::difference_type const n) const
+		{
+			return (reverse_iterator(this->current + n));
+		}
+		reverse_iterator &			operator+=(typename Iter::difference_type const n) {
+			this->current.operator-=(n);
+			return(*this);
+		}
+		reverse_iterator &			operator-=(typename Iter::difference_type const n) {
+			this->current.operator+=(n);
+			return(*this);
 		}
 		protected:
 			Iter	current;

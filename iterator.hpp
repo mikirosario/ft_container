@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/10/31 23:20:23 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/10/31 23:38:33 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,24 +32,23 @@ namespace ft
 	//reverse_iterator inherits from normal iterator (which inherits from iterator_traits)
 	//a copy of the base constructor is stored as current, and retrievable via the base getter
 	template<class Iter>
-	struct reverse_iterator : public Iter {
-		reverse_iterator(void) : Iter(), current(Iter::_m_ptr) {}
-		reverse_iterator(Iter const & normal_iterator) : Iter(normal_iterator), current(normal_iterator) {}
-		reverse_iterator(reverse_iterator const & src) : Iter(src._m_ptr), current(src.current) {}
+	struct reverse_iterator {
+		reverse_iterator(void) : current(Iter::_m_ptr) {}
+		reverse_iterator(Iter const & normal_iterator) : current(normal_iterator) {}
+		reverse_iterator(reverse_iterator const & src) : current(src.current) {}
 		reverse_iterator & operator=(reverse_iterator const & src) {
 			current = src.current;
-			this->_m_ptr = src._m_ptr;
 			return (*this);
 		}
 		Iter	base(void) const {
 			return (this->current);
 		}
 		typename Iter::reference	operator*(void) const {
-			return (*this->current.operator-(1));
+			return (*(this->current - 1));
 			//return (*this->Iter::operator-(1)); //para qué hacer copias de current sin necesidad?? :P
 		}
 		typename Iter::pointer		operator->(void) const {
-			return (&(*this->current.operator-(1)));
+			return (&(*this->current - 1));
 			//return (&(*this->Iter::operator-(1)));
 		}
 		typename Iter::reference	operator[](typename Iter::difference_type n) const {
@@ -60,7 +59,7 @@ namespace ft
 			return (*this);
 		}
 		reverse_iterator			operator++(int) {
-			reverse_iterator	ret(this->_m_ptr);
+			reverse_iterator	ret(this->current);
 			this->current.operator--();
 			return (ret);
 		}
@@ -69,7 +68,7 @@ namespace ft
 			return (*this);
 		}
 		reverse_iterator			operator--(int) {
-			reverse_iterator	ret(this->_m_ptr);
+			reverse_iterator	ret(this->current);
 			this->current.operator++();
 			return (ret);
 		}

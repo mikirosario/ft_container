@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/01 00:19:11 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/02 13:16:06 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,24 +35,35 @@ namespace ft
 		reverse_iterator(void) : current(Iter::_m_ptr) {}
 		reverse_iterator(Iter const & normal_iterator) : current(normal_iterator) {}
 		reverse_iterator(reverse_iterator const & src) : current(src.current) {}
+		//Base Iterator Getter
+		Iter	base(void) const {
+			return (this->current);
+		}
+		//Reverse Assignment Operator Overload
 		reverse_iterator & operator=(reverse_iterator const & src) {
 			current = src.current;
 			return (*this);
 		}
-		Iter	base(void) const {
-			return (this->current);
+		//Relational Operator Overloads
+		bool	operator==(reverse_iterator const & rhs) const {
+			return (this->current.operator==(rhs.current - 1));
 		}
-		typename Iter::reference	operator*(void) const {
-			return (*(this->current - 1));
-			//return (*this->Iter::operator-(1)); //para qué hacer copias de current sin necesidad?? :P
+		bool	operator!=(reverse_iterator const & rhs) const {
+			return (this->current.operator!=(rhs.current - 1));
 		}
-		typename Iter::pointer		operator->(void) const {
-			return (&(*this->current - 1));
-			//return (&(*this->Iter::operator-(1)));
+		bool	operator<(reverse_iterator const & rhs) const {
+			return (this->current.operator>(rhs.current - 1));
 		}
-		typename Iter::reference	operator[](typename Iter::difference_type const & n) const {
-			return (current[-n-1]); //!?
+		bool	operator>(reverse_iterator const & rhs) const {
+			return (this->current.operator<(rhs.current - 1));
 		}
+		bool	operator<=(reverse_iterator const & rhs) const {
+			return (this->current.operator>=(rhs.current - 1));
+		}
+		bool	operator>=(reverse_iterator const & rhs) const {
+			return (this->current.operator<=(rhs.current - 1));
+		}
+		//Arithmetic Operator Overloads
 		reverse_iterator &			operator++() {
 			this->current.operator--();
 			return (*this);
@@ -86,6 +97,16 @@ namespace ft
 		reverse_iterator &			operator-=(typename Iter::difference_type const n) {
 			this->current.operator+=(n);
 			return(*this);
+		}
+		//Referencing Operator Overloads
+		typename Iter::reference	operator*(void) const {
+			return (*(this->current - 1));
+		}
+		typename Iter::pointer		operator->(void) const {
+			return (&(*this->current - 1));
+		}
+		typename Iter::reference	operator[](typename Iter::difference_type const & n) const {
+			return (current[-n-1]);
 		}
 		protected:
 			Iter	current;

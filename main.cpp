@@ -6,11 +6,12 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/02 14:04:12 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/02 18:56:58 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_vector.hpp"
+#include "type_traits.hpp"
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -266,9 +267,14 @@ bool iterator_tests(void)
 int main(void)
 {	
 	if (iterator_tests())
-		PRINT << GRN "OK" RST << END;
+		PRINT << GRN "OK" << END;
 	else
-		PRINT << RED "KO" RST << END;
+		PRINT << RED "KO" << END;
+	
+	int	i = 1;
+	//enable_if tests
+	PRINT << "i is odd: " << std::boolalpha << ft::is_odd(i) << END;
+
 
 	return (0);
 }

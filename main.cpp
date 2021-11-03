@@ -6,12 +6,13 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/02 18:56:58 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/03 17:21:07 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_vector.hpp"
 #include "type_traits.hpp"
+#include "algorithm.hpp"
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -271,9 +272,24 @@ int main(void)
 	else
 		PRINT << RED "KO" << END;
 	
+	//enable_if test
+	//Change to non-integral (double, float, etc.) to test. :)
+	PRINT << YEL "ENABLE_IF TEST:" << NL;
 	int	i = 1;
-	//enable_if tests
-	PRINT << "i is odd: " << std::boolalpha << ft::is_odd(i) << END;
+	PRINT << TAB << ALN << "i is odd: " << std::boolalpha << GRN << ft::is_odd(i) << END;
+
+	std::string	test1 = "Apple";
+	std::string test2 = "honey";
+	bool std_ret;
+
+	std_ret = std::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
+
+	PRINT << GRN << std::boolalpha << std_ret << END;
+
+	std_ret = ft::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
+	PRINT << GRN << std::boolalpha << std_ret << END;
+
+	
 
 
 	return (0);

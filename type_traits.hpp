@@ -6,14 +6,14 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 16:20:31 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/02 19:53:47 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/03 15:27:15 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPE_TRAITS_H
 # define TYPE_TRAITS_H
 
-//#include <uchar.h> ?? To be continued...
+//#include <uchar.h> //?? To be continued...
 
 // //DEBUG CODE
 // #include <type_traits>
@@ -76,45 +76,53 @@ namespace ft
 		typedef false_type	type;
 	};
 
+	//is_integral implementation
+	//any instantiation with the listed types inherits true_type.
+	//otherwise, the default instantiation inherits false_type.
 	template<typename T>
 	struct is_integral : public false_type {};
 	//Specializations
 	template <>
-	struct is_integral< bool > : public true_type {};
+	struct is_integral<bool> : public true_type {};
 	template <>
-	struct is_integral< char > : public true_type {};
+	struct is_integral<char> : public true_type {};
 	// template <>
-	// struct is_integral< char16_t > : public true_type {};
+	// struct is_integral<char16_t> : public true_type {};
 	// template <>
-	// struct is_integral< char32_t > : public true_type {};
+	// struct is_integral<char32_t> : public true_type {};
 	template <>
-	struct is_integral< wchar_t > : public true_type {};
+	struct is_integral<wchar_t> : public true_type {};
 	template <>
-	struct is_integral< signed char > : public true_type {};
+	struct is_integral<signed char> : public true_type {};
 	template <>
-	struct is_integral< short int > : public true_type {};
+	struct is_integral<short int> : public true_type {};
 	template <>
-	struct is_integral< int > : public true_type {};
+	struct is_integral<int> : public true_type {};
 	template <>
-	struct is_integral< long int > : public true_type {};
+	struct is_integral<long int> : public true_type {};
 	template <>
-	struct is_integral< long long int > : public true_type {};
+	struct is_integral<long long int> : public true_type {};
 	template <>
-	struct is_integral< unsigned char > : public true_type {};
+	struct is_integral<unsigned char> : public true_type {};
 	template <>
-	struct is_integral< unsigned short int > : public true_type {};
+	struct is_integral<unsigned short int> : public true_type {};
 	template <>
-	struct is_integral< unsigned int > : public true_type {};
+	struct is_integral<unsigned int> : public true_type {};
 	template <>
-	struct is_integral< unsigned long int > : public true_type {};
+	struct is_integral<unsigned long int> : public true_type {};
 	template <>
-	struct is_integral< unsigned long long int > : public true_type {};
+	struct is_integral<unsigned long long int> : public true_type {};
 
 	template<typename T>
+	//bool xD xD xD xD
+	//bool is_odd(T = any_integer)
+	/*
+	** Included this for enable_if and is_integral testing. So original, I know.
+	*/
 	typename ft::enable_if<ft::is_integral<T>::value,bool>::type is_odd (T i)
 	{
 		return (bool (i%2));
-	}	
+	}
 };
 
 #endif

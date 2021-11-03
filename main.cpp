@@ -6,13 +6,14 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/03 17:21:07 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/03 21:43:55 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_vector.hpp"
 #include "type_traits.hpp"
 #include "algorithm.hpp"
+#include "utility.hpp"
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -272,6 +273,13 @@ int main(void)
 	else
 		PRINT << RED "KO" << END;
 	
+	//quick make_pair test
+	ft::pair<int, char>	pair_chorra(42, 42);
+	std::pair<int, char> std_pair_chorra(42, 42);
+
+	PRINT << YEL "MY PAIR_CHORRA: " GRN << pair_chorra.first << YEL ", " GRN << pair_chorra.second << END;
+	PRINT << YEL "STD PAIR_CHORRA: " GRN << std_pair_chorra.first << YEL ", " GRN << std_pair_chorra.second << END;
+
 	//enable_if test
 	//Change to non-integral (double, float, etc.) to test. :)
 	PRINT << YEL "ENABLE_IF TEST:" << NL;

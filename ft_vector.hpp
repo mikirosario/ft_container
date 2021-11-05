@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/02 13:17:44 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/05 23:20:39 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,6 @@ namespace ft
 				protected:
 					typename Iterator::pointer	_m_ptr;
 			};
-
 		public:
 			typedef T											value_type;
 			typedef Alloc										allocator_type;
@@ -126,6 +125,31 @@ namespace ft
 			typedef const value_type*							const_pointer;
 			typedef Iterator<T>									iterator;
 			typedef Iterator<const T>							const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef ft::reverse_iterator<iterator>				reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
+			//Constructors
+				//default
+			explicit vector(const allocator_type & alloc = allocator_type()) : _size(0), _alloc(alloc), _arr(_alloc.allocate(0)) {}
+				//fill
+			explicit vector(size_type n, const value_type & val, const allocator_type & alloc = allocator_type())
+			: _size(n), _alloc(alloc), _arr(_alloc.allocate(n)) {
+				//DEBUG temporary, i'll find some obscenely wordy templated algorithm to use that takes up 100 lines, I swear! xD
+				for (size_t i = 0; i < n; ++i)
+					this->_alloc.construct(_arr + i, val);
+				//DEBUG
+			}
+			~vector(void) {
+				this->_alloc.deallocate(this->_arr, _size);
+			}
+			iterator	begin(void) {
+				return (iterator(_arr));
+			}
+		protected:
+			const size_type				_size; //const?? allocator wants only the size reserved in the FIRST call to allocate?? what kind of shenanigan is THIS?? bring back malloc! xD
+			 allocator_type	_alloc;
+			T	*_arr;
+
+			
 
 	};
 };

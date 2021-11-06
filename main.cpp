@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/05 22:41:07 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/06 15:51:30 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,10 @@ bool iterator_tests(void)
 
 	PRINT << YEL "CREATING INT ARRAY a[3] = {9,42,84}" << END;
 	int a[3] = {9, 42, 84};
-	std::vector<int> linux;
-	linux.push_back(9);
-	linux.push_back(42);
-	linux.push_back(84);
+	std::vector<int> std_vector;
+	std_vector.push_back(9);
+	std_vector.push_back(42);
+	std_vector.push_back(84);
 	PRINT	<< YEL SEP << NL
 			<< YEL "CREATING FT::VECTOR<INT>::ITERATORS:" << NL
 			<< TAB << ALN << "ft_it = &a[0]" << NL
@@ -63,14 +63,14 @@ bool iterator_tests(void)
 	PRINT	<< YEL "CREATING IDENTICAL STD::VECTOR<INT>::ITERATORS:" << NL
 			<< TAB << ALN << "std_it = &a[0]" << NL
 			<< TAB << ALN << "std_it2 = &a[1]" << END;
-	std::vector<int>::iterator std_it(linux.begin()); //MAC COMPILER WILL NOT CREATE ITERATOR FROM POINTER!!???
-	std::vector<int>::iterator std_it2(linux.begin() + 1); //GRRAAAAAARRRRRRRGH!!!! WHY!!!!?????
+	std::vector<int>::iterator std_it(std_vector.begin()); //MAC COMPILER WILL NOT CREATE ITERATOR FROM POINTER!!???
+	std::vector<int>::iterator std_it2(std_vector.begin() + 1); //GRRAAAAAARRRRRRRGH!!!! WHY!!!!?????
 	PRINT	<< YEL "CREATING FT::VECTOR<INT>::CONST_ITERATOR:" << NL
 			<< TAB << ALN << "ft_cit = &a[0]" << END;
 	ft::vector<int>::const_iterator ft_cit(&a[0]);
 	PRINT	<< YEL "CREATING IDENTICAL STD::VECTOR<INT>::CONST_ITERATOR:" << NL
 			<< TAB << ALN << "std_cit = &a[0]" << END;
-	std::vector<int>::const_iterator std_cit(linux.begin());
+	std::vector<int>::const_iterator std_cit(std_vector.begin());
 
 	//CONST CHECK
 	PRINT	<< YEL "CONST_ITERATOR VALUES ARE READ-ONLY; PRINTING IS OKAY:" << END;
@@ -166,11 +166,11 @@ bool iterator_tests(void)
 	// I was happy with it that way, but the subject DOES say try to implement
 	// even the tiniest STL details... :).
 	ft_it = ft::vector<int>::iterator(a + 3);
-	std_it = std::vector<int>::iterator(linux.begin() + 3);
+	std_it = std::vector<int>::iterator(std_vector.begin() + 3);
 	ft_it2 = ft::vector<int>::iterator(&a[1]);
-	std_it2 = std::vector<int>::iterator(linux.begin() + 1);
+	std_it2 = std::vector<int>::iterator(std_vector.begin() + 1);
 	ft_cit = ft::vector<int>::const_iterator(a + 3);
-	std_cit = std::vector<int>::const_iterator(linux.begin() + 3);
+	std_cit = std::vector<int>::const_iterator(std_vector.begin() + 3);
 	// /\ Whereupon I EXPLICITLY do what the compiler was willing to do for me
 	// implicitly. xD
 	PRINT	<< YEL "CREATING REVERSE FT::VECTOR<INT>::ITERATORS:" << NL

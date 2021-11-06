@@ -6,7 +6,7 @@
 #    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/06 18:21:39 by mrosario          #+#    #+#              #
-#    Updated: 2021/11/06 18:22:33 by mrosario         ###   ########.fr        #
+#    Updated: 2021/11/06 18:26:31 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,4 +47,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re $(NAME)
+.PHONY: all clean fclean re

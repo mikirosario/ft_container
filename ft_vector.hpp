@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/06 21:59:42 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/06 23:52:03 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,11 +137,17 @@ namespace ft
 				for ( ; _objc < n; ++_objc)
 					this->_alloc.construct(_arr + _objc, val);
 			}
-			template<typename InputIterator>
-			vector(InputIterator first, InputIterator last, const allocator_type & alloc = allocator_type()) :
-			_size((last - first) / sizeof(size_type)), _objc(0), _alloc(alloc), _arr(_alloc.allocate(_size)) {
-				std::copy<InputIterator, iterator>(first, last, begin());
+			template<typename InputIt> //it's taking my int!!!! :O must do some enable_if is_iterator or something
+			vector(InputIt first, InputIt last, const allocator_type & alloc = allocator_type()) :
+			_size(last - first), _objc(0), _alloc(alloc), _arr(_alloc.allocate(_size)) {
+				//std::copy<InputIt, iterator>(first, last, begin());
+				(void)tmp;
+				for ( ; _objc < _size; ++first, ++_objc)
+				{
+					this->_alloc.construct(_arr + _objc, *first);
+				}
 			}
+
 			~vector(void) {
 				this->_alloc.deallocate(this->_arr, _size);
 			}

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/05 23:20:39 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/06 21:59:42 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_VECTOR_H
 
 #include <memory>
+#include <algorithm>
 #include "iterator.hpp"
 
 //DEBUG CODE
@@ -129,14 +130,17 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			//Constructors
 				//default
-			explicit vector(const allocator_type & alloc = allocator_type()) : _size(0), _alloc(alloc), _arr(_alloc.allocate(0)) {}
+			explicit vector(const allocator_type & alloc = allocator_type()) : _size(0), _objc(0), _alloc(alloc), _arr(_alloc.allocate(0)) {}
 				//fill
-			explicit vector(size_type n, const value_type & val, const allocator_type & alloc = allocator_type())
-			: _size(n), _alloc(alloc), _arr(_alloc.allocate(n)) {
-				//DEBUG temporary, i'll find some obscenely wordy templated algorithm to use that takes up 100 lines, I swear! xD
-				for (size_t i = 0; i < n; ++i)
-					this->_alloc.construct(_arr + i, val);
-				//DEBUG
+			explicit vector(size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type())
+			: _size(n), _objc(0), _alloc(alloc), _arr(_alloc.allocate(_size)) {
+				for ( ; _objc < n; ++_objc)
+					this->_alloc.construct(_arr + _objc, val);
+			}
+			template<typename InputIterator>
+			vector(InputIterator first, InputIterator last, const allocator_type & alloc = allocator_type()) :
+			_size((last - first) / sizeof(size_type)), _objc(0), _alloc(alloc), _arr(_alloc.allocate(_size)) {
+				std::copy<InputIterator, iterator>(first, last, begin());
 			}
 			~vector(void) {
 				this->_alloc.deallocate(this->_arr, _size);
@@ -144,9 +148,15 @@ namespace ft
 			iterator	begin(void) {
 				return (iterator(_arr));
 			}
+
+			iterator	end(void)
+			{
+				return (iterator(_arr + _objc));
+			}
 		protected:
 			const size_type				_size; //const?? allocator wants only the size reserved in the FIRST call to allocate?? what kind of shenanigan is THIS?? bring back malloc! xD
-			 allocator_type	_alloc;
+			size_type		_objc;
+			allocator_type	_alloc;
 			T	*_arr;
 
 			

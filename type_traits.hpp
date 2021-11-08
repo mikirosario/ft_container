@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 16:20:31 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/08 01:59:42 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/08 02:14:38 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,15 +144,20 @@ namespace ft
 	** C++. No, it defines its own 'nullptr' somewhere. But, guess what? I'm
 	** just using good old feckin C-style NULL for my NULL. So DEAL.
 	**
-	** So anyway, yeah, we pass this NULL pointer of type T to test, and if T is
-	** C::iterator category, the compiler thinks the test that returns the yes
-	** reference is the best match, so the comparison returns true, and value is
-	** set to true. Otherwise, SFINAE opts for the one that returns the no
-	** reference so the comparison returns false, and the value is set to false.
+	** So anyway, yeah, we pass T to test, where it becomes C, and then we pass
+	** it a NULL pointer of type C::iterator_category, which is only possible if
+	** C::iterator_category exists, which should (normally) only be true for
+	** iterators, unless my evaluator really wants to ruin my day. If it exists
+	** the compiler thinks the test that returns the yes reference is the best
+	** match, so the comparison returns true, and value is set to true.
+	** Otherwise, SFINAE opts for the one that returns the no reference so the
+	** comparison returns false, and the value is set to false.
 	**
 	** All this and I still haven't even made sure this is an input_iterator!
 	**
 	** At least it seems better than just checking if it's not an integral. xD
+	** What happened if the vector was a vector of doubles? Or are doubles
+	** really just considered integers under the hood?
 	*/
 
 	template<typename T>

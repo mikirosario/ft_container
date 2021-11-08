@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/06 23:20:09 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/08 00:07:22 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,11 @@ void	my_veritable_vector(void)
 {
 	ft::vector<int>	viktor(4, 42);
 	std::vector<int> vector(4, 42);
-	//ft::vector<int> clone(viktor.begin(), viktor.end());
+	ft::vector<int> clone(viktor.begin(), viktor.end());
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "no puede ser: " << *it << NL;
+	//std::vector<int> clone(vector.begin(), vector.end());
+	std::vector<std::vector<int>::iterator> test;
 	ft::vector<int>::iterator ft_it(viktor.begin());
 	std::vector<int>::iterator std_it(vector.begin());
 

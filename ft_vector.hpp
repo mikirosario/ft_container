@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/06 23:52:03 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/08 01:31:43 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 
 #include <memory>
 #include <algorithm>
+#include "type_traits.hpp"
 #include "iterator.hpp"
 
 //DEBUG CODE
+#include <vector>
 #include <iostream>
 //DEBUG CODE
 
@@ -137,16 +139,64 @@ namespace ft
 				for ( ; _objc < n; ++_objc)
 					this->_alloc.construct(_arr + _objc, val);
 			}
+
+			/*
+			** THIS is now the single most hideous thing I have seen coded...
+			** This... THING!!
+			**
+			** It beats the get_next_line written entirely in nested ternaries.
+			**
+			** It even beats my original ft_printf and ft_itoa_base COMBINED.
+			**
+			** I think 42 must hate C++ and the real point of these exercises
+			** is to make us hate it as well. :p
+			**
+			** I can't believe this not only actually works, but is supposed to
+			** be what passes for proper trait checking in C++98. WHAT EVEN IS
+			** THIS!? IS THAT A FICTIONAL POINTER TO A TYPE I'M SETTING TO NULL?
+			** WHAT THE HELL IS THIS EVEN DOING!? WHY, BJARNE, WHY!?
+			**/
 			template<typename InputIt> //it's taking my int!!!! :O must do some enable_if is_iterator or something
-			vector(InputIt first, InputIt last, const allocator_type & alloc = allocator_type()) :
+			vector(InputIt first, InputIt last, const allocator_type & alloc = allocator_type(),
+			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type* = NULL) :
 			_size(last - first), _objc(0), _alloc(alloc), _arr(_alloc.allocate(_size)) {
-				//std::copy<InputIt, iterator>(first, last, begin());
-				(void)tmp;
-				for ( ; _objc < _size; ++first, ++_objc)
-				{
-					this->_alloc.construct(_arr + _objc, *first);
-				}
+					for ( ; _objc < _size; ++first, ++_objc)
+					{
+						this->_alloc.construct(_arr + _objc, *first);
+					}
 			}
+
+			// /*
+			// ** The !is_integral version. I don't get this either. What if it's
+			// ** a vector of doubles? A vector of instantiated classes? But this
+			// ** apparently was an official implementation?? O_O What is this
+			// ** language!?
+			// */
+			// template<typename InputIt> //it's taking my int!!!! :O must do some enable_if is_iterator or something
+			// vector(InputIt first, InputIt last, const allocator_type & alloc = allocator_type(),
+			// typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = NULL) :
+			// _size(last - first), _objc(0), _alloc(alloc), _arr(_alloc.allocate(_size)) {
+			// 		for ( ; _objc < _size; ++first, ++_objc)
+			// 		{
+			// 			this->_alloc.construct(_arr + _objc, *first);
+			// 		}
+			// }
+
+			// /*
+			// ** The actual, official implementation from my own Linux library.
+			// ** WTF is this!? Is this check performed at run-time inside the
+			// ** _M_initialize_dispatch function? What does it do if it turns out
+			// ** to be an integer, throw an exception? What is this MADNESS!? o_O
+			// */
+     		// template<typename _InputIterator>
+			// vector(_InputIterator __first, _InputIterator __last,
+			// const allocator_type& __a = allocator_type())
+			// : _Base(__a)
+			// {
+			// 	// Check whether it's an integral type.  If so, it's not an iterator.
+			// 	typedef typename std::__is_integer<_InputIterator>::__type _Integral;
+			// 	_M_initialize_dispatch(__first, __last, _Integral());
+			// }
 
 			~vector(void) {
 				this->_alloc.deallocate(this->_arr, _size);

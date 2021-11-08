@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   type_traits.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 16:20:31 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/03 15:27:15 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/08 01:59:42 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ namespace ft
 	struct enable_if<true, T>
 	{
 		typedef T type;
+		int tonti;
 	};
 
 	template<typename T, T val>
@@ -113,6 +114,71 @@ namespace ft
 	template <>
 	struct is_integral<unsigned long long int> : public true_type {};
 
+	/*
+	** This struct does a has_iterator_category check.
+	**
+	** OMG. This obscene struct receives a type T. It defines a yes of size 1
+	** byte and a no of size 2 bytes.
+	**
+	** Then it declares a function test that does nothing but receive a
+	** C::iterator_category *. What the hell is C::iterator_category *, you ask?
+	** Why, it's a pointer to C::iterator_category, of course! Who cares that
+	** C::iterator_category isn't even a real constructible object? It's valid.
+	** You do you, C::iterator_category!
+	**
+	** So test receives a pointer to C::iterator category. If it receives such a
+	** pointer it does nothing with it and returns a reference to our yes.
+	** Normally the compiler complains about doing nothing with the variables we
+	** receive, but somehow it doesn't here - I have no idea why. Then again,
+	** normally functions have actual function bodies and definitions, so fuck
+	** me.
+	**
+	** Then our demented struct declares another function test that takes
+	** anything but a C::iterator_category, does nothing with it, and returns a
+	** reference to no.
+	**
+	** Then we define a value to be the result of a comparison between yes and
+	** the result of test<T>(NULL), where test is initialized with type T and we
+	** just pass it a null pointer (*trollface*). Actually it's not even
+	** supposed to be NULL, apparently even that is just too straightforward for
+	** C++. No, it defines its own 'nullptr' somewhere. But, guess what? I'm
+	** just using good old feckin C-style NULL for my NULL. So DEAL.
+	**
+	** So anyway, yeah, we pass this NULL pointer of type T to test, and if T is
+	** C::iterator category, the compiler thinks the test that returns the yes
+	** reference is the best match, so the comparison returns true, and value is
+	** set to true. Otherwise, SFINAE opts for the one that returns the no
+	** reference so the comparison returns false, and the value is set to false.
+	**
+	** All this and I still haven't even made sure this is an input_iterator!
+	**
+	** At least it seems better than just checking if it's not an integral. xD
+	*/
+
+	template<typename T>
+	struct	has_iterator_category {
+		typedef char yes[1];
+		typedef char no[2];
+
+		template<typename C>
+		static yes & test(typename C::iterator_category *);
+		
+		template<typename C>
+		static no & test(...);
+
+		static const bool value = sizeof(test<T>(NULL)) == sizeof(yes);
+	};
+	
+	// template<typename T>
+	// bool	is_iterator(void)
+	// {
+	// 	// if (T::iterator_category)
+	// 	// 	return (true);
+	// 	// else
+	// 	// 	return (false);
+	// 	return (true);
+	// };
+
 	template<typename T>
 	//bool xD xD xD xD
 	//bool is_odd(T = any_integer)
@@ -122,6 +188,28 @@ namespace ft
 	typename ft::enable_if<ft::is_integral<T>::value,bool>::type is_odd (T i)
 	{
 		return (bool (i%2));
+	}
+
+	//Primary template
+	template<typename T>
+	struct st_remove_reference
+	{
+		typedef T type;
+	};
+
+	//lvalue reference is removed
+	template<typename T>
+	struct st_remove_reference<T&>
+	{
+		typedef T type;
+	};
+
+	//std::move implementation
+	//type T is deduced context
+	template<typename T>
+	typename st_remove_reference<T>::type &	move(T & arg)
+	{
+		return (static_cast<typename st_remove_reference<T>::type & >(arg));
 	}
 };
 

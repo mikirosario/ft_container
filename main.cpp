@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/09 19:26:11 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/09 20:23:05 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,8 +280,11 @@ void	my_veritable_vector(void)
 
 	//REVERSE ITERATOR PRINT TEST
 	for (ft::vector<int>::reverse_iterator rit = viktor.rbegin(), rend = viktor.rend(); rit != rend; ++rit)
-		PRINT << "reverse: " << *rit << NL;
+		PRINT << "reverse: " << *rit << END;
 
+	//MAX_SIZE
+		PRINT << "Max Size: " << viktor.max_size() << END;
+		PRINT << "Max Size STD: " << vector.max_size() << END;
 	//std::vector<int> clone(vector.begin(), vector.end());
 	std::vector<std::vector<int>::iterator> test;
 	ft::vector<int>::iterator ft_it(viktor.begin());

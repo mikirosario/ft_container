@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/08 00:07:22 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/09 19:26:11 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,6 +277,11 @@ void	my_veritable_vector(void)
 	ft::vector<int> clone(viktor.begin(), viktor.end());
 	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
 		PRINT << "no puede ser: " << *it << NL;
+
+	//REVERSE ITERATOR PRINT TEST
+	for (ft::vector<int>::reverse_iterator rit = viktor.rbegin(), rend = viktor.rend(); rit != rend; ++rit)
+		PRINT << "reverse: " << *rit << NL;
+
 	//std::vector<int> clone(vector.begin(), vector.end());
 	std::vector<std::vector<int>::iterator> test;
 	ft::vector<int>::iterator ft_it(viktor.begin());

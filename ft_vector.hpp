@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/08 01:31:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/09 19:19:48 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ namespace ft
 				for ( ; _objc < n; ++_objc)
 					this->_alloc.construct(_arr + _objc, val);
 			}
-
+				//range
 			/*
 			** THIS is now the single most hideous thing I have seen coded...
 			** This... THING!!
@@ -165,7 +165,6 @@ namespace ft
 						this->_alloc.construct(_arr + _objc, *first);
 					}
 			}
-
 			// /*
 			// ** The !is_integral version. I don't get this either. What if it's
 			// ** a vector of doubles? A vector of instantiated classes? But this
@@ -181,7 +180,6 @@ namespace ft
 			// 			this->_alloc.construct(_arr + _objc, *first);
 			// 		}
 			// }
-
 			// /*
 			// ** The actual, official implementation from my own Linux library.
 			// ** WTF is this!? Is this check performed at run-time inside the
@@ -198,6 +196,15 @@ namespace ft
 			// 	_M_initialize_dispatch(__first, __last, _Integral());
 			// }
 
+			//copy
+			//y si src.alloc es de otro tipo??
+			//debería usar getters, para que sea standard
+			// vector (const & vector src) : _size(src._objc), _objc(0), _alloc(src._alloc), _arr(_alloc.allocate(_size)) {
+			// 	typename src.iterator first = src.begin();
+			// 	typename src.iterator end = src.end();
+			// 	for ( ; first != end; ++first)
+			// 		this->_alloc.construct()
+			// }
 			~vector(void) {
 				this->_alloc.deallocate(this->_arr, _size);
 			}
@@ -205,10 +212,16 @@ namespace ft
 				return (iterator(_arr));
 			}
 
-			iterator	end(void)
-			{
+			iterator	end(void) {
 				return (iterator(_arr + _objc));
 			}
+			reverse_iterator	rbegin(void) {
+				return (ft::reverse_iterator<iterator>(iterator(_arr + _objc)));
+			}
+			reverse_iterator	rend(void) {
+				return (ft::reverse_iterator<iterator>(iterator(_arr)));
+			}
+
 		protected:
 			const size_type				_size; //const?? allocator wants only the size reserved in the FIRST call to allocate?? what kind of shenanigan is THIS?? bring back malloc! xD
 			size_type		_objc;

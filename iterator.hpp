@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/07 15:05:05 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/09 19:37:02 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,22 +46,22 @@ namespace ft
 		}
 		//Relational Operator Overloads
 		bool	operator==(reverse_iterator const & rhs) const {
-			return (this->current.operator==(rhs.current - 1));
+			return (this->current.operator==(rhs.current));
 		}
 		bool	operator!=(reverse_iterator const & rhs) const {
-			return (this->current.operator!=(rhs.current - 1));
+			return (this->current.operator!=(rhs.current));
 		}
 		bool	operator<(reverse_iterator const & rhs) const {
-			return (this->current.operator>(rhs.current - 1));
+			return (this->current.operator>(rhs.current));
 		}
 		bool	operator>(reverse_iterator const & rhs) const {
-			return (this->current.operator<(rhs.current - 1));
+			return (this->current.operator<(rhs.current));
 		}
 		bool	operator<=(reverse_iterator const & rhs) const {
-			return (this->current.operator>=(rhs.current - 1));
+			return (this->current.operator>=(rhs.current));
 		}
 		bool	operator>=(reverse_iterator const & rhs) const {
-			return (this->current.operator<=(rhs.current - 1));
+			return (this->current.operator<=(rhs.current));
 		}
 		//Arithmetic Operator Overloads
 		reverse_iterator &			operator++() {

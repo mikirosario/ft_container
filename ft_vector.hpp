@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/09 20:33:22 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/09 22:03:37 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ namespace ft
 		public:
 			typedef T											value_type;
 			typedef Alloc										allocator_type;
-			typedef uint64_t /*std::size_t*/					size_type;
+			typedef std::size_t									size_type;
 			typedef std::ptrdiff_t								difference_type;
 			typedef value_type&									reference;
 			typedef const value_type&							const_reference;
@@ -137,10 +137,10 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			//Constructors //Need to take _max_size into account now...
 				//default
-			explicit vector(const allocator_type & alloc = allocator_type()) : _capacity(0), _size(0), _max_size(static_cast<size_type>(pow(2, SYSBITS)/sizeof(T)) - 1), _alloc(alloc), _arr(_alloc.allocate(0)) {}
+			explicit vector(const allocator_type & alloc = allocator_type()) : _capacity(0), _size(0), _alloc(alloc), _arr(_alloc.allocate(0)) {}
 				//fill
 			explicit vector(size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type())
-			: _capacity(n), _size(0), _max_size(static_cast<size_type>(pow(2, SYSBITS)/sizeof(T)) - 1), _alloc(alloc), _arr(_alloc.allocate(_capacity)) {
+			: _capacity(n), _size(0), _alloc(alloc), _arr(_alloc.allocate(_capacity)) {
 				for ( ; _size < n; ++_size)
 					this->_alloc.construct(_arr + _size, val);
 			}
@@ -164,7 +164,7 @@ namespace ft
 			template<typename InputIt> //it's taking my int!!!! :O must do some enable_if is_iterator or something
 			vector(InputIt first, InputIt last, const allocator_type & alloc = allocator_type(),
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type* = NULL) :
-			_capacity(last - first), _size(0), _max_size(static_cast<size_type>(pow(2, SYSBITS)/sizeof(T)) - 1), _alloc(alloc), _arr(_alloc.allocate(_capacity)) {
+			_capacity(last - first), _size(0), _alloc(alloc), _arr(_alloc.allocate(_capacity)) {
 					for ( ; _size < _capacity; ++first, ++_size)
 					{
 						this->_alloc.construct(_arr + _size, *first);
@@ -230,13 +230,12 @@ namespace ft
 				return (_size);
 			}
 			size_type			max_size(void){
-				return (_max_size);
+				return (_alloc.max_size());
 			}
 
 		protected:
 			const size_type	_capacity; //const?? allocator wants only the size reserved in the FIRST call to allocate?? what kind of shenanigan is THIS?? bring back malloc! xD
 			size_type		_size; //object count						
-			size_type		_max_size; //(2^CPU_MaxBits)/sizeof(dataType) - 1 == (2^(sizeof(pointer) * 8))/sizeof(dataType)
 			allocator_type	_alloc;
 			T	*_arr;
 

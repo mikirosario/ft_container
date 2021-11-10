@@ -6,26 +6,34 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/09 22:03:37 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/10 02:02:18 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_VECTOR_H
 # define FT_VECTOR_H
 
+//precompiled header?
 #include <memory>
 #include <algorithm>
+#include <exception>
+//#include <stdexcept> //for length_error. Linux only, or Mac also?
+#include <iostream>
+//precompiled header?
+
 #include "type_traits.hpp"
 #include "iterator.hpp"
 
 //DEBUG CODE
-#include <cmath>
 #include <vector>
-#include <iostream>
 //DEBUG CODE
 
-//system bits == size of pointer (in bytes) * 8
-#define SYSBITS (sizeof(void *) * 8)
+#define RED "\e[1;31m"
+#define RST "\e[0m"
+#define PRINT std::cout
+#define NL "\n"
+#define TAB "\t"
+#define END RST << std::endl
 
 
 namespace ft
@@ -204,6 +212,7 @@ namespace ft
 			//copy
 			//y si src.alloc es de otro tipo??
 			//debería usar getters, para que sea standard
+			//									//should I shrink to fit here?
 			// vector (const & vector src) : _capacity(src._capacity), _size(0), _alloc(src._alloc), _arr(_alloc.allocate(_capacity)) {
 			// 	typename src.iterator first = src.begin();
 			// 	typename src.iterator end = src.end();
@@ -216,31 +225,123 @@ namespace ft
 			iterator			begin(void) {
 				return (iterator(_arr));
 			}
+			//As Thor warns us, C++ is lying to you.
+			//First argument of any void function is a pointer to the instance.
+			//It appears as "this". If the instance is const, "this" points to
+			//const, so it's a pointer to const - that's what this funky syntax
+			//means. It's an overloaded begin for when 'this' is a pointer to
+			//const, because the instance (the vector, in this case) is const.
+			//In that case, since the vector is const, we return const_iterators
+			//instead of normal iterators, as const_iterators are iterators to
+			//const (but not const themselves, you can increment and decrement
+			//them just fine).
+			const_iterator		begin(void) const {
+				return (const_iterator(_arr));
+			}
 
 			iterator			end(void) {
 				return (iterator(_arr + _size));
 			}
+
+			const_iterator		end(void) const {
+				return (const_iterator(_arr + _size));
+			}
+			
 			reverse_iterator	rbegin(void) {
 				return (ft::reverse_iterator<iterator>(iterator(_arr + _size)));
 			}
+
+			const_reverse_iterator	rbegin(void) const {
+				return (ft::reverse_iterator<const_iterator>(const_iterator(_arr + _size)));
+			}
+			
 			reverse_iterator	rend(void) {
 				return (ft::reverse_iterator<iterator>(iterator(_arr)));
 			}
-			size_type			size(void) {
-				return (_size);
-			}
-			size_type			max_size(void){
-				return (_alloc.max_size());
+
+			const_reverse_iterator	rend(void) const {
+				return (ft::reverse_iterator<const_iterator>(const_iterator(_arr)));
 			}
 
+			size_type			size(void) const {
+				return (_size);
+			}
+			size_type			max_size(void) const {
+				return (_alloc.max_size());
+			}
+			size_type			capacity(void) const {
+				return (_capacity);
+			}
+			/*
+			** This is an array, so any reallocation means copying over all the
+			** contents of the prior array.
+			**
+			** If the new capacity is greater than max_size, length_error
+			** exception is thrown.
+			**
+			** If the new capacity is less than or equal to existing capacity,
+			** the request is ignored.
+			**
+			** Otherwise, we attempt to allocate space for the new array. If it
+			** fails, we handle the exceptions (bad_alloc should be thrown).
+			**
+			** If it succeeds, we copy the array over to the new location, clear
+			** the old array (destroy all of its members), deallocate the old
+			** array, pass the address of the new array to into the _arr
+			** pointer, set the capacity to the new capacity, and reset the
+			** size, because clear sets it to 0. Allocator must return a
+			** deallocatable pointer, even if zero memory is allocated, so we
+			** will always need to deallocate here, though we will never
+			** dereference a pointer to an empty array, of course.
+			**
+			** That should do it.
+			*/
+			void				reserve(size_type new_cap) throw (std::length_error) {
+				if (new_cap > this->max_size())
+					throw std::length_error("So big, even Bjarne won't allocate it.");
+				else if (new_cap > this->_capacity)
+				{
+					try
+					{
+						T *			new_arr = _alloc.allocate(new_cap);
+						size_type	new_size = 0;
+						for ( ; new_size < _size; ++new_size)
+							new_arr[new_size] = _arr[new_size];
+						clear();
+						_alloc.deallocate(_arr, _capacity);
+						this->_arr = new_arr;
+						this->_capacity = new_cap;
+						this->_size = new_size;
+					}
+					catch (std::bad_alloc & e)
+					{
+						PRINT << RED << e.what() << END;
+					}
+					catch (std::exception & e)
+					{
+						PRINT << RED << e.what() << END;
+					}
+				}
+			}
+			/*
+			** This function destroys any objects constructed in the array in
+			** reverse order, and then deallocates the memory occupied by the
+			** array, using the provided allocator object. By default,
+			** std::allocator. The allocator wants a raw pointer, not
+			** iterator shenanigans, hence the dereferencing and referencing.
+			**
+			** The size is set to 0. Capacity is NOT affected.
+			*/
+			void				clear(void) {
+				for (reverse_iterator rit = this->rbegin(), rend = this->rend(); rit != rend; ++rit)
+					_alloc.destroy(&(*rit));
+				this->_size = 0;
+			}
 		protected:
-			const size_type	_capacity; //const?? allocator wants only the size reserved in the FIRST call to allocate?? what kind of shenanigan is THIS?? bring back malloc! xD
+			size_type		_capacity;
 			size_type		_size; //object count						
 			allocator_type	_alloc;
 			T	*_arr;
-
-			
-
 	};
 };
 

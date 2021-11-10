@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/09 21:58:09 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/10 00:40:54 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 #define TAB "\t"
 #define ALN std::left << std::setw(30)
 #define SEP "-------------------------------------------------------------------------------------"
-#define END RST << NL
+#define END RST << std::endl
 #define SET std::setw(9) << color
 									//reference to pointer
 void	check(bool result, char const *& color, bool & ret)
@@ -285,11 +285,20 @@ void	my_veritable_vector(void)
 	//MAX_SIZE
 		PRINT << "Max Size: " << viktor.max_size() / 2 << END;
 		PRINT << "Max Size STD: " << vector.max_size() << END;
+
+	//CAPACITY
+		PRINT << "Capacity Before: " << viktor.capacity() << END;
+
+	//RESERVE
+	viktor.reserve(10);
 	//std::vector<int> clone(vector.begin(), vector.end());
 	std::vector<std::vector<int>::iterator> test;
 	ft::vector<int>::iterator ft_it(viktor.begin());
 	std::vector<int>::iterator std_it(vector.begin());
 
+	//CAPACITY
+		PRINT << "Capacity After: " << viktor.capacity() << END;
+		
 	//DEBUG i know i know, my iterators aren't done yet ok? it will take up a thousand characters eventually i swear! xD
 	for (size_t i = 0; i < 4; ++i)
 		PRINT << *ft_it++ << END;

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/10 21:41:15 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/10 22:54:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,10 +292,16 @@ void	my_veritable_vector(void)
 	//PUSH_BACK
 	viktor.push_back(84);
 	viktor.push_back(168);
+	viktor.push_back(69);
 	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
 		PRINT << "Vamooooos: " << *it << NL;
 	//CAPACITY
 		PRINT << "Capacity After Push_Back: " << viktor.capacity() << END;
+	
+	//RESERVE
+	viktor.reserve(10);
+	//CAPACITY
+		PRINT << "Capacity After Reserve: " << viktor.capacity() << END;
 	
 	//POP_BACK
 	viktor.pop_back();
@@ -312,9 +318,21 @@ void	my_veritable_vector(void)
 	viktor.resize(6, 21);
 	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
 		PRINT << "Size up overload: " << *it << NL;
-	//RESERVE
-	viktor.reserve(10);
 
+	//ERASE 1
+	viktor.erase(viktor.begin() + 2);
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Erased elem 2: " << *it << NL;
+	if (viktor.erase(viktor.end() - 1) == viktor.end())
+		PRINT << "BIEN" << NL;
+	else
+		PRINT << "MALDAD" << NL;
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Erased elem end: " << *it << NL;
+	//ERASE 2
+	viktor.erase(viktor.begin() + 1, viktor.end());
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Erased range: " << *it << NL;
 	//ASSIGN
 	clone.push_back(-42);
 	clone.push_back(-21);
@@ -327,8 +345,7 @@ void	my_veritable_vector(void)
 	ft::vector<int>::iterator ft_it(viktor.begin());
 	std::vector<int>::iterator std_it(vector.begin());
 
-	//CAPACITY
-		PRINT << "Capacity After Reserve: " << viktor.capacity() << END;
+
 	
 	//DEBUG i know i know, my iterators aren't done yet ok? it will take up a thousand characters eventually i swear! xD
 	for (size_t i = 0; i < 4; ++i)

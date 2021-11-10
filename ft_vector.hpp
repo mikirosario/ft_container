@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/10 21:40:11 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/10 23:09:00 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -426,6 +426,55 @@ namespace ft
 				else if (new_size > _size)
 					while (_size < new_size)
 						push_back(value);
+			}
+			/*
+			** This function destroys the element pointed to by pos and left
+			** shifts all elements to its right, returning an iterator to the
+			** following element at its new position. If the erased element is
+			** the last element, the end iterator is returned.
+			**
+			** If invalid position is passed behaviour is "undefined", but I'm
+			** nice, so I just return a NULL iterator. ;)
+			*/
+			iterator			erase(iterator pos) {
+				iterator it = pos;
+				iterator end = this->end();
+
+				if (it >= end || it < begin())
+					return (iterator(NULL));
+				_alloc.destroy(&(*pos));
+				for (iterator end = this->end(); it + 1 != end; ++it)
+					*it = *(it + 1);
+				pop_back();
+				return (pos);
+			}
+			/*
+			** This function destroys all the elements within the range and left
+			** shifts all elements to the right of the destroyed elements by the
+			** number of elements that were destroyed, returning an iterator to
+			** the new position of the element after the last destroyed element.
+			** If the last erased element was the last element, the end iterator
+			** is returned.
+			**
+			** If invalid range is passed behaviour is "undefined", but I'm nice
+			** so I just return a NULL iterator. ;)
+			*/
+			iterator			erase(iterator first, iterator last) {
+				size_type	eraseCount;
+				iterator	begin = this->begin();
+				iterator	end = this->end();
+				iterator	it;
+
+				if (first < begin || last < begin || last > end || first > end || first > last)
+					return (iterator(NULL));
+				eraseCount = last - first;
+				for (it = first; it != last; ++it)
+					_alloc.destroy(&(*it));
+				for (it = first; it + eraseCount != end; ++it)
+					*it = *(it + eraseCount);
+				for (size_type i = 0; i < eraseCount; ++i)
+					pop_back();
+				return  (last - eraseCount);
 			}
 
 		protected:

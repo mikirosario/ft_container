@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/10 03:36:58 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/10 21:41:15 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +283,7 @@ void	my_veritable_vector(void)
 		PRINT << "reverse: " << *rit << END;
 
 	//MAX_SIZE
-		PRINT << "Max Size: " << viktor.max_size() / 2 << END;
+		PRINT << "Max Size: " << viktor.max_size() << END;
 		PRINT << "Max Size STD: " << vector.max_size() << END;
 
 	//CAPACITY
@@ -294,10 +294,24 @@ void	my_veritable_vector(void)
 	viktor.push_back(168);
 	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
 		PRINT << "Vamooooos: " << *it << NL;
-
 	//CAPACITY
 		PRINT << "Capacity After Push_Back: " << viktor.capacity() << END;
-
+	
+	//POP_BACK
+	viktor.pop_back();
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Popped back: " << *it << NL;
+	
+	//RESIZE
+	viktor.resize(2);
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Size down: " << *it << NL;
+	viktor.resize(4);
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Size up: " << *it << NL;
+	viktor.resize(6, 21);
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Size up overload: " << *it << NL;
 	//RESERVE
 	viktor.reserve(10);
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/10 03:30:10 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/10 21:40:11 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -415,6 +415,19 @@ namespace ft
 				// 	PRNTERR << RED << e.what() << END;
 				// }
 			}
+			void				pop_back(void) {
+				if (_size)
+					_alloc.destroy(&(_arr[--_size]));
+			}
+			void				resize(size_type new_size, T value = T()) {
+				if (new_size < _size)
+					while (_size > new_size)
+						pop_back();
+				else if (new_size > _size)
+					while (_size < new_size)
+						push_back(value);
+			}
+
 		protected:
 			size_type		_capacity;
 			size_type		_size; //object count						

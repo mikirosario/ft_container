@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/10 00:40:54 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/10 03:36:58 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,18 +287,35 @@ void	my_veritable_vector(void)
 		PRINT << "Max Size STD: " << vector.max_size() << END;
 
 	//CAPACITY
-		PRINT << "Capacity Before: " << viktor.capacity() << END;
+		PRINT << "Capacity Before Push_Back: " << viktor.capacity() << END;
+
+	//PUSH_BACK
+	viktor.push_back(84);
+	viktor.push_back(168);
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Vamooooos: " << *it << NL;
+
+	//CAPACITY
+		PRINT << "Capacity After Push_Back: " << viktor.capacity() << END;
 
 	//RESERVE
 	viktor.reserve(10);
+
+	//ASSIGN
+	clone.push_back(-42);
+	clone.push_back(-21);
+	viktor.assign(clone.begin(), clone.end());
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "Assign...: " << *it << NL;
+
 	//std::vector<int> clone(vector.begin(), vector.end());
 	std::vector<std::vector<int>::iterator> test;
 	ft::vector<int>::iterator ft_it(viktor.begin());
 	std::vector<int>::iterator std_it(vector.begin());
 
 	//CAPACITY
-		PRINT << "Capacity After: " << viktor.capacity() << END;
-		
+		PRINT << "Capacity After Reserve: " << viktor.capacity() << END;
+	
 	//DEBUG i know i know, my iterators aren't done yet ok? it will take up a thousand characters eventually i swear! xD
 	for (size_t i = 0; i < 4; ++i)
 		PRINT << *ft_it++ << END;

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/10 02:02:18 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/10 03:30:10 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,25 @@
 
 #define RED "\e[1;31m"
 #define RST "\e[0m"
-#define PRINT std::cout
+#define PRNTERR std::cerr
 #define NL "\n"
 #define TAB "\t"
 #define END RST << std::endl
+
+#define GROWTH_FACTOR 2
+/* This catch block is used after every call to reserve */
+#define CATCH_RESERVE_EXCEPTIONS	catch (std::length_error & e) \
+									{ \
+										PRNTERR << RED << e.what() << END; \
+									} \
+									catch (std::bad_alloc & e) \
+									{ \
+										PRNTERR << RED << e.what() << END; \
+									} \
+									catch (std::exception & e) \
+									{ \
+										PRNTERR << RED << e.what() << END; \
+									} \
 
 
 namespace ft
@@ -159,7 +174,7 @@ namespace ft
 			**
 			** It beats the get_next_line written entirely in nested ternaries.
 			**
-			** It even beats my original ft_printf and ft_itoa_base COMBINED.
+			** It even beats my original ft_PRNTERRf and ft_itoa_base COMBINED.
 			**
 			** I think 42 must hate C++ and the real point of these exercises
 			** is to make us hate it as well. :p
@@ -220,8 +235,30 @@ namespace ft
 			// 		this->_alloc.construct()
 			// }
 			~vector(void) {
+				clear();
 				this->_alloc.deallocate(this->_arr, _capacity);
 			}
+
+			// vector &	operator=(vector const & src) {
+				
+			// }
+
+			template<typename InputIt>
+			void				assign(InputIt first, InputIt last,
+			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type* = NULL) {
+				size_type	new_size = last - first;
+
+				try
+				{
+					reserve(new_size); 	//reserve will do nothing if new_size is not greater than capacity
+					clear(); 			//reserve already calls clear if it had to reallocate, but there is no harm calling it
+										//again, it will do nothing if the container is already clear.
+					for ( ; first != last; ++first)
+						push_back(*first);
+				}
+				CATCH_RESERVE_EXCEPTIONS
+			}
+
 			iterator			begin(void) {
 				return (iterator(_arr));
 			}
@@ -263,6 +300,14 @@ namespace ft
 				return (ft::reverse_iterator<const_iterator>(const_iterator(_arr)));
 			}
 
+			/* Capacity */
+			
+			bool				empty(void) const {
+				if (!size())
+					return (true);
+				return (false);
+			}
+
 			size_type			size(void) const {
 				return (_size);
 			}
@@ -277,7 +322,8 @@ namespace ft
 			** contents of the prior array.
 			**
 			** If the new capacity is greater than max_size, length_error
-			** exception is thrown.
+			** exception is thrown. If _alloc throws an exception, we rethrow it
+			** to the caller.
 			**
 			** If the new capacity is less than or equal to existing capacity,
 			** the request is ignored.
@@ -296,7 +342,7 @@ namespace ft
 			**
 			** That should do it.
 			*/
-			void				reserve(size_type new_cap) throw (std::length_error) {
+			void				reserve(size_type new_cap) throw (std::length_error, std::bad_alloc, std::exception) {
 				if (new_cap > this->max_size())
 					throw std::length_error("So big, even Bjarne won't allocate it.");
 				else if (new_cap > this->_capacity)
@@ -315,11 +361,11 @@ namespace ft
 					}
 					catch (std::bad_alloc & e)
 					{
-						PRINT << RED << e.what() << END;
+						throw ; //we rethrow bad_alloc
 					}
 					catch (std::exception & e)
 					{
-						PRINT << RED << e.what() << END;
+						throw ;
 					}
 				}
 			}
@@ -336,6 +382,38 @@ namespace ft
 				for (reverse_iterator rit = this->rbegin(), rend = this->rend(); rit != rend; ++rit)
 					_alloc.destroy(&(*rit));
 				this->_size = 0;
+			}
+
+			/*
+			** This function pushes an element to the back and increments the
+			** size count. If there is no room for the new element, the vector
+			** reallocates more memory. Growth is exponential, and moderated by
+			** the GROWTH_FACTOR.
+			**
+			** The reserve function may throw an exception, so we use a
+			** try/catch block. The catch block is long and used every time I
+			** call reserve, so I put it in a define. :p
+			*/
+			void				push_back(value_type const & val) {
+				try
+				{
+					if (_size + 1 > _capacity)
+						reserve(_capacity * GROWTH_FACTOR);
+					_arr[_size++] = val;
+				}
+				CATCH_RESERVE_EXCEPTIONS
+				// catch (std::length_error & e)
+				// {
+				// 	PRNTERR << RED << e.what() << END;
+				// }
+				// catch (std::bad_alloc & e)
+				// {
+				// 	PRNTERR << RED << e.what() << END;
+				// }
+				// catch (std::exception & e)
+				// {
+				// 	PRNTERR << RED << e.what() << END;
+				// }
 			}
 		protected:
 			size_type		_capacity;

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/10 22:54:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/11 21:10:11 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,6 +333,11 @@ void	my_veritable_vector(void)
 	viktor.erase(viktor.begin() + 1, viktor.end());
 	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
 		PRINT << "Erased range: " << *it << NL;
+
+	//INSERT 1
+	viktor.insert(viktor.begin(), 1984);
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "After insertion: " << *it << NL;
 	//ASSIGN
 	clone.push_back(-42);
 	clone.push_back(-21);
@@ -387,7 +392,14 @@ int main(void)
 	std_ret = ft::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
 	PRINT << GRN << std::boolalpha << std_ret << END;
 
-	
+	// //DEBUG
+	// {
+	// 	PRINT << YEL << "THE GREAT IS_INTEGRAL TEST!" << NL
+	// 	<< "Double Is Integral?" << std::boolalpha << " " << std::is_integral<double>::value << NL
+	// 	<< "Float Is Integral?" << std::boolalpha << " " << std::is_integral<float>::value << NL
+	// 	<< "Unsigned Int Is Integral?" << std::boolalpha << " " << std::is_integral<unsigned int>::value << END;
+	// }
+	// //DEBUG
 
 
 	return (0);

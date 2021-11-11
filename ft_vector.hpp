@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/10 23:09:00 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/11 22:28:47 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 //DEBUG CODE
 #include <vector>
+#include <type_traits>
 //DEBUG CODE
 
 #define RED "\e[1;31m"
@@ -81,7 +82,7 @@ namespace ft
 					return (this->_m_ptr > rhs._m_ptr);
 				}
 				bool	operator<(Iterator const & rhs) const {
-					return (!operator>(rhs));
+					return (!operator>=(rhs));
 				}
 				bool	operator>=(Iterator const & rhs) const {
 					return (operator>(rhs) | operator==(rhs));
@@ -285,19 +286,19 @@ namespace ft
 			}
 			
 			reverse_iterator	rbegin(void) {
-				return (ft::reverse_iterator<iterator>(iterator(_arr + _size)));
+				return (ft::reverse_iterator<iterator>(iterator(this->end())));
 			}
 
 			const_reverse_iterator	rbegin(void) const {
-				return (ft::reverse_iterator<const_iterator>(const_iterator(_arr + _size)));
+				return (ft::reverse_iterator<const_iterator>(const_iterator(this->end())));
 			}
 			
 			reverse_iterator	rend(void) {
-				return (ft::reverse_iterator<iterator>(iterator(_arr)));
+				return (ft::reverse_iterator<iterator>(iterator(this->begin())));
 			}
 
 			const_reverse_iterator	rend(void) const {
-				return (ft::reverse_iterator<const_iterator>(const_iterator(_arr)));
+				return (ft::reverse_iterator<const_iterator>(const_iterator(this->begin())));
 			}
 
 			/* Capacity */
@@ -419,6 +420,19 @@ namespace ft
 				if (_size)
 					_alloc.destroy(&(_arr[--_size]));
 			}
+			/*
+			** This function resizes the container by new_size elements. If the
+			** new size is greater than the current size, the value passed as an
+			** argument is pushed to the end of the object until the new size is
+			** reached. If no value is passed, the value is value-initialized.
+			** If the new size is less than the current size, elements are
+			** popped off the end of the object until the new_size is reached.
+			** If the new size is the same as the current size, nothing is done.
+			** If size_type is defined as signed and a negative number is passed
+			** behaviour is undef-- OK, let's be real, you're asking for a
+			** segmentation fault. I made that type unsigned for a reason, you
+			** know. :p
+			*/
 			void				resize(size_type new_size, T value = T()) {
 				if (new_size < _size)
 					while (_size > new_size)
@@ -475,6 +489,60 @@ namespace ft
 				for (size_type i = 0; i < eraseCount; ++i)
 					pop_back();
 				return  (last - eraseCount);
+			}
+			
+			//can't use iterators here, they will be invalidated by realloc...
+			//good thing we're not scared of "unsafe" stuff ;)
+			//a single resize could cause a realloc that invalidates pos
+			//so we need to translate it IMMEDIATELY to a relative position
+			//value that will be address-indifferent.
+			/*
+			** This function inserts the value passed as val at the position pos
+			** BEFORE the element at that position.
+			**
+			** Because this may lead to a reallocation that would invalidate any
+			** iterators or pointers, we take the position relative to the
+			** beginning of the array before resizing.
+			**
+			** If the position is not within the vector range, nothing is done
+			** and a NULL iterator is returned. Otherwise, the vector is resized
+			** to one element greater than its current size.
+			**
+			** An iterator 'it', starting at end - 1, is used to shift all
+			** elements in the array right by one, including the element at
+			** begin + 'pos'. Thus, 'pos' is the position of the last element to
+			** be shifted and the position of the newly inserted element after
+			** it is assigned to 'pos'. If 'pos' is at begin, it will be 0, so
+			** begin + 'pos' will be begin.
+			**
+			** End is always one element right of the last element in the
+			** vector, and the shift iterator is always assigned to end - 1.
+			** Thus, if the vector was empty at the start (begin == end), after
+			** the resize 'it' will be equal to end - 1, while 'pos' will be
+			** equal to begin + 0, so 'it' will already be equal to 'pos' and
+			** nothing will be right-shifted, leaving val to be directly copied
+			** to *it.
+			**
+			** We return an iterator to the inserted value, which should always
+			** be the last element pointed to by it.
+			**
+			** IT MAKES SENSE IN MY HEAD, OKAY!? xD I'm open to simpler ways of
+			** organizing this. xD
+			*/						
+			iterator			insert(iterator pos, value_type const & val) {
+				iterator	begin(this->begin());
+
+				if (pos < begin || pos > this->end())
+					return (iterator(NULL));
+				size_type pos_index = (pos - begin);
+				this->resize(_size + 1); //iterators invalidated here
+				//right shift all values after and including _arr[pos_index]
+				iterator it(this->end() - 1);
+				for (iterator first(this->begin() + pos_index); it != first; --it)
+					*it = *(it - 1);
+				//copy value
+				*it = val;
+				return (it);
 			}
 
 		protected:

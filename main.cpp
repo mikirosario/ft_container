@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/11 21:10:11 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/13 19:25:51 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,7 +337,16 @@ void	my_veritable_vector(void)
 	//INSERT 1
 	viktor.insert(viktor.begin(), 1984);
 	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "After insertion: " << *it << NL;
+		PRINT << "After insertion 1: " << *it << NL;
+	//INSERT 2
+	viktor.insert(viktor.begin(), 2, 1970);
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "After insertion 2: " << *it << NL;
+	
+	ft::vector<int> tryst(4, 1);
+	tryst.insert(tryst.begin() + 1, 1, 9);
+	for (ft::vector<int>::iterator it = tryst.begin(), end = tryst.end(); it != end; ++it)
+		PRINT << "After insertion alt: " << *it << NL;
 	//ASSIGN
 	clone.push_back(-42);
 	clone.push_back(-21);

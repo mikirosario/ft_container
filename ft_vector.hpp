@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/11 22:28:47 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/13 19:33:51 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -420,6 +420,7 @@ namespace ft
 				if (_size)
 					_alloc.destroy(&(_arr[--_size]));
 			}
+
 			/*
 			** This function resizes the container by new_size elements. If the
 			** new size is greater than the current size, the value passed as an
@@ -441,7 +442,10 @@ namespace ft
 					while (_size < new_size)
 						push_back(value);
 			}
+
 			/*
+			** SINGLE ELEMENT ERASE
+			**
 			** This function destroys the element pointed to by pos and left
 			** shifts all elements to its right, returning an iterator to the
 			** following element at its new position. If the erased element is
@@ -462,7 +466,10 @@ namespace ft
 				pop_back();
 				return (pos);
 			}
+
 			/*
+			** RANGE ERASE
+			**
 			** This function destroys all the elements within the range and left
 			** shifts all elements to the right of the destroyed elements by the
 			** number of elements that were destroyed, returning an iterator to
@@ -497,6 +504,8 @@ namespace ft
 			//so we need to translate it IMMEDIATELY to a relative position
 			//value that will be address-indifferent.
 			/*
+			** SINGLE ELEMENT INSERT
+			**
 			** This function inserts the value passed as val at the position pos
 			** BEFORE the element at that position.
 			**
@@ -534,15 +543,84 @@ namespace ft
 
 				if (pos < begin || pos > this->end())
 					return (iterator(NULL));
-				size_type pos_index = (pos - begin);
+				size_type	pos_index = (pos - begin);
 				this->resize(_size + 1); //iterators invalidated here
 				//right shift all values after and including _arr[pos_index]
-				iterator it(this->end() - 1);
+				iterator	it(this->end() - 1);
 				for (iterator first(this->begin() + pos_index); it != first; --it)
 					*it = *(it - 1);
-				//copy value
+				//copy value to pos
 				*it = val;
 				return (it);
+			}
+
+			/*
+			** FILL INSERT
+			**
+			** This function inserts n copies of the value passed as val before
+			** the position passed as pos.
+			**
+			** As with the SINGLE ELEMENT INSERT, this may need reallocation,
+			** which invalidates all previous pointers/iterators, so first we
+			** want to take the position relative to the first element so it's
+			** invariant under that transformation.
+			**
+			** Then we resize to size n to get our new positions, which will
+			** start out all the way to our right. The iterator 'it' starts at
+			** end() - 1 and copies the value at it - n, counting down until
+			** equal to pos + n - 1, the position before the last new position
+			** that will receive a copy of an existing value. If n was zero then
+			** there are no new positions and for any non-empty array (where
+			** end > begin) it just leads to useless self-copying of all values
+			** after pos to themselves. To avoid this I use a n > 0 check,
+			** though I'd prefer a more efficient solution. Maybe avoiding the
+			** self-copying isn't worth the overhead of the extra check on all
+			** other calls? On the fence about this...
+			**
+			** 
+			**
+			**
+			**   B E
+			** - - -
+			** - - -
+			** - v -
+			** - v v v v -
+			** insert(B, 2, d);
+			**	 B	 E
+			** - v ? -
+			**   B	   E
+			** - v ? ? - //step 1
+			**	 B		   E
+			** - v1 v2 ? ? ? ? -
+			*	 B
+			** - ? ? ? ? v1 v2
+			*/
+		//returns void in C++98 version. Gotta love consistency. xD
+			void				insert(iterator pos, size_type n, T const & val)
+			{
+				iterator	begin(this->begin());
+
+				if (pos < begin || pos > this->end())
+					return ;
+				size_type	pos_index = (pos - begin);
+				this->resize(_size + n); //iterators invalidated here
+				iterator first(this->begin() + pos_index);
+				//if (n > 0)	//stop self-copying when n == 0 and _size > 0, or not worth extra check ?
+								//other ways of approaching the right shift ?
+				//{
+					//right shift all values after and including _arr[pos_index] by n
+					for (iterator it(this->end() - 1); it != first + n - 1; --it)
+					{
+						// //DEBUG
+						// if (n != 2)
+						// 	PRNTERR << "wha?" << END;
+						// //DEBUG
+						*it = *(it - n);
+					}
+					//copy val to positions before shifted values
+					for (iterator it(first); it != first + n; ++it)
+						*it = val;
+				//}
 			}
 
 		protected:

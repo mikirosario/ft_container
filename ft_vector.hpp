@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/13 19:58:57 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/13 20:21:20 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -457,7 +457,7 @@ namespace ft
 			iterator			erase(iterator pos) {
 				iterator it = pos;
 				iterator end = this->end();
-
+				//protect?
 				if (it >= end || it < begin())
 					return (iterator(NULL));
 				_alloc.destroy(&(*pos));
@@ -485,8 +485,8 @@ namespace ft
 				iterator	begin = this->begin();
 				iterator	end = this->end();
 				iterator	it;
-
-				if (first < begin || last < begin || last > end || first > end || first > last)
+				//protect?
+				if (first < begin || last < begin || last > end || first > end)
 					return (iterator(NULL));
 				eraseCount = last - first;
 				for (it = first; it != last; ++it)
@@ -540,9 +540,9 @@ namespace ft
 			*/						
 			iterator			insert(iterator pos, value_type const & val) {
 				iterator	begin(this->begin());
-
-				if (pos < begin || pos > this->end())
-					return (iterator(NULL));
+				// // protect?
+				// if (pos < begin || pos > this->end())
+				// 	return (iterator(NULL));
 				size_type	pos_index = (pos - begin);
 				this->resize(_size + 1); //iterators invalidated here
 				//right shift all values after and including _arr[pos_index]
@@ -603,9 +603,9 @@ namespace ft
 			void				insert(iterator pos, size_type n, T const & val)
 			{
 				iterator	begin(this->begin());
-
-				if (pos < begin || pos > this->end())
-					return ;
+				// protect?
+				// if (pos < begin || pos > this->end())
+				// 	return ;
 				size_type	pos_index = (pos - begin);
 				this->resize(_size + n); //iterators invalidated here
 				iterator first(this->begin() + pos_index);
@@ -627,18 +627,29 @@ namespace ft
 				//}
 			}
 			
+			//c++98 isn't actually type-safe if InputIt is an integer, instead
+			//it interprets the same thing as the last overload (first is 'n'
+			// and last is 'val'). I can see why, I mean they are very similar,
+			//but... do I REALLY have to implement that?? I WANT to type check
+			//the thing!! It doesn't even really make much sense, T and
+			// size_type are still probably different integers. :p I might get
+			//annoyed enough to do a run-time type check and call insert2
+			//overload, which is awful. Wait, that isn't what they originally
+			//did, is it...? IS IT? O_O
 			template<typename InputIt>
 			void	insert(iterator pos, InputIt first, InputIt last,
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL)
 			{
-				//protect??
-				size_type	grow_size_by = last - first;
+				// //protect??
+				// if (pos < this->begin() || pos > this->end())
+				// 	return ;
+				size_type	grow_by = last - first;
 				size_type	pos_index = (pos - this->begin());
-				this->resize(_size + grow_size_by); //iterators invalidated here
+				this->resize(_size + grow_by); //iterators invalidated here
 				//right shift all values after and including _arr[pos_index]
 				iterator insert_pos(this->begin() + pos_index);
-				for (iterator it(this->end() - 1); it != insert_pos + grow_size_by - 1; --it)
-					*it = *(it - grow_size_by);
+				for (iterator it(this->end() - 1); it != insert_pos + grow_by - 1; --it)
+					*it = *(it - grow_by);
 				for (iterator it(this->begin() + pos_index); first != last; ++first, ++it)
 					*it = *first;
 

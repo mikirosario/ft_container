@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/13 19:33:51 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/13 19:58:57 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -572,10 +572,14 @@ namespace ft
 			** that will receive a copy of an existing value. If n was zero then
 			** there are no new positions and for any non-empty array (where
 			** end > begin) it just leads to useless self-copying of all values
-			** after pos to themselves. To avoid this I use a n > 0 check,
-			** though I'd prefer a more efficient solution. Maybe avoiding the
-			** self-copying isn't worth the overhead of the extra check on all
-			** other calls? On the fence about this...
+			** after pos to themselves. To avoid this I thought of using a n > 0
+			** check, though I'd prefer a more efficient solution. Maybe
+			** avoiding the self-copying isn't worth the overhead of the extra
+			** check on all function calls? On the fence about this...
+			**
+			** Anyway, after the right shift, it is set to first (which is begin
+			** + pos_index), and val is copied there and to all subsequent
+			** addresses of the array until first + n. Pretty straightforward.
 			**
 			** 
 			**
@@ -621,6 +625,27 @@ namespace ft
 					for (iterator it(first); it != first + n; ++it)
 						*it = val;
 				//}
+			}
+			
+			template<typename InputIt>
+			void	insert(iterator pos, InputIt first, InputIt last,
+			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL)
+			{
+				//protect??
+				size_type	grow_size_by = last - first;
+				size_type	pos_index = (pos - this->begin());
+				this->resize(_size + grow_size_by); //iterators invalidated here
+				//right shift all values after and including _arr[pos_index]
+				iterator insert_pos(this->begin() + pos_index);
+				for (iterator it(this->end() - 1); it != insert_pos + grow_size_by - 1; --it)
+					*it = *(it - grow_size_by);
+				for (iterator it(this->begin() + pos_index); first != last; ++first, ++it)
+					*it = *first;
+
+					
+					
+
+
 			}
 
 		protected:

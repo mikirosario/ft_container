@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/13 20:21:20 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/13 21:34:32 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -600,8 +600,7 @@ namespace ft
 			** - ? ? ? ? v1 v2
 			*/
 		//returns void in C++98 version. Gotta love consistency. xD
-			void				insert(iterator pos, size_type n, T const & val)
-			{
+			void				insert(iterator pos, size_type n, T const & val) {
 				iterator	begin(this->begin());
 				// protect?
 				// if (pos < begin || pos > this->end())
@@ -638,8 +637,7 @@ namespace ft
 			//did, is it...? IS IT? O_O
 			template<typename InputIt>
 			void	insert(iterator pos, InputIt first, InputIt last,
-			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL)
-			{
+			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) {
 				// //protect??
 				// if (pos < this->begin() || pos > this->end())
 				// 	return ;
@@ -652,12 +650,28 @@ namespace ft
 					*it = *(it - grow_by);
 				for (iterator it(this->begin() + pos_index); first != last; ++first, ++it)
 					*it = *first;
-
-					
-					
-
-
 			}
+
+			/*
+			** This function does what it says on the tin.
+			*/
+			void	swap(vector & src) {
+				T				*org_arr = this->_arr;
+				size_type		org_size = this->_size;
+				size_type 		org_cap = this->_capacity;
+				allocator_type	org_alloc = this->_alloc;
+
+				this->_alloc = src._alloc;
+				src._alloc = org_alloc;
+				this->_arr = src._arr;
+				src._arr = org_arr;
+				this->_size = src._size;
+				src._size = org_size;
+				this->_capacity = src._capacity;
+				src._capacity = org_cap;
+			}
+
+
 
 		protected:
 			size_type		_capacity;
@@ -665,6 +679,13 @@ namespace ft
 			allocator_type	_alloc;
 			T	*_arr;
 	};
+	/*
+	** This function does what it says on the tin.
+	*/
+	template<typename T>
+		void	swap(vector<T> & v1, vector<T> & v2) {
+			v1.swap(v2);
+	}
 };
 
 #endif

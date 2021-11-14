@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/14 13:27:54 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/14 21:51:47 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,10 +163,36 @@ namespace ft
 				//default
 			explicit vector(const allocator_type & alloc = allocator_type()) : _capacity(0), _size(0), _alloc(alloc), _arr(_alloc.allocate(0)) {}
 				//fill
+
+			/*
+			** This constructor will allocate memory for n elements and fill the
+			** container with n copies of val. If val is not specified, it will
+			** be value-initialized. If allocation fails, allocation exceptions
+			** will be handled here and printed for the user. Otherwise, resize
+			** overload is used to instantiate the values. The resize method
+			** only throws if it needs to reserve or you ask for a truly insane
+			** amount of memory.
+			*/
 			explicit vector(size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type())
-			: _capacity(n), _size(0), _alloc(alloc), _arr(_alloc.allocate(_capacity)) {
-				for ( ; _size < n; ++_size)
-					this->_alloc.construct(_arr + _size, val);
+			: _capacity(0), _size(0), _alloc(alloc), _arr(NULL) {
+				try
+				{
+					_arr = _alloc.allocate(n); //may throw bad_alloc
+					_capacity = n;
+					this->resize(n, val); //throws, but should be fine here as we've pre-reserved above, unless there is a length_error
+				}
+				catch(const std::length_error & e) //we'll handle push_back exceptions here
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::bad_alloc & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::exception & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
 			}
 				//range
 			/*
@@ -188,11 +214,34 @@ namespace ft
 			template<typename InputIt> //it's taking my int!!!! :O must do some enable_if is_iterator or something
 			vector(InputIt first, InputIt last, const allocator_type & alloc = allocator_type(),
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type* = NULL) :
-			_capacity(last - first), _size(0), _alloc(alloc), _arr(_alloc.allocate(_capacity)) {
-					for ( ; _size < _capacity; ++first, ++_size)
-					{
-						this->_alloc.construct(_arr + _size, *first);
-					}
+			_capacity(0), _size(0), _alloc(alloc), _arr(NULL) {	
+				try
+				{
+					size_type	new_capacity = last - first;
+
+					_arr = _alloc.allocate(new_capacity); //may throw bad_alloc
+					_capacity = new_capacity;
+					this->insert(this->begin(), first, last);
+				}
+				catch(const std::length_error & e) //we'll handle push_back exceptions here
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::bad_alloc & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::exception & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+					
+
+					
+					// for ( ; _size < _capacity; ++first, ++_size)
+					// {
+					// 	this->_alloc.construct(_arr + _size, *first);
+					// }
 			}
 			// /*
 			// ** The !is_integral version. I don't get this either. What if it's
@@ -227,22 +276,143 @@ namespace ft
 
 			//copy
 			//y si src.alloc es de otro tipo??
-			//debería usar getters, para que sea standard
-			//									//should I shrink to fit here?
-			// vector (const & vector src) : _capacity(src._capacity), _size(0), _alloc(src._alloc), _arr(_alloc.allocate(_capacity)) {
-			// 	typename src.iterator first = src.begin();
-			// 	typename src.iterator end = src.end();
-			// 	for ( ; first != end; ++first)
-			// 		this->_alloc.construct()
-			// }
+			//should I shrink to fit here?
+			vector(vector const & src) : _capacity(0), _size(0), _alloc(src.get_allocator()), _arr(NULL) {
+				try
+				{
+					_arr = _alloc.allocate(src.capacity()); //may throw bad_alloc
+					_capacity = src.capacity();
+					this->insert(this->begin(), src.begin(), src.end());
+				}
+				catch(const std::length_error & e) //we'll handle push_back exceptions here
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::bad_alloc & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::exception & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+			}
+
 			~vector(void) {
 				clear();
 				this->_alloc.deallocate(this->_arr, _capacity);
 			}
 
+			/*
+			** The standard allows for implementation-defined exceptions, so for
+			** my overload I'll do the copy ONLY if:
+			** 	1. new_capacity <= old_capacity (meaning we already have enough
+			** 	allocated memory for it), OR
+			** 	2. new allocation did not throw exception
+			**
+			** Otherwise I will catch the bad_alloc exception and leave the
+			** old data untouched. Yeah, I'm the type who likes all-risk
+			** accident insurance. xD
+			**
+			** So, if the capacity of the source is greater than mine, I try to
+			** reallocate. If that throws an exception we catch it and report
+			** it, but do not rethrow it, and leave existing data alone.
+			**
+			** This is what push_back ultimately does anyway, but we save time
+			** by allocating at least as much as we need before the copy.
+			**
+			** Otherwise all existing data is cleared. Only if new memory was
+			** allocated, then existing memory is deallocated, the container
+			** _capacity is updated, and the container pointer is addressed to
+			** the new memory block. Finally, all source elements are copied to
+			** destination.
+			*/
+			vector &	operator=(vector const & src) {
+				try
+				{
+					T *	new_mem_block = NULL;
+
+					if (src.capacity() > _capacity)
+						new_mem_block = _alloc.allocate(src.capacity()); //throws exceptions
+					this->clear();
+					if (new_mem_block != NULL) //pointers and iterators invalidated here
+					{
+						this->_alloc.deallocate(this->_arr, _capacity); //note, even if 0 is allocated, resultant pointer needs to be deallocated!
+						_capacity = src.capacity();
+						_arr = new_mem_block;
+					}
+					this->insert(this->begin(), src.begin(), src.end());
+				}
+				catch (std::bad_alloc & e)
+				{
+					PRNTERR << e.what() << END;
+				}
+				catch (std::exception & e)
+				{
+					PRNTERR << e.what() << END;
+				}
+				return (*this);
+			}
+
 			// vector &	operator=(vector const & src) {
 				
 			// }
+
+
+			/* Element Access */
+
+			/*
+			** These two functions overload the [] operator for non-const and
+			** const containers to return a reference to the element at position
+			** n. They are not 'safe'. Out-of-bounds positions do undefined
+			** stuff.
+			*/
+			reference			operator[](size_type n) {
+				return (*(this->begin() + n));
+			}
+
+			const_reference		operator[](size_type n) const {
+				return (*(this->begin() + n));
+			}
+
+			/*
+			** These two functions return a reference to the element at position
+			** n. They are 'safe'. If the position n is out of bounds of the
+			** container, an out_of_range exception error is thrown. So they
+			** always do defined stuff.
+			*/
+			reference			at(size_type n) throw(std::out_of_range) {
+				if (_size < 1 || n >= _size)
+					throw (std::out_of_range("Referenced Out of Bounds Position"));
+				return ((*this)[n]);
+			}
+
+			const_reference		at(size_type n) const throw(std::out_of_range) {
+				if (_size < 1 || n >= _size)
+					throw (std::out_of_range("Referenced Out of Bounds Position"));
+				return ((*this)[n]);
+			}
+			
+			/*
+			** These four functions return a reference to the first and last
+			** elements of the container. They are not 'safe'. If the container
+			** is empty they do undefined stuff.
+			*/
+			reference			front(void) {
+				return ((*this)[0]);
+			}
+
+			const_reference		front(void) const {
+				return ((*this)[0]);
+			}
+
+			reference			back(void) {
+				return ((*this)[_size - 1]);
+			}
+
+			const_reference		back(void) const {
+				return ((*this)[_size - 1]);
+			}
 
 			template<typename InputIt>
 			void				assign(InputIt first, InputIt last,
@@ -261,7 +431,7 @@ namespace ft
 			}
 
 			iterator			begin(void) {
-				return (iterator(_arr));
+				return (iterator(_arr)); //valid only for vectors
 			}
 			//As Thor warns us, C++ is lying to you.
 			//First argument of any void function is a pointer to the instance.
@@ -274,15 +444,15 @@ namespace ft
 			//const (but not const themselves, you can increment and decrement
 			//them just fine).
 			const_iterator		begin(void) const {
-				return (const_iterator(_arr));
+				return (const_iterator(_arr)); //valid only for vectors
 			}
 
 			iterator			end(void) {
-				return (iterator(_arr + _size));
+				return (iterator(_arr + _size)); //valid only for vectors
 			}
 
 			const_iterator		end(void) const {
-				return (const_iterator(_arr + _size));
+				return (const_iterator(_arr + _size)); //valid only for vectors
 			}
 			
 			reverse_iterator	rbegin(void) {
@@ -350,10 +520,11 @@ namespace ft
 				{
 					try
 					{
-						T *			new_arr = _alloc.allocate(new_cap);
+						T *			new_arr = _alloc.allocate(new_cap); //may throw exception
 						size_type	new_size = 0;
+
 						for ( ; new_size < _size; ++new_size)
-							new_arr[new_size] = _arr[new_size];
+							_alloc.construct(&new_arr[new_size], _arr[new_size]); //valid for vector only
 						clear();
 						_alloc.deallocate(_arr, _capacity);
 						this->_arr = new_arr;
@@ -392,33 +563,35 @@ namespace ft
 			** the GROWTH_FACTOR.
 			**
 			** The reserve function may throw an exception, so we use a
-			** try/catch block. The catch block is long and used every time I
-			** call reserve, so I put it in a define. :p
+			** try/catch block. All exceptions from reserve are rethrown to the
+			** caller, which seems to me to be the STL behaviour going by
+			** StackOverflow complaints about unhandled bad_alloc errors with
+			** push_back. xD
 			*/
-			void				push_back(value_type const & val) {
+			void				push_back(value_type const & val) throw (std::length_error, std::bad_alloc, std::exception) {
 				try
 				{
 					if (_size + 1 > _capacity)
 						reserve(_capacity * GROWTH_FACTOR);
-					_arr[_size++] = val;
+					_alloc.construct(_arr + _size++, val); //valid for vector only; change for lists, map and such; only place _size increments
 				}
-				CATCH_RESERVE_EXCEPTIONS
-				// catch (std::length_error & e)
-				// {
-				// 	PRNTERR << RED << e.what() << END;
-				// }
-				// catch (std::bad_alloc & e)
-				// {
-				// 	PRNTERR << RED << e.what() << END;
-				// }
-				// catch (std::exception & e)
-				// {
-				// 	PRNTERR << RED << e.what() << END;
-				// }
+				catch (std::length_error & e)
+				{
+					throw ; // rethrow any exceptions from reserve
+				}
+				catch (std::bad_alloc & e)
+				{
+					throw ;
+				}
+				catch (std::exception & e)
+				{
+					throw ;
+				}
 			}
+
 			void				pop_back(void) {
 				if (_size)
-					_alloc.destroy(&(_arr[--_size]));
+					_alloc.destroy(&(_arr[--_size])); //valid for vector only; only place _size decrements
 			}
 
 			/*
@@ -433,14 +606,36 @@ namespace ft
 			** behaviour is undef-- OK, let's be real, you're asking for a
 			** segmentation fault. I made that type unsigned for a reason, you
 			** know. :p
+			**
+			** The resize function rethrows all exceptions potentially thrown by
+			** push_back (via reserve), breaking out of the push_back loop if
+			** any are thrown. The container should be left in the last healthy
+			** state before the exception was thrown.
 			*/
-			void				resize(size_type new_size, T value = T()) {
+			void				resize(size_type new_size, T value = T()) throw (std::length_error, std::bad_alloc, std::exception) {
 				if (new_size < _size)
 					while (_size > new_size)
 						pop_back();
 				else if (new_size > _size)
-					while (_size < new_size)
-						push_back(value);
+				{
+					try
+					{
+						while (_size < new_size)
+							push_back(value); // may throw exception; exception will break us out of the loop with _size unchanged
+					}
+					catch(const std::length_error & e) //we'll handle push_back exceptions here
+					{
+						throw ;
+					}
+					catch(const std::bad_alloc & e)
+					{
+						throw ;
+					}
+					catch(const std::exception & e)
+					{
+						throw ;
+					}
+				}
 			}
 
 			/*
@@ -513,9 +708,9 @@ namespace ft
 			** iterators or pointers, we take the position relative to the
 			** beginning of the array before resizing.
 			**
-			** If the position is not within the vector range, nothing is done
-			** and a NULL iterator is returned. Otherwise, the vector is resized
-			** to one element greater than its current size.
+			** If the position is not within the vector range, behaviour is
+			** undefined, as in STL. Otherwise, the vector is resized to one
+			** element greater than its current size.
 			**
 			** An iterator 'it', starting at end - 1, is used to shift all
 			** elements in the array right by one, including the element at
@@ -535,22 +730,40 @@ namespace ft
 			** We return an iterator to the inserted value, which should always
 			** be the last element pointed to by it.
 			**
-			** IT MAKES SENSE IN MY HEAD, OKAY!? xD I'm open to simpler ways of
-			** organizing this. xD
+			** The resize method may throw an exception upon reallocation. If
+			** this happens, the operation is aborted before the container is
+			** altered and the exception is handled by insert, printing the
+			** error for the user and returning a NULL iterator.
 			*/						
 			iterator			insert(iterator pos, value_type const & val) {
 				iterator	begin(this->begin());
 				// // protect?
 				// if (pos < begin || pos > this->end())
 				// 	return (iterator(NULL));
-				size_type	pos_index = (pos - begin);
-				this->resize(_size + 1); //iterators invalidated here
-				//right shift all values after and including _arr[pos_index]
-				iterator	it(this->end() - 1);
-				for (iterator first(this->begin() + pos_index); it != first; --it)
-					*it = *(it - 1);
-				//copy value to pos
-				*it = val;
+				iterator it(NULL);
+				try
+				{
+					size_type	pos_index = (pos - begin);
+					this->resize(_size + 1); //iterators invalidated here; note, resize increments _size! _size is ONLY incremented through resize, do NOT increment anywhere else!
+					//right shift all values after and including container[pos_index]
+					it = (this->end() - 1);
+					for (iterator first(this->begin() + pos_index); it != first; --it) //resize uses push_back to construct new values; construction ONLY happens in resize and reserve
+						*it = *(it - 1);
+					//copy value to pos
+					*it = val;
+				}
+				catch(const std::length_error & e) //we'll handle push_back exceptions here
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::bad_alloc & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::exception & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}				
 				return (it);
 			}
 
@@ -581,7 +794,10 @@ namespace ft
 			** + pos_index), and val is copied there and to all subsequent
 			** addresses of the array until first + n. Pretty straightforward.
 			**
-			** 
+			** The resize method may throw an exception upon reallocation. If
+			** this happens, the operation is aborted before the container is
+			** altered and the exception is handled by insert, printing the
+			** error for the user and returning a NULL iterator.
 			**
 			**
 			**   B E
@@ -601,29 +817,47 @@ namespace ft
 			*/
 		//returns void in C++98 version. Gotta love consistency. xD
 			void				insert(iterator pos, size_type n, T const & val) {
-				iterator	begin(this->begin());
+				
+				
+				//iterator	begin(this->begin());
 				// protect?
 				// if (pos < begin || pos > this->end())
 				// 	return ;
-				size_type	pos_index = (pos - begin);
-				this->resize(_size + n); //iterators invalidated here
-				iterator first(this->begin() + pos_index);
-				//if (n > 0)	//stop self-copying when n == 0 and _size > 0, or not worth extra check ?
-								//other ways of approaching the right shift ?
-				//{
-					//right shift all values after and including _arr[pos_index] by n
-					for (iterator it(this->end() - 1); it != first + n - 1; --it)
-					{
-						// //DEBUG
-						// if (n != 2)
-						// 	PRNTERR << "wha?" << END;
-						// //DEBUG
-						*it = *(it - n);
-					}
-					//copy val to positions before shifted values
-					for (iterator it(first); it != first + n; ++it)
-						*it = val;
-				//}
+				try
+				{
+					size_type	pos_index = (pos - this->begin());
+
+					this->resize(_size + n); //iterators invalidated here
+					iterator first(this->begin() + pos_index);
+					//if (n > 0)	//stop self-copying when n == 0 and _size > 0, or not worth extra check ?
+									//other ways of approaching the right shift ?
+					//{
+						//right shift all values after and including _arr[pos_index] by n
+						for (iterator it(this->end() - 1); it != first + n - 1; --it)
+						{
+							// //DEBUG
+							// if (n != 2)
+							// 	PRNTERR << "wha?" << END;
+							// //DEBUG
+							*it = *(it - n);
+						}
+						//copy val to positions before shifted values
+						for (iterator it(first); it != first + n; ++it)
+							*it = val;
+					//}
+				}
+				catch(const std::length_error & e) //we'll handle push_back exceptions here
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::bad_alloc & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::exception & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}				
 			}
 			
 			//c++98 isn't actually type-safe if InputIt is an integer, instead
@@ -641,15 +875,31 @@ namespace ft
 				// //protect??
 				// if (pos < this->begin() || pos > this->end())
 				// 	return ;
-				size_type	grow_by = last - first;
-				size_type	pos_index = (pos - this->begin());
-				this->resize(_size + grow_by); //iterators invalidated here
-				//right shift all values after and including _arr[pos_index]
-				iterator insert_pos(this->begin() + pos_index);
-				for (iterator it(this->end() - 1); it != insert_pos + grow_by - 1; --it)
-					*it = *(it - grow_by);
-				for (iterator it(this->begin() + pos_index); first != last; ++first, ++it)
-					*it = *first;
+				try
+				{
+					size_type	grow_by = last - first;
+					size_type	pos_index = (pos - this->begin());
+
+					this->resize(_size + grow_by); //iterators invalidated here
+					//right shift all values after and including _arr[pos_index]
+					iterator insert_pos(this->begin() + pos_index);
+					for (iterator it(this->end() - 1); it != insert_pos + grow_by - 1; --it)
+						*it = *(it - grow_by);
+					for (iterator it(this->begin() + pos_index); first != last; ++first, ++it)
+						*it = *first;
+				}
+				catch(const std::length_error & e) //we'll handle push_back exceptions here
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::bad_alloc & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
+				catch(const std::exception & e)
+				{
+					PRNTERR << RED << e.what() << END;
+				}
 			}
 
 			/*

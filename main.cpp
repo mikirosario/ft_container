@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/14 14:02:04 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/14 19:41:08 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,9 +274,22 @@ void	my_veritable_vector(void)
 {
 	ft::vector<int>	viktor(4, 42);
 	std::vector<int> vector(4, 42);
-	ft::vector<int> clone(viktor.begin(), viktor.end());
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+
+	//RANGE CONSTRUCTOR TEST
+	ft::vector<int> range(viktor.begin(), viktor.end());
+	for (ft::vector<int>::iterator it = range.begin(), end = range.end(); it != end; ++it)
 		PRINT << "no puede ser: " << *it << NL;
+
+	//COPY CONSTRUCTOR TEST
+	ft::vector<int> clone(viktor);
+	for (ft::vector<int>::iterator it = clone.begin(), end = clone.end(); it != end; ++it)
+		PRINT << "Clone: " << *it << NL;
+	
+	//ASSIGNMENT OVERLOAD COPY TEST
+	ft::vector<int> assigned(0);
+	assigned = viktor;
+	for (ft::vector<int>::iterator it = assigned.begin(), end = assigned.end(); it != end; ++it)
+		PRINT << "Assigned: " << *it << NL;
 
 	//REVERSE ITERATOR PRINT TEST
 	for (ft::vector<int>::reverse_iterator rit = viktor.rbegin(), rend = viktor.rend(); rit != rend; ++rit)
@@ -380,7 +393,7 @@ void	my_veritable_vector(void)
 	do {
 		viktor.get_allocator().destroy(&allocated_array[i]);
 	} while (i-- > 0);
-	viktor.get_allocator().deallocate(allocated_array, 4); // Why would anyone do this? :p
+	viktor.get_allocator().deallocate(allocated_array, 4); // Why would anyone do this though?
 
 	//ASSIGN
 	clone.push_back(-42);
@@ -394,8 +407,70 @@ void	my_veritable_vector(void)
 	ft::vector<int>::iterator ft_it(viktor.begin());
 	std::vector<int>::iterator std_it(vector.begin());
 
-
+	//REFERENCING
+	const ft::vector<int>	c_viktor(3, 42);
+	ft::vector<int>	vacio;
+	int & num1(viktor[0]);
 	
+	PRINT << "Referenced by viktor[]: " << num1 << END;
+
+	try
+	{
+		int & num2(viktor.at(5));
+		PRINT << "Referenced by at(): " << num2 << END;
+	}
+	catch(const std::out_of_range & e)
+	{
+		PRNTERR << e.what() << END;
+	}
+
+	try
+	{
+		int & num2(viktor.at(6));
+		PRINT << "Referenced by at(): " << num2 << END;
+	}
+	catch(const std::out_of_range & e)
+	{
+		PRNTERR << e.what() << END;
+	}
+
+	try
+	{
+		int & num2(vacio.at(0));
+		PRINT << "Referenced by at(): " << num2 << END;
+	}
+	catch(const std::out_of_range & e)
+	{
+		PRNTERR << e.what() << END;
+	}
+	
+	//CONST REFERENCING
+	// Const int reference to const vector int, this is fine.
+	const int & c_num(c_viktor[5]);
+	// // Compiler will not allow this as c_viktor is const.
+	// int & num3(c_viktor[5]);
+
+	// This is all fine, read-only
+	PRINT << "Const Reference: " << c_num << END;
+
+	// // Compiler will not allow this as c_viktor is const.
+	//c_viktor[0] = 8;
+	
+
+	//FRONT AND BACK
+	PRINT << "Front: " << viktor.front() << NL
+	<< "Back: " << viktor.back() << NL
+	<< "Const Front: " << c_viktor.front() << NL
+	<< "Const Back: " << c_viktor.back() << END;
+
+	//This is fine
+	viktor.front() = 5;
+	viktor.back() = 10;
+
+	// // Compiler should not allow this as c_viktor is const.
+	// c_viktor.front() = 5;
+	// c_viktor.back() = 10;
+
 	//DEBUG i know i know, my iterators aren't done yet ok? it will take up a thousand characters eventually i swear! xD
 	for (size_t i = 0; i < 4; ++i)
 		PRINT << *ft_it++ << END;

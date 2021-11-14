@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/13 21:34:46 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/14 01:28:47 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,14 +353,15 @@ void	my_veritable_vector(void)
 		PRINT << "After insertion 3: " << *it << NL;
 	
 	//SWAP
-	ft::swap(viktor, tryst);
+	viktor.swap(tryst);
 	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
 		PRINT << "After swap: " << *it << NL;
 	
-	// //STD SWAP WITH FT::VECTOR
-	// std::swap(viktor, tryst);
-	// for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-	// 	PRINT << "After swap 2: " << *it << NL;
+	//STD SWAP WITH FT::VECTOR
+	swap(viktor, tryst);
+	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+		PRINT << "After swap 2: " << *it << NL;
+
 	//ASSIGN
 	clone.push_back(-42);
 	clone.push_back(-21);

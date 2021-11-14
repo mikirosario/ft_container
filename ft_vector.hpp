@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/13 21:34:32 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/14 01:36:47 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 //DEBUG CODE
 #include <vector>
-#include <type_traits>
+//#include <type_traits>
 //DEBUG CODE
 
 #define RED "\e[1;31m"
@@ -655,7 +655,7 @@ namespace ft
 			/*
 			** This function does what it says on the tin.
 			*/
-			void	swap(vector & src) {
+			void	swap(vector<T, Alloc> & src) {
 				T				*org_arr = this->_arr;
 				size_type		org_size = this->_size;
 				size_type 		org_cap = this->_capacity;
@@ -671,20 +671,32 @@ namespace ft
 				src._capacity = org_cap;
 			}
 
-
-
 		protected:
 			size_type		_capacity;
 			size_type		_size; //object count						
 			allocator_type	_alloc;
 			T	*_arr;
 	};
+
 	/*
-	** This function does what it says on the tin.
+	** This is an std::swap specialization for my ft::vector. I have no idea how
+	** it finds this and knows what to do with it, it isn't even in the std
+	** namespace and it doesn't even refer to std::swap. Apparently it has to do
+	** with Argument-Dependent Lookup. It deduces the arguments of x and y and
+	** sees their type is in ft::, so it concludes, "oh, then the programmer
+	** probably wants that swap in ft:: that takes two parameters exactly like
+	** these".
+	**
+	** At this point I'm starting to think the C++ compiler is magic gnomes.
+	**
+	** Anyway this diverts std::swap to the swap I define in my vector class,
+	** and it's a good thing too - because whatever the default swap is doing,
+	** my vector class does NOT like it and throws a double free error at the
+	** end of it to make that clear. :p
 	*/
 	template<typename T>
-		void	swap(vector<T> & v1, vector<T> & v2) {
-			v1.swap(v2);
+	void	swap(ft::vector<T> & x, ft::vector<T> & y) {
+		x.swap(y);
 	}
 };
 

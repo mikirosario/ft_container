@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/14 19:41:08 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/15 00:41:04 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -471,6 +471,12 @@ void	my_veritable_vector(void)
 	// c_viktor.front() = 5;
 	// c_viktor.back() = 10;
 
+	//COMPARISON TEST
+	PRINT << "viktor == assigned?: " << std::boolalpha << (viktor == assigned) << END;
+	PRINT << "viktor != assigned?: " << std::boolalpha << (viktor != assigned) << END;
+	PRINT << "viktor == viktor?: " << std::boolalpha << (viktor == viktor) << END;
+	PRINT << "viktor != viktor?: " << std::boolalpha << (viktor != viktor) << END;
+
 	//DEBUG i know i know, my iterators aren't done yet ok? it will take up a thousand characters eventually i swear! xD
 	for (size_t i = 0; i < 4; ++i)
 		PRINT << *ft_it++ << END;
@@ -502,6 +508,7 @@ int main(void)
 
 	std::string	test1 = "Apple";
 	std::string test2 = "honey";
+	std::string test3 = "honey";
 	bool std_ret;
 
 	std_ret = std::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
@@ -511,6 +518,11 @@ int main(void)
 	std_ret = ft::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
 	PRINT << GRN << std::boolalpha << std_ret << END;
 
+	std_ret = ft::equal<std::string::iterator, std::string::iterator>(test2.begin(), test2.end(), test3.begin());
+	PRINT << GRN << std::boolalpha << std_ret << END;
+
+	std_ret = ft::equal<std::string::iterator, std::string::iterator>(test2.begin(), test2.end(), test1.begin());
+	PRINT << GRN << std::boolalpha << std_ret << END;
 	// //DEBUG
 	// {
 	// 	PRINT << YEL << "THE GREAT IS_INTEGRAL TEST!" << NL

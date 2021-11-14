@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   algorithm.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 15:23:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/03 17:19:33 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/11/15 00:09:14 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ namespace ft
 	*/
 
 	template<typename InputIterator1, typename InputIterator2, typename Comp>
-	bool	lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
+	bool	lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
 									InputIterator2 first2, InputIterator2 last2, Comp comp)
 	{
 		while(first1 != last1)
@@ -108,6 +108,29 @@ namespace ft
 			++first1; ++first2;
 		}
 		return (first2 != last2); //if true, second range was shorter, if false equal? isn't that already checked in while?
+	}
+
+	/*
+	** Oops, I forgot equal, and now I need it. :p Here we gooo!
+	*/
+	template<typename InputIterator1, typename InputIterator2>
+	bool	equal(InputIterator1 first1, InputIterator1 last1,
+				InputIterator2 first2)
+	{
+		for ( ; first1 != last1; ++first1, ++first2)
+			if (!(*first1 == *first2))
+				return (false);
+		return (true);
+	}
+
+	template<typename InputIterator1, typename InputIterator2, typename BinaryPredicate>
+	bool	equal(InputIterator1 first1, InputIterator1 last1,
+				InputIterator2 first2, BinaryPredicate pred)
+	{
+		for ( ; first1 != last1; ++first1, ++first2)
+			if (!pred(*first1, *first2))
+				return (false);
+		return (true);
 	}
 }
 

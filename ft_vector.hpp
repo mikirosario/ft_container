@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/14 02:04:00 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/14 13:27:54 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -706,13 +706,21 @@ namespace ft
 			** my vector class does NOT like it and throws a double free error at the
 			** end of it to make that clear. So... yay? :p
 			*/
-			template<typename _Tp>
-			friend void	swap(ft::vector<_Tp> & x, ft::vector<_Tp> & y) {
-				x.swap(y);
+			// template<typename _Tp>
+			// friend void	swap(ft::vector<_Tp> & x, ft::vector<_Tp> & y) {
+			// 	x.swap(y);
+			// }
+
+			/*
+			** This function returns a copy of the instantiated allocator.
+			*/
+			allocator_type	get_allocator(void) const {
+				return(_alloc);
 			}
+
 		protected:
 			size_type		_capacity;
-			size_type		_size; //object count						
+			size_type		_size; //object count
 			allocator_type	_alloc;
 			T	*_arr;
 	};
@@ -721,12 +729,12 @@ namespace ft
 	// except if it's not a free function i obviously can't use ft::swap.
 	// maybe i'll free it. i don't know. maybe not. aren't some containers not
 	// swappable? i wouldn't have to enable_if them, would I?? :O because I'm
-	// leaving them as friends if THAT's the case. xD
+	// leaving them as friends if THAT's the case.
 
-	// template<typename T>
-	// void	swap(ft::vector<T> & x, ft::vector<T> & y) {
-	// 	x.swap(y);
-	// }
+	template<typename T, typename Alloc>
+	void	swap(ft::vector<T, Alloc> & x, ft::vector<T, Alloc> & y) {
+		x.swap(y);
+	}
 };
 
 #endif

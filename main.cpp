@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/14 02:00:57 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/14 14:02:04 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,9 +358,29 @@ void	my_veritable_vector(void)
 		PRINT << "After swap: " << *it << NL;
 	
 	//STD SWAP WITH FT::VECTOR
-	swap(viktor, tryst);
+	swap(viktor, tryst); //HOW!? I didn't give you any information!! :O
 	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
 		PRINT << "After swap 2: " << *it << NL;
+
+	//GET ALLOCATOR
+	// //You could do this:
+	// ft::vector<int>::allocator_type alloc = viktor.get_allocator();
+	//
+	// //But you can't do this:
+	// viktor.allocator_type alloc = viktor.get_allocator();
+	//
+	// //Because... well, according to compiler, because you just can't. So there.
+	// Aaaanyway...
+	int * allocated_array = viktor.get_allocator().allocate(4);
+	for (size_t i = 0; i < 4; ++i)
+		viktor.get_allocator().construct(&allocated_array[i], 42);
+	for (size_t i = 0; i < 4; ++i)
+		PRINT << "Allocated Array: " << allocated_array[i] << END;
+	size_t i = 3;
+	do {
+		viktor.get_allocator().destroy(&allocated_array[i]);
+	} while (i-- > 0);
+	viktor.get_allocator().deallocate(allocated_array, 4); // Why would anyone do this? :p
 
 	//ASSIGN
 	clone.push_back(-42);

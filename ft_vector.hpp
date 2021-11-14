@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/14 01:36:47 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/14 02:04:00 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -670,7 +670,46 @@ namespace ft
 				this->_capacity = src._capacity;
 				src._capacity = org_cap;
 			}
-
+			/*
+			** This is an std::swap specialization for my ft::vector. I have no idea how
+			** it finds this and knows what to do with it, it isn't even in the std
+			** namespace and it doesn't even refer to std::swap. Apparently it has to do
+			** with Argument-Dependent Lookup (ADL).
+			**
+			** If I've understood it correctly (which I may not have), in ADL mode it
+			** deduces the arguments of x and y and sees their type is in ft::, so it
+			** concludes, "oh, then the programmer probably wants that swap in ft:: that
+			** takes two parameters exactly like these".
+			**
+			** I can also do this inside the vector class itself by making the
+			** specialization a 'friend', which makes it visible to std::swap. Somehow.
+			** Even though I haven't specified who I'm friends with, because I'm not
+			** allowed to actually SAY std:: anywhere.
+			**
+			** But! There is a caveat. The compiler ONLY does ADL if you put "using
+			** std::swap" before the call to swap. At least according to the Internets.
+			** In my brief experience, if I put NOTHING before the call to swap, and
+			** just call "swap", it also finds it just fine, so it must use ADL there
+			** too?
+			**
+			** If, however, I do the totally unreasonable thing of addressing std::swap
+			** directly, you know, the template I'm allegedly trying to specialize, it
+			** will totally ignore any specializations outside its namespace and not do
+			** the ADL. Why?
+			**
+			** My hypothesis is that the C++ compiler is run by magic gnomes who hate
+			** humans and they're trying to use it to drive us all insane and I've
+			** decided to dedicate my life to proving it true.
+			**
+			** Anyway this diverts std::swap to the swap I define in my vector class,
+			** and it's a good thing too - because whatever the default swap is doing,
+			** my vector class does NOT like it and throws a double free error at the
+			** end of it to make that clear. So... yay? :p
+			*/
+			template<typename _Tp>
+			friend void	swap(ft::vector<_Tp> & x, ft::vector<_Tp> & y) {
+				x.swap(y);
+			}
 		protected:
 			size_type		_capacity;
 			size_type		_size; //object count						
@@ -678,26 +717,16 @@ namespace ft
 			T	*_arr;
 	};
 
-	/*
-	** This is an std::swap specialization for my ft::vector. I have no idea how
-	** it finds this and knows what to do with it, it isn't even in the std
-	** namespace and it doesn't even refer to std::swap. Apparently it has to do
-	** with Argument-Dependent Lookup. It deduces the arguments of x and y and
-	** sees their type is in ft::, so it concludes, "oh, then the programmer
-	** probably wants that swap in ft:: that takes two parameters exactly like
-	** these".
-	**
-	** At this point I'm starting to think the C++ compiler is magic gnomes.
-	**
-	** Anyway this diverts std::swap to the swap I define in my vector class,
-	** and it's a good thing too - because whatever the default swap is doing,
-	** my vector class does NOT like it and throws a double free error at the
-	** end of it to make that clear. :p
-	*/
-	template<typename T>
-	void	swap(ft::vector<T> & x, ft::vector<T> & y) {
-		x.swap(y);
-	}
+	// both of these methods seem to work for swap
+	// except if it's not a free function i obviously can't use ft::swap.
+	// maybe i'll free it. i don't know. maybe not. aren't some containers not
+	// swappable? i wouldn't have to enable_if them, would I?? :O because I'm
+	// leaving them as friends if THAT's the case. xD
+
+	// template<typename T>
+	// void	swap(ft::vector<T> & x, ft::vector<T> & y) {
+	// 	x.swap(y);
+	// }
 };
 
 #endif

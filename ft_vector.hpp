@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/15 00:41:19 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/15 01:17:05 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1003,9 +1003,28 @@ namespace ft
 
 	template<typename T, typename Alloc>
 	bool	operator!=(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
-		return(!operator==(lhs, rhs));
+		return(!operator==(lhs, rhs)); //a!=b == !a==b
 	}
 
+	template<typename T, typename Alloc>
+	bool	operator<(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+		return(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	template<typename T, typename Alloc>
+	bool	operator>(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+		return(operator<(rhs, lhs)); //a>b == b<a
+	}
+
+	template<typename T, typename Alloc>
+	bool	operator<=(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+		return(!operator<(rhs, lhs)); //a<=b == !b<a
+	}
+	
+	template<typename T, typename Alloc>
+	bool	operator>=(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+		return(!operator<(lhs, rhs)); //a>=b == !a<b
+	}
 };
 
 #endif

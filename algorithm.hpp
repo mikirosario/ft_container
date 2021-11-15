@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 15:23:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/15 00:09:14 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/15 00:58:39 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ namespace ft
 	{
 		while(first1 != last1)
 		{
-			if (first2 == last2 || *first2 < *first1) //if second range is less than first, or
+			 //if second range is shorter than first (ended before first) or contains element that is less than corresponding element in first
+			if (first2 == last2 || *first2 < *first1)
 				return (false);
 			else if (*first1 < *first2)
 				return (true);

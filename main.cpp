@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/15 00:41:04 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/15 01:18:05 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -476,6 +476,14 @@ void	my_veritable_vector(void)
 	PRINT << "viktor != assigned?: " << std::boolalpha << (viktor != assigned) << END;
 	PRINT << "viktor == viktor?: " << std::boolalpha << (viktor == viktor) << END;
 	PRINT << "viktor != viktor?: " << std::boolalpha << (viktor != viktor) << END;
+	PRINT << "viktor < assigned?: " << std::boolalpha << (viktor < assigned) << END;
+	PRINT << "viktor > assigned?: " << std::boolalpha << (viktor > assigned) << END;
+	PRINT << "viktor < viktor?: " << std::boolalpha << (viktor < viktor) << END;
+	PRINT << "viktor > viktor?: " << std::boolalpha << (viktor > viktor) << END;
+	PRINT << "viktor <= assigned?: " << std::boolalpha << (viktor <= assigned) << END;
+	PRINT << "viktor >= assigned?: " << std::boolalpha << (viktor >= assigned) << END;
+	PRINT << "viktor <= viktor?: " << std::boolalpha << (viktor <= viktor) << END;
+	PRINT << "viktor >= viktor?: " << std::boolalpha << (viktor >= viktor) << END;
 
 	//DEBUG i know i know, my iterators aren't done yet ok? it will take up a thousand characters eventually i swear! xD
 	for (size_t i = 0; i < 4; ++i)

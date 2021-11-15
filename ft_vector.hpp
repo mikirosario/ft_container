@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/15 01:17:05 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/15 01:31:57 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,19 +77,19 @@ namespace ft
 					return (this->_m_ptr == rhs._m_ptr);
 				}
 				bool	operator!=(Iterator const & rhs) const {
-					return (!operator==(rhs));
-				}
-				bool	operator>(Iterator const & rhs) const {
-					return (this->_m_ptr > rhs._m_ptr);
+					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
 				bool	operator<(Iterator const & rhs) const {
-					return (!operator>=(rhs));
+					return (this->_m_ptr < rhs._m_ptr);
 				}
-				bool	operator>=(Iterator const & rhs) const {
-					return (operator>(rhs) | operator==(rhs));
+				bool	operator>(Iterator const & rhs) const {
+					return (rhs < *this); //a>b == b<a
 				}
 				bool	operator<=(Iterator const & rhs) const {
-					return (operator<(rhs) | operator==(rhs));
+					return (!(rhs < *this)); //a<=b == !(b<a)
+				}
+				bool	operator>=(Iterator const & rhs) const {
+					return (!(*this < rhs)); //a>=b == !(a<b)
 				}
 				//Arithmetic Operator Overloads
 				Iterator &							operator++(void) {

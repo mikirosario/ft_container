@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/16 04:14:44 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/16 12:42:04 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -426,7 +426,11 @@ bool	my_veritable_vector(void)
 
 	/* CONSTRUCTOR TESTS */
 	//FILL CONSTRUCTOR TEST
-	PRINT	<< YEL "FILL CONSTRUCTOR TESTS" << NL
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << NL
+			<< "CONSTRUCTOR CHECKS" << NL
+			<< NL
+			<< "FILL CONSTRUCTOR TESTS" << NL
 			<< TAB << "Fill-constructing: " << NL
 			<< TAB << "  ft::container mi_fill_cont(4, 42)" << NL
 			<< TAB << "  std::container su_fill_cont(4, 42)" << END;
@@ -436,7 +440,8 @@ bool	my_veritable_vector(void)
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 
 	//RANGE CONSTRUCTOR TEST
-	PRINT	<< YEL "RANGE CONSTRUCTOR TESTS" << NL
+	PRINT	<< NL
+			<< YEL "RANGE CONSTRUCTOR TESTS" << NL
 			<< TAB << "Range-constructing: " << NL
 			<< TAB << "  ft::container mi_range_cont(mi_fill_cont.begin(), mi_fill_cont.end())" << NL
 			<< TAB << "  std::container su_range_cont(su_fill_cont.begin(), su_fill_cont.end())" << END;
@@ -446,7 +451,8 @@ bool	my_veritable_vector(void)
 	cont_check_log(su_range_cont, mi_range_cont, ret);
 
 	//COPY CONSTRUCTOR TEST
-	PRINT	<< YEL "COPY CONSTRUCTOR TESTS" << NL
+	PRINT	<< NL
+			<< YEL "COPY CONSTRUCTOR TESTS" << NL
 			<< TAB << "Copy-constructing: " << NL
 			<< TAB << "  ft::container mi_copied_cont(mi_fill_cont)" << NL
 			<< TAB << "  std::container su_copied_cont(su_fill_cont)" << END;
@@ -454,6 +460,8 @@ bool	my_veritable_vector(void)
 	STD_Container	su_copied_cont(su_fill_cont);
 	elemc_compare_log(su_copied_cont, mi_copied_cont);
 	cont_check_log(su_copied_cont, mi_copied_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 	
 	//ASSIGNMENT OVERLOAD COPY TEST
 	PRINT	<< YEL "ASSIGNMENT OVERLOAD COPY TEST" << NL
@@ -464,6 +472,8 @@ bool	my_veritable_vector(void)
 	STD_Container	su_assigned_cont = su_fill_cont;
 	elemc_compare_log(su_assigned_cont, mi_assigned_cont);
 	cont_check_log(su_assigned_cont, mi_assigned_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//REVERSE ITERATOR PRINT TEST
 	//DEBUG
@@ -480,6 +490,8 @@ bool	my_veritable_vector(void)
 	PRINT	<< TAB << YEL "STD Reverse Printed Container: " << END;
 	for (typename STD_Container::reverse_iterator rit = su_fill_cont.rbegin(), rend = su_fill_cont.rend(); rit != rend; ++rit)
 		PRINT << TAB << *rit << END;
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//MAX SIZE EQUALITY CHECK... I take allocator's max_size, and depending on
 	//implementation STL appears to do different things at different times. We
@@ -490,6 +502,8 @@ bool	my_veritable_vector(void)
 			<< TAB << "  su_fill_cont.max_size()" << END;
 	compare_log(su_fill_cont.max_size() == mi_fill_cont.max_size(), ret, "Max Size", msg_offset, 20);
 	PRINT	<< mi_fill_cont.max_size() << TAB << su_fill_cont.max_size() << END;
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//CAPACITY EQUALITY CHECK, this should be equal if we follow the same
 	//allocation strategy of multiplying by * 2. :p
@@ -499,9 +513,11 @@ bool	my_veritable_vector(void)
 			<< TAB << "  su_fill_cont.capacity()" << END;
 	compare_log(su_fill_cont.capacity() == mi_fill_cont.capacity(), ret, "Capacity", msg_offset);
 	PRINT	<< std::setw(msg_offset) << mi_fill_cont.capacity() << TAB << std::setw(msg_offset) << su_fill_cont.capacity() << END;
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//PUSH_BACK CHECK
-	PRINT	<< YEL "PUSH BACK CHECK" << NL
+	PRINT	<< YEL "PUSH BACK CHECKS" << NL
 			<< TAB << "Adding 84, 168 and 69 via push_back to: " << NL
 			<< TAB << "  mi_fill_cont.push_back(84...)" << NL
 			<< TAB << "  su_fill_cont.push_back(84...)" << END;
@@ -523,6 +539,8 @@ bool	my_veritable_vector(void)
 	su_copied_cont.push_back(-21);
 	elemc_compare_log(su_copied_cont, mi_copied_cont);
 	cont_check_log(su_copied_cont, mi_copied_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 	
 	//RESERVE CHECK
 	PRINT	<< YEL "RESERVE CHECK" << NL
@@ -534,6 +552,8 @@ bool	my_veritable_vector(void)
 	//CAPACITY AFTER RESERVE COMPARISON
 	compare_log(su_fill_cont.capacity() == mi_fill_cont.capacity(), ret, "Capacity After Reserve", msg_offset);
 	PRINT	<< std::setw(msg_offset) << mi_fill_cont.capacity() << TAB << std::setw(msg_offset) << su_fill_cont.capacity() << END;
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//POP_BACK CHECK
 	PRINT	<< YEL "POP BACK CHECK" << NL
@@ -544,6 +564,8 @@ bool	my_veritable_vector(void)
 	su_fill_cont.pop_back();
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 	
 	//RESIZE CHECKS
 	//Size down
@@ -573,13 +595,15 @@ bool	my_veritable_vector(void)
 	su_fill_cont.resize(6, 21);
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 	
 	//ERASE CHECKS
 	//ERASE BY POSITION
 	PRINT	<< YEL "ERASE CHECKS" << NL
 			<< TAB << "Erasing by position:" << NL
 			<< TAB << "  mi_fill_cont.erase(mi_fill_cont.begin() + 2)" << NL
-			<< TAB << "  su_fill_cont.resize(su_fill_cont.begin() + 2)" << END;
+			<< TAB << "  su_fill_cont.erase(su_fill_cont.begin() + 2)" << END;
 	{
 		typename MY_Container::iterator mi_erase_res = mi_fill_cont.erase(mi_fill_cont.begin() + 2);
 		typename STD_Container::iterator su_erase_res = su_fill_cont.erase(su_fill_cont.begin() + 2);
@@ -594,9 +618,10 @@ bool	my_veritable_vector(void)
 		compare_log(mi_res_pos == su_res_pos, ret, "Return Iterator Position", msg_offset);
 		PRINT	<< std::setw(msg_offset) << mi_res_pos << TAB << std::setw(msg_offset) << su_res_pos << END;
 	}
-	PRINT	<< TAB << YEL "Erasing last element by position:" << NL
+	PRINT	<< NL
+			<< TAB << YEL "Erasing last element by position:" << NL
 			<< TAB << "  mi_fill_cont.erase(mi_fill_cont.end() - 1)" << NL
-			<< TAB << "  su_fill_cont.resize(su_fill_cont.end() - 1)" << END;
+			<< TAB << "  su_fill_cont.erase(su_fill_cont.end() - 1)" << END;
 	{
 		typename MY_Container::iterator mi_erase_res = mi_fill_cont.erase(mi_fill_cont.end() - 1);
 		typename STD_Container::iterator su_erase_res = su_fill_cont.erase(su_fill_cont.end() - 1);
@@ -623,6 +648,8 @@ bool	my_veritable_vector(void)
 		su_fill_cont.erase(su_fill_cont.begin() + 1, su_fill_cont.end());
 		elemc_compare_log(su_fill_cont, mi_fill_cont);
 		cont_check_log(su_fill_cont, mi_fill_cont, ret);
+		PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+				<< "-------------------------------------------------------------------------------------" << END;
 
 	//INSERT CHECKS
 	//INSERT BY POSITION
@@ -644,8 +671,7 @@ bool	my_veritable_vector(void)
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	//Creating new containers for swap test
-	PRINT	<< NL
-			<< TAB << YEL "Creating new containers:" << NL
+	PRINT	<< TAB << YEL "Fill-creating new containers:" << NL
 			<< TAB << "  ft::container mi_swappable_cont(4, 1)" << NL
 			<< TAB << "  std::container su_swappable_cont(4, 1)" << END;
 	MY_Container	mi_swappable_cont(4, 1);
@@ -657,15 +683,27 @@ bool	my_veritable_vector(void)
 	su_swappable_cont.insert(su_swappable_cont.begin() + 1, 1, 9);
 	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
 	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
-
+	
 	//INSERT BY RANGE
-	PRINT	<< TAB << YEL "Inserting by range:" << NL
+	PRINT	<< NL
+			<< TAB << YEL "Inserting by range:" << NL
 			<< TAB << "  mi_fill_cont.insert(mi_fill_cont.begin(), mi_swappable_cont.begin(), mi_swappable_cont.end())" << NL
 			<< TAB << "  su_fill_cont.insert(su_fill_cont.begin(), su_swappable_cont.begin(), su_swappable_cont.end())" << END;
 	mi_fill_cont.insert(mi_fill_cont.begin(), mi_swappable_cont.begin(), mi_swappable_cont.end());
 	su_fill_cont.insert(su_fill_cont.begin(), su_swappable_cont.begin(), su_swappable_cont.end());
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+
+	PRINT	<< NL
+			<< TAB << YEL "Inserting by range with reverse iterators:" << NL
+			<< TAB << "  mi_assigned_cont.insert(mi_assigned_cont.begin(), mi_fill_cont.rbegin(), mi_fill_cont.rend())" << NL
+			<< TAB << "  su_assigned_cont.insert(su_assigned_cont.begin(), su_fill_cont.rbegin(), su_fill_cont.rend())" << END;
+	mi_assigned_cont.insert(mi_assigned_cont.begin(), mi_fill_cont.rbegin(), mi_fill_cont.rend());
+	su_assigned_cont.insert(su_assigned_cont.begin(), su_fill_cont.rbegin(), su_fill_cont.rend());
+	elemc_compare_log(su_assigned_cont, mi_assigned_cont);
+	cont_check_log(su_assigned_cont, mi_assigned_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 	
 	//SWAP CHECKS; 4 WAYS TO SWAP!
 	//AS CLASS FUNCTION
@@ -736,6 +774,8 @@ bool	my_veritable_vector(void)
 	PRINT	<< TAB << YEL "  swappable_cont:" << END;
 	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
 	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//GET ALLOCATOR CHECK
 	// // You could do this:
@@ -760,7 +800,8 @@ bool	my_veritable_vector(void)
 	su_fill_cont.get_allocator().allocate(4); //so this is NOT 4 bytes, but rather 4 * sizeof(SourceContainer::value_type)
 	typename MY_Container::value_type * 	mi_allocated_array = mi_fill_cont.get_allocator().allocate(4);
 	typename STD_Container::value_type *	su_allocated_array = su_fill_cont.get_allocator().allocate(4);
-	PRINT	<< TAB << YEL "Assigning values to each allocation using constructor of returned allocator instance:" << NL
+	PRINT	<< NL
+			<< TAB << YEL "Assigning values to each allocation using constructor of returned allocator instance:" << NL
 			<< TAB << "  mi_fill_cont.get_allocator().construct(arr, val)" << NL
 			<< TAB << "  su_fill_cont.get_allocator().construct(arr, val)" << END;
 	//We don't know what the value_type could be, so we'll just default-initialize whatever it is.
@@ -786,7 +827,8 @@ bool	my_veritable_vector(void)
 	
 	//Of course we can't forget to free our memory. ;)
 	//First we destroy... don't know what those instances might need to free, after all...
-	PRINT	<< TAB << YEL "Destroying each instance in the allocated array:" << NL
+	PRINT	<< NL
+			<< TAB << YEL "Destroying each instance in the allocated array:" << NL
 			<< TAB << "  mi_fill_cont.get_allocator().destroy(&arr[i])" << NL
 			<< TAB << "  su_fill_cont.get_allocator().destroy(&arr[i])" << END;
 	size_t i = 3;
@@ -795,26 +837,35 @@ bool	my_veritable_vector(void)
 		su_fill_cont.get_allocator().destroy(&su_allocated_array[i]);
 	} while (i-- > 0);
 	//And then we deallocate... be sure to remember how much we allocated! ;)
-	PRINT	<< TAB << YEL "Deallocating the allocated memory block:" << NL
+	PRINT	<< NL
+			<< TAB << YEL "Deallocating the allocated memory block:" << NL
 			<< TAB << "  mi_fill_cont.get_allocator().deallocate(arr, 4)" << NL
 			<< TAB << "  su_fill_cont.get_allocator().deallocate(arr, 4)" << END;
 	mi_fill_cont.get_allocator().deallocate(mi_allocated_array, 4); // C++ is just SO much simpler than C!
 	su_fill_cont.get_allocator().deallocate(su_allocated_array, 4); // I am really feeling that high level abstraction right now! xD
 	//Look ma, no leaks!
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
-
-	//DEBUG
-	// I FORGOT THE OTHER ASSIGN OVERLOAD!!!! PUT IT IN!!!! xD
-	//DEBUG
 	//ASSIGN CHECK
 	PRINT	<< YEL "ASSIGN CHECK" << NL
-			<< TAB << "Assigning by range:" << NL
+			<< TAB << "Assigning by fill:" << NL
+			<< TAB << "  mi_fill_cont.assign(8, 42)" << NL
+			<< TAB << "  su_fill_cont.assign(8, 42)" << END;
+	mi_fill_cont.assign(8, 42);
+	su_fill_cont.assign(8, 42);
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< NL
+			<< TAB << YEL "Assigning by range:" << NL
 			<< TAB << "  mi_fill_cont.assign(mi_copied_cont.begin(), mi_copied_cont.end())" << NL
 			<< TAB << "  su_fill_cont.assign(su_copied_cont.begin(), su_copied_cont.end())" << END;
 	mi_fill_cont.assign(mi_copied_cont.begin(), mi_copied_cont.end());
 	su_fill_cont.assign(su_copied_cont.begin(), su_copied_cont.end());
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//REFERENCING CHECKS
 	//Referencing by []
@@ -934,6 +985,8 @@ bool	my_veritable_vector(void)
 		//c_mi_copied_cont[0] = 8;
 		//c_su_copied_cont[0] = 8;
 	}
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//FRONT AND BACK CHECKS
 	PRINT	<< YEL "FRONT AND BACK CHECKS" << NL
@@ -977,9 +1030,13 @@ bool	my_veritable_vector(void)
 		// c_su_copied_cont.front() = 5;
 		// c_su_copied_cont.back() = 10;
 	}
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	//COMPARISON CHECKS
 	comparison_operator_log(su_fill_cont, su_assigned_cont, mi_fill_cont, mi_assigned_cont, ret);
+	PRINT	<< YEL "-------------------------------------------------------------------------------------" << NL
+			<< "-------------------------------------------------------------------------------------" << END;
 
 	return (ret);
 }

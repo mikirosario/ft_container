@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/15 01:18:05 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/16 02:10:54 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <cstring>
+
+#include <functional>
 
 #define GRN "\e[1;32m"
 #define RED "\e[1;31m"
@@ -270,153 +273,502 @@ bool iterator_tests(void)
 	return (ret);
 }
 
-void	my_veritable_vector(void)
+/*
+** This is the same as the == comparison operator overload for a container,
+** except it compares two different container types: STD_Container and
+** MY_Container. This is used as the predicate for the check function in my
+** testing routine to confirm whether std:: and ft:: versions of the same
+** container type behave equally under the same conditions. If sizes and
+** ranges are equal, it returns true, otherwise it returns false.
+*/
+template<class STD_Container, class MY_Container>
+static bool	operator==(STD_Container const & lhs, MY_Container const & rhs)
 {
-	ft::vector<int>	viktor(4, 42);
-	std::vector<int> vector(4, 42);
+	return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+}
+
+/*
+** This is a modification of my original check function. Here the predicate for
+** container checking is always the same (cont1 == cont2), I both do the
+** check and print the results here in the appropriate colors. The global return
+** value is set to false if any of these checks fail.
+**
+** If the check fails, container contents are printed in red, otherwise they are
+** printed in green.
+*/
+template<class STD_Container, class MY_Container>
+void	cont_check_log(STD_Container std_cont, MY_Container my_cont, bool & ret)
+{
+	char const *	color;
+
+	if (std_cont == my_cont)
+		color = GRN;
+	else
+	{
+		color = RED;
+		ret = false;
+	}
+	PRINT	<< TAB << YEL "MY Container: " << END;
+	for (typename MY_Container::iterator it = my_cont.begin(), end = my_cont.end(); it != end; ++it)
+		PRINT << TAB << color << *it << END;
+	PRINT	<< TAB << YEL "STD Container: " << END;
+	for (typename STD_Container::iterator it = std_cont.begin(), end = std_cont.end(); it != end; ++it)
+		PRINT << TAB << color << *it << END;
+}
+
+/*
+** This function compares the sizes of the std::container and my ft::container
+** and prints out the element count of each. If they are equal, the counts are
+** printed in green, otherwise they are printed in red. This is a complementary
+** log for the container check log, indicating at a glance whether unequal
+** containers have the same size (and thus necessarily different content).
+*/
+template<class STD_Container, class MY_Container>
+void	elemc_compare_log(STD_Container const & lhs, MY_Container const & rhs)
+{
+	char const *	color;
+
+	color = lhs.size() == rhs.size() ? GRN : RED;
+	PRINT	<< TAB << YEL "MY Element Count" << TAB << "STD Element Count" << NL
+			<< TAB << color << std::setw(17) << rhs.size() << TAB << std::setw(17) << lhs.size() << END;
+}
+
+/*
+** This function will take the result of any comparison as comp. If the result
+** is true, the color is set to green. If it is false, the color is set to red
+** and the global return value is set to false.
+**
+** The message passed as a parameter will be printed to in a left and right
+** column in yellow with the prefix "MY " and "STD ", respectively. The
+** msg_offset will be set to the width of the longest message (std_msg). You can
+** optionally specify the column width as the last argument, otherwise they
+** will be separated only by a TAB.
+**
+** The color will be set to green or red before the function exits. It will need
+** to be reset by the caller, either with RST or END!
+*/
+void	compare_log(bool comp, bool & ret, std::string const & msg, size_t & msg_offset, size_t const & minw = 0)
+{
+	char const *		color;
+	std::string	const	my_msg = "MY " + msg;
+	std::string	const	std_msg = "STD " + msg;
+
+	if (comp)
+		color = GRN;
+	else
+	{
+		color = RED;
+		ret = false;
+	}
+	msg_offset = std_msg.size();
+	PRINT	<< TAB << YEL << std::setw(minw) << my_msg << TAB << std::setw(minw) << std_msg << NL
+			<< TAB << color;
+}
+
+/*
+** The idea behind this test is to be a templated function with common tests for
+** all container types to save me a bajillion hours writing out the same tests
+** over and over again. Thanks, compiler. ;) The tests all compare my version
+** and STL version of the same container type under the same conditions.
+** Conditions are printed in yellow before each test and results are printed in
+** red and green after the test. The function returns true if all tests are
+** passed and false otherwise.
+*/
+template<class MY_Container, class STD_Container>
+bool	my_veritable_vector(void)
+{
+	bool			ret = true;
+	size_t			msg_offset;
+
+	/* CONSTRUCTOR TESTS */
+	//FILL CONSTRUCTOR TEST
+	PRINT	<< YEL "FILL CONSTRUCTOR TESTS" << NL
+			<< TAB << "Fill-constructing: " << NL
+			<< TAB << "  ft::container mi_fill_cont(4, 42)" << NL
+			<< TAB << "  std::container su_fill_cont(4, 42)" << END;
+	MY_Container	mi_fill_cont(4, 42);
+	STD_Container	su_fill_cont(4, 42);
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 
 	//RANGE CONSTRUCTOR TEST
-	ft::vector<int> range(viktor.begin(), viktor.end());
-	for (ft::vector<int>::iterator it = range.begin(), end = range.end(); it != end; ++it)
-		PRINT << "no puede ser: " << *it << NL;
+	PRINT	<< YEL "RANGE CONSTRUCTOR TESTS" << NL
+			<< TAB << "Range-constructing: " << NL
+			<< TAB << "  ft::container mi_range_cont(mi_fill_cont.begin(), mi_fill_cont.end())" << NL
+			<< TAB << "  std::container su_range_cont(su_fill_cont.begin(), su_fill_cont.end())" << END;
+			MY_Container	mi_range_cont(mi_fill_cont.begin(), mi_fill_cont.end());
+			STD_Container 	su_range_cont(su_fill_cont.begin(), su_fill_cont.end());
+	elemc_compare_log(su_range_cont, mi_range_cont);
+	cont_check_log(su_range_cont, mi_range_cont, ret);
 
 	//COPY CONSTRUCTOR TEST
-	ft::vector<int> clone(viktor);
-	for (ft::vector<int>::iterator it = clone.begin(), end = clone.end(); it != end; ++it)
-		PRINT << "Clone: " << *it << NL;
+	PRINT	<< YEL "COPY CONSTRUCTOR TESTS" << NL
+			<< TAB << "Copy-constructing: " << NL
+			<< TAB << "  ft::container mi_copied_cont(mi_fill_cont)" << NL
+			<< TAB << "  std::container su_copied_cont(su_fill_cont)" << END;
+	MY_Container	mi_copied_cont(mi_fill_cont);
+	STD_Container	su_copied_cont(su_fill_cont);
+	elemc_compare_log(su_copied_cont, mi_copied_cont);
+	cont_check_log(su_copied_cont, mi_copied_cont, ret);
 	
 	//ASSIGNMENT OVERLOAD COPY TEST
-	ft::vector<int> assigned(0);
-	assigned = viktor;
-	for (ft::vector<int>::iterator it = assigned.begin(), end = assigned.end(); it != end; ++it)
-		PRINT << "Assigned: " << *it << NL;
+	PRINT	<< YEL "ASSIGNMENT OVERLOAD COPY TEST" << NL
+			<< TAB << "Copying via assignment: " << NL
+			<< TAB << "  ft::container(0) mi_assigned_cont = mi_fill_cont" << NL
+			<< TAB << "  std::container(0) su_assigned_cont = su_fill_cont" << END;
+	MY_Container	mi_assigned_cont = mi_fill_cont;
+	STD_Container	su_assigned_cont = su_fill_cont;
+	elemc_compare_log(su_assigned_cont, mi_assigned_cont);
+	cont_check_log(su_assigned_cont, mi_assigned_cont, ret);
 
 	//REVERSE ITERATOR PRINT TEST
-	for (ft::vector<int>::reverse_iterator rit = viktor.rbegin(), rend = viktor.rend(); rit != rend; ++rit)
-		PRINT << "reverse: " << *rit << END;
+	//DEBUG
+	// Change this to output to file and do a diff or something, and include it in the global ret checks and the like
+	//DEBUG
+	PRINT	<< YEL "REVERSE ITERATOR PRINT TEST" << NL
+			<< TAB << "Printing using reverse iterators: " << NL
+			<< TAB << "  mi_fill_cont" << NL
+			<< TAB << "  su_fill_cont" << END;
 
-	//MAX_SIZE
-		PRINT << "Max Size: " << viktor.max_size() << END;
-		PRINT << "Max Size STD: " << vector.max_size() << END;
+	PRINT	<< TAB << YEL "MY Reverse Printed Container: " << END;
+	for (typename MY_Container::reverse_iterator rit = mi_fill_cont.rbegin(), rend = mi_fill_cont.rend(); rit != rend; ++rit)
+		PRINT << TAB << *rit << END;
+	PRINT	<< TAB << YEL "STD Reverse Printed Container: " << END;
+	for (typename STD_Container::reverse_iterator rit = su_fill_cont.rbegin(), rend = su_fill_cont.rend(); rit != rend; ++rit)
+		PRINT << TAB << *rit << END;
 
-	//CAPACITY
-		PRINT << "Capacity Before Push_Back: " << viktor.capacity() << END;
+	//MAX SIZE EQUALITY CHECK... I take allocator's max_size, and depending on
+	//implementation STL appears to do different things at different times. We
+	//SEEM to do the same thing on school Mac, however. ;)
+	PRINT	<< YEL "MAX SIZE EQUALITY CHECK" << NL
+			<< TAB << "Comparing : " << NL
+			<< TAB << "  mi_fill_cont.max_size()" << NL
+			<< TAB << "  su_fill_cont.max_size()" << END;
+	compare_log(su_fill_cont.max_size() == mi_fill_cont.max_size(), ret, "Max Size", msg_offset, 20);
+	PRINT	<< mi_fill_cont.max_size() << TAB << su_fill_cont.max_size() << END;
 
-	//PUSH_BACK
-	viktor.push_back(84);
-	viktor.push_back(168);
-	viktor.push_back(69);
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "Vamooooos: " << *it << NL;
-	//CAPACITY
-		PRINT << "Capacity After Push_Back: " << viktor.capacity() << END;
-	
-	//RESERVE
-	viktor.reserve(10);
-	//CAPACITY
-		PRINT << "Capacity After Reserve: " << viktor.capacity() << END;
-	
-	//POP_BACK
-	viktor.pop_back();
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "Popped back: " << *it << NL;
-	
-	//RESIZE
-	viktor.resize(2);
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "Size down: " << *it << NL;
-	viktor.resize(4);
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "Size up: " << *it << NL;
-	viktor.resize(6, 21);
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "Size up overload: " << *it << NL;
+	//CAPACITY EQUALITY CHECK, this should be equal if we follow the same
+	//allocation strategy of multiplying by * 2. :p
+	PRINT	<< YEL "CAPACITY EQUALITY CHECK" << NL
+			<< TAB << "Comparing : " << NL
+			<< TAB << "  mi_fill_cont.capacity()" << NL
+			<< TAB << "  su_fill_cont.capacity()" << END;
+	compare_log(su_fill_cont.capacity() == mi_fill_cont.capacity(), ret, "Capacity", msg_offset);
+	PRINT	<< std::setw(msg_offset) << mi_fill_cont.capacity() << TAB << std::setw(msg_offset) << su_fill_cont.capacity() << END;
 
-	//ERASE 1
-	viktor.erase(viktor.begin() + 2);
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "Erased elem 2: " << *it << NL;
-	if (viktor.erase(viktor.end() - 1) == viktor.end())
-		PRINT << "BIEN" << NL;
-	else
-		PRINT << "MALDAD" << NL;
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "Erased elem end: " << *it << NL;
-	//ERASE 2
-	viktor.erase(viktor.begin() + 1, viktor.end());
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "Erased range: " << *it << NL;
+	//PUSH_BACK CHECK
+	PRINT	<< YEL "PUSH BACK CHECK" << NL
+			<< TAB << "Adding 84, 168 and 69 via push_back to: " << NL
+			<< TAB << "  mi_fill_cont.push_back(84...)" << NL
+			<< TAB << "  su_fill_cont.push_back(84...)" << END;
+	mi_fill_cont.push_back(84);
+	mi_fill_cont.push_back(168);
+	mi_fill_cont.push_back(69);
+	su_fill_cont.push_back(84);
+	su_fill_cont.push_back(168);
+	su_fill_cont.push_back(69);
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	
+	//RESERVE CHECK
+	PRINT	<< YEL "RESERVE CHECK" << NL
+			<< TAB << "Reserving space for 20 elements: " << NL
+			<< TAB << "  mi_fill_cont.reserve(20)" << NL
+			<< TAB << "  su_fill_cont.reserve(20)" << END;
+	mi_fill_cont.reserve(20);
+	su_fill_cont.reserve(20);
+	//CAPACITY AFTER RESERVE COMPARISON
+	compare_log(su_fill_cont.capacity() == mi_fill_cont.capacity(), ret, "Capacity After Reserve", msg_offset);
+	PRINT	<< std::setw(msg_offset) << mi_fill_cont.capacity() << TAB << std::setw(msg_offset) << su_fill_cont.capacity() << END;
 
-	//INSERT 1
-	viktor.insert(viktor.begin(), 1984);
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "After insertion 1: " << *it << NL;
-	//INSERT 2
-	viktor.insert(viktor.begin(), 2, 1970);
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "After insertion 2: " << *it << NL;
+	//POP_BACK CHECK
+	PRINT	<< YEL "POP BACK CHECK" << NL
+			<< TAB << "Popping back last element: " << NL
+			<< TAB << "  mi_fill_cont.pop_back()" << NL
+			<< TAB << "  su_fill_cont.pop_back()" << END;
+	mi_fill_cont.pop_back();
+	su_fill_cont.pop_back();
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	
-	ft::vector<int> tryst(4, 1);
-	tryst.insert(tryst.begin() + 1, 1, 9);
-	for (ft::vector<int>::iterator it = tryst.begin(), end = tryst.end(); it != end; ++it)
-		PRINT << "After insertion alt: " << *it << NL;
-	//INSERT 3
-	viktor.insert(viktor.begin(), tryst.begin(), tryst.end());
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "After insertion 3: " << *it << NL;
+	//RESIZE CHECKS
+	//Size down
+	PRINT	<< YEL "RESIZE CHECKS" << NL
+			<< TAB << "Sizing down:" << NL
+			<< TAB << "  mi_fill_cont.resize(2)" << NL
+			<< TAB << "  su_fill_cont.resize(2)" << END;
+	mi_fill_cont.resize(2);
+	su_fill_cont.resize(2);
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	//Size up
+	PRINT	<< NL
+			<< TAB << YEL "Sizing up:" << NL
+			<< TAB << " mi_fill_cont.resize(4)" << NL
+			<< TAB << " su_fill_cont.resize(4)" << END;
+	mi_fill_cont.resize(4);
+	su_fill_cont.resize(4);
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	//Size up with caller-specified value
+	PRINT	<< NL
+			<< TAB << YEL "Sizing up with caller-specified value:" << NL
+			<< TAB << " mi_fill_cont.resize(6, 21)" << NL
+			<< TAB << " su_fill_cont.resize(6, 21)" << END;
+	mi_fill_cont.resize(6, 21);
+	su_fill_cont.resize(6, 21);
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	
-	//SWAP
-	viktor.swap(tryst);
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "After swap: " << *it << NL;
-	
-	//STD SWAP WITH FT::VECTOR
-	swap(viktor, tryst); //HOW!? I didn't give you any information!! :O
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
-		PRINT << "After swap 2: " << *it << NL;
+	//ERASE CHECKS
+	//ERASE BY POSITION
+	PRINT	<< YEL "ERASE CHECKS" << NL
+			<< TAB << "Erasing by position:" << NL
+			<< TAB << "  mi_fill_cont.erase(mi_fill_cont.begin() + 2)" << NL
+			<< TAB << "  su_fill_cont.resize(su_fill_cont.begin() + 2)" << END;
+	{
+		typename MY_Container::iterator mi_erase_res = mi_fill_cont.erase(mi_fill_cont.begin() + 2);
+		typename STD_Container::iterator su_erase_res = su_fill_cont.erase(su_fill_cont.begin() + 2);
+		size_t	mi_res_pos = mi_erase_res - mi_fill_cont.begin();
+		size_t	su_res_pos = su_erase_res - su_fill_cont.begin();
 
-	//GET ALLOCATOR
-	// //You could do this:
-	// ft::vector<int>::allocator_type alloc = viktor.get_allocator();
+		elemc_compare_log(su_fill_cont, mi_fill_cont);
+		cont_check_log(su_fill_cont, mi_fill_cont, ret);
+		//Should return an iterator to the value after the erased element.
+		//Since we're dealing with two different memory blocks, we convert the
+		//iterators to their positions relative to begin() and compare those.
+		compare_log(mi_res_pos == su_res_pos, ret, "Return Iterator Position", msg_offset);
+		PRINT	<< std::setw(msg_offset) << mi_res_pos << TAB << std::setw(msg_offset) << su_res_pos << END;
+	}
+	PRINT	<< TAB << YEL "Erasing last element by position:" << NL
+			<< TAB << "  mi_fill_cont.erase(mi_fill_cont.end() - 1)" << NL
+			<< TAB << "  su_fill_cont.resize(su_fill_cont.end() - 1)" << END;
+	{
+		typename MY_Container::iterator mi_erase_res = mi_fill_cont.erase(mi_fill_cont.end() - 1);
+		typename STD_Container::iterator su_erase_res = su_fill_cont.erase(su_fill_cont.end() - 1);
+		size_t	mi_res_pos = mi_erase_res - mi_fill_cont.begin();
+		size_t	su_res_pos = su_erase_res - su_fill_cont.begin();
+	
+		elemc_compare_log(su_fill_cont, mi_fill_cont);
+		cont_check_log(su_fill_cont, mi_fill_cont, ret);
+		//Should return an iterator to the value after the erased element.
+		//Since we're dealing with two different memory blocks, we convert the
+		//iterators to their positions relative to begin() and compare those.
+		//In this case we're erasing the last element, so it should be equal to
+		//end() for both.
+		compare_log(mi_res_pos == su_res_pos, ret, "Return Iterator Position", msg_offset);
+		PRINT	<< std::setw(msg_offset) << mi_res_pos << TAB << std::setw(msg_offset) << su_res_pos << END;
+	}
+	//ERASE BY RANGE
+		PRINT	<< NL
+				<< TAB << YEL "Erasing by range:" << NL
+				<< TAB << "  mi_fill_cont.erase(mi_fill_cont.begin() + 1, mi_fill_cont.end())" << NL
+				<< TAB << "  su_fill_cont.erase(su_fill_cont.begin() + 1, su_fill_cont.end())" << END;
+		//THESE RETURN VOID IN C++98
+		mi_fill_cont.erase(mi_fill_cont.begin() + 1, mi_fill_cont.end());
+		su_fill_cont.erase(su_fill_cont.begin() + 1, su_fill_cont.end());
+		elemc_compare_log(su_fill_cont, mi_fill_cont);
+		cont_check_log(su_fill_cont, mi_fill_cont, ret);
+
+	//INSERT CHECKS
+	//INSERT BY POSITION
+	PRINT	<< YEL "INSERT CHECKS" << NL
+			<< TAB << "Inserting by position:" << NL
+			<< TAB << "  mi_fill_cont.insert(mi_fill_cont.begin(), 1984)" << NL
+			<< TAB << "  su_fill_cont.insert(su_fill_cont.begin(), 1984)" << END;
+	mi_fill_cont.insert(mi_fill_cont.begin(), 1984);
+	su_fill_cont.insert(su_fill_cont.begin(), 1984);
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	//INSERT BY POSITION AND CLONE N TIMES
+	PRINT	<< NL
+			<< TAB << YEL "Inserting by position and cloning n times:" << NL
+			<< TAB << "  mi_fill_cont.insert(mi_fill_cont.begin(), 2, 1970)" << NL
+			<< TAB << "  su_fill_cont.insert(su_fill_cont.begin(), 2, 1970)" << END;
+	mi_fill_cont.insert(mi_fill_cont.begin(), 2, 1970);
+	su_fill_cont.insert(su_fill_cont.begin(), 2, 1970);
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	//Creating new containers for swap test
+	PRINT	<< NL
+			<< TAB << YEL "Creating new containers:" << NL
+			<< TAB << "  ft::container mi_swappable_cont(4, 1)" << NL
+			<< TAB << "  std::container su_swappable_cont(4, 1)" << END;
+	MY_Container	mi_swappable_cont(4, 1);
+	STD_Container	su_swappable_cont(4, 1);
+	PRINT	<< TAB << YEL "Inserting by position and cloning n times:" << NL
+			<< TAB << "  mi_swappable_cont.insert(mi_swappable_cont.begin() + 1, 1, 9)" << NL
+			<< TAB << "  su_swappable_cont.insert(su_swappable_cont.begin() + 1, 1, 9)" << END;
+	mi_swappable_cont.insert(mi_swappable_cont.begin() + 1, 1, 9);
+	su_swappable_cont.insert(su_swappable_cont.begin() + 1, 1, 9);
+	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
+	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
+
+	//INSERT BY RANGE
+	PRINT	<< TAB << YEL "Inserting by range:" << NL
+			<< TAB << "  mi_fill_cont.insert(mi_fill_cont.begin(), mi_swappable_cont.begin(), mi_swappable_cont.end())" << NL
+			<< TAB << "  su_fill_cont.insert(su_fill_cont.begin(), su_swappable_cont.begin(), su_swappable_cont.end())" << END;
+	mi_fill_cont.insert(mi_fill_cont.begin(), mi_swappable_cont.begin(), mi_swappable_cont.end());
+	su_fill_cont.insert(su_fill_cont.begin(), su_swappable_cont.begin(), su_swappable_cont.end());
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	
+	//SWAP CHECKS; 4 WAYS TO SWAP!
+	//AS CLASS FUNCTION
+	PRINT	<< YEL "SWAP CHECKS" << NL
+			<< TAB << "Swapping with class function:" << NL
+			<< TAB << "  mi_fill_cont.swap(mi_swappable_cont)" << NL
+			<< TAB << "  su_fill_cont.swap(su_swappable_cont)" << END;
+	mi_fill_cont.swap(mi_swappable_cont);
+	su_fill_cont.swap(su_swappable_cont);
+	//fill_cont swapped with swappable_cont
+	PRINT	<< TAB << YEL "  fill_cont:" << END;
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< TAB << YEL "  swappable_cont:" << END;
+	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
+	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
+
+	//WITH DEFAULT STD::SWAP
+	//THIS DOES A BYTE-FOR-BYTE SWAP OF THE INSTANCE USING THE COPY-CONSTRUCTOR TO CREATE A THIRD TEMPORARY INSTANCE
+	//VERY INEFFICIENT! BUT... FOR SCIENCE! xD
+	PRINT	<< NL
+			<< TAB << YEL "Swapping with default std::swap" << NL
+			<< TAB << "  std::swap(mi_fill_cont, mi_swappable_cont)" << NL
+			<< TAB << "  std::swap(su_fill_cont, su_swappable_cont)" << END;
+	std::swap(mi_fill_cont, mi_swappable_cont);
+	std::swap(su_fill_cont, su_swappable_cont);
+	//fill_cont swapped with swappable_cont again!
+	PRINT	<< TAB << YEL "  fill_cont:" << END;
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< TAB << YEL "  swappable_cont:" << END;
+	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
+	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
+
+	//USING FT::SWAP FOR FT::CONTAINER AND STD::SWAP FOR STD::CONTAINER VIA ARGUMENT-DEPENDENT LOOKUP (ADL)
+	//ADL LOOKS UP A MATCHING TEMPLATE SPECIALIZATION WITHIN THE SAME NAMESPACE AS THE ARGUMENTS
+	//THIS DOES MAGIC TO FIND MY SPECIALIZED SWAP TEMPLATE IN FT:: NAMESPACE WHICH CALLS THE CLASS FUNCTION
+	PRINT	<< NL
+			<< TAB << YEL "Swapping with class function via ADL:" << NL
+			<< TAB << "  std::swap(mi_fill_cont, mi_swappable_cont)" << NL
+			<< TAB << "  std::swap(su_fill_cont, su_swappable_cont)" << END;
+	swap(mi_fill_cont, mi_swappable_cont); //why does this activate ADL? no feckin idea!
+	swap(su_fill_cont, su_swappable_cont);
+	//fill_cont swapped with swappable_cont yet again!
+	PRINT	<< TAB << YEL "  fill_cont:" << END;
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< TAB << YEL "  swappable_cont:" << END;
+	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
+	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
+
+	//USING DEFAULT STD::SWAP BUT STILL FINDING FT::SWAP VIA ARGUMENT-DEPENDENT LOOKUP (ADL) FOR SOME REASON
+	//ADL LOOKS UP A MATCHING TEMPLATE SPECIALIZATION WITHIN THE SAME NAMESPACE AS THE ARGUMENTS
+	//THIS DOES MAGIC TO FIND MY SPECIALIZED SWAP TEMPLATE IN FT:: NAMESPACE WHICH CALLS THE CLASS FUNCTION
+	//SO BASICALLY THE SAME AS BEFORE... RIGHT? I THINK. I HOPE!
+	//HONESTLY, WHO THE HELL KNOWS AT THIS POINT? ONLY SCOTT MEYERS AND THE COMMITTEE... ANYWAY, THEY SWAP!
+	PRINT	<< NL
+			<< TAB << YEL "Swapping with class function via ADL:" << NL
+			<< TAB << "  std::swap(mi_fill_cont, mi_swappable_cont)" << NL
+			<< TAB << "  std::swap(su_fill_cont, su_swappable_cont)" << END;
+	using std::swap; //why does this activate ADL too? no feckin idea!
+	swap(mi_fill_cont, mi_swappable_cont);
+	swap(su_fill_cont, su_swappable_cont);
+	//fill_cont swapped with swappable_cont yet another time!
+	PRINT	<< TAB << YEL "  fill_cont:" << END;
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< TAB << YEL "  swappable_cont:" << END;
+	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
+	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
+
+	//GET ALLOCATOR CHECK
+	// // You could do this:
+	// MY_Container::allocator_type		my_alloc = mi_fill_cont.get_allocator();
+	// STD_Container::allocator_type	std_alloc = su_fill_cont.get_allocator();
 	//
-	// //But you can't do this:
-	// viktor.allocator_type alloc = viktor.get_allocator();
+	// // But you can't do this:
+	// mi_fill_cont.allocator_type	my_alloc = mi_fill_cont.get_allocator();
+	// su_fill_cont.allocator_type	std_alloc = su_fill_cont.get_allocator();
 	//
-	// //Because... well, according to compiler, because you just can't. So there.
-	// Aaaanyway...
-	int * allocated_array = viktor.get_allocator().allocate(4);
+	// // Because... well, according to compiler, because you just CAN'T. So THERE.
+	//
+	// Aaaanyway... we'll get an allocator instance and use it to allocate more
+	// memory on the heap, because that's ALWAYS fun! :)
+	//
+	// Stop looking at me like that... ¬¬
+	PRINT	<< YEL "GET ALLOCATOR CHECK" << NL
+			<< TAB << "Allocating heap memory using returned allocator instance:" << NL
+			<< TAB << "  mi_fill_cont.get_allocator().allocate(4)" << NL
+			<< TAB << "  su_fill_cont.get_allocator().allocate(4)" << END;
+	mi_fill_cont.get_allocator().allocate(4); //allocators are stateful, and remember what type they are allocating
+	su_fill_cont.get_allocator().allocate(4); //so this is NOT 4 bytes, but rather 4 * sizeof(SourceContainer::value_type)
+	typename MY_Container::value_type * 	mi_allocated_array = mi_fill_cont.get_allocator().allocate(4);
+	typename STD_Container::value_type *	su_allocated_array = su_fill_cont.get_allocator().allocate(4);
+	PRINT	<< TAB << YEL "Assigning values to each allocation using constructor of returned allocator instance:" << NL
+			<< TAB << "  mi_fill_cont.get_allocator().construct(arr, val)" << NL
+			<< TAB << "  su_fill_cont.get_allocator().construct(arr, val)" << END;
+	//We don't know what the value_type could be, so we'll just default-initialize whatever it is.
 	for (size_t i = 0; i < 4; ++i)
-		viktor.get_allocator().construct(&allocated_array[i], 42);
+		mi_fill_cont.get_allocator().construct(&mi_allocated_array[i], typename MY_Container::value_type());
 	for (size_t i = 0; i < 4; ++i)
-		PRINT << "Allocated Array: " << allocated_array[i] << END;
+		su_fill_cont.get_allocator().construct(&su_allocated_array[i], typename STD_Container::value_type());
+	//Errmm... I'll just do memcmp! ;)
+	{
+		int	result;
+		//sorry for the hideousness.
+		//memcmp returns 0 if equal, compare_log expects true if equal...
+		//the allocator expects a multiple of the type as the size, memcmp expects the size in bytes...
+		//you know how it is. xD
+		compare_log(!(result = std::memcmp(su_allocated_array, mi_allocated_array, 4 * sizeof(typename MY_Container::value_type))), ret, "Heap Allocation", msg_offset);
+		PRINT	<< "mi_allocated_array " << (!result ? " == " : " != ") << " su_allocated_array" << END;
+	}
+	// // we can assign to the arrays and print the results if we know the types and they have ostream overloads and such
+	// for (size_t i = 0; i < 4; ++i)
+	// 	PRINT << "Allocated Array: " << mi_allocated_array[i] << END;
+	// for (size_t i = 0; i < 4; ++i)
+	// 	PRINT << "Allocated Array: " << su_allocated_array[i] << END;
+	
+	//Of course we can't forget to free our memory. ;)
+	//First we destroy... don't know what those instances might need to free, after all...
+	PRINT	<< TAB << YEL "Destroying each instance in the allocated array:" << NL
+			<< TAB << "  mi_fill_cont.get_allocator().destroy(&arr[i])" << NL
+			<< TAB << "  su_fill_cont.get_allocator().destroy(&arr[i])" << END;
 	size_t i = 3;
 	do {
-		viktor.get_allocator().destroy(&allocated_array[i]);
+		mi_fill_cont.get_allocator().destroy(&mi_allocated_array[i]);
+		su_fill_cont.get_allocator().destroy(&su_allocated_array[i]);
 	} while (i-- > 0);
-	viktor.get_allocator().deallocate(allocated_array, 4); // Why would anyone do this though?
+	//And then we deallocate... be sure to remember how much we allocated! ;)
+	PRINT	<< TAB << YEL "Deallocating the allocated memory block:" << NL
+			<< TAB << "  mi_fill_cont.get_allocator().deallocate(arr, 4)" << NL
+			<< TAB << "  su_fill_cont.get_allocator().deallocate(arr, 4)" << END;
+	mi_fill_cont.get_allocator().deallocate(mi_allocated_array, 4); // C++ is just SO much simpler than C!
+	su_fill_cont.get_allocator().deallocate(su_allocated_array, 4); // I am really feeling that high level abstraction right now! xD
+	//Look ma, no leaks!
 
 	//ASSIGN
-	clone.push_back(-42);
-	clone.push_back(-21);
-	viktor.assign(clone.begin(), clone.end());
-	for (ft::vector<int>::iterator it = viktor.begin(), end = viktor.end(); it != end; ++it)
+	mi_copied_cont.push_back(-42);
+	mi_copied_cont.push_back(-21);
+	mi_fill_cont.assign(mi_copied_cont.begin(), mi_copied_cont.end());
+	for (typename MY_Container::iterator it = mi_fill_cont.begin(), end = mi_fill_cont.end(); it != end; ++it)
 		PRINT << "Assign...: " << *it << NL;
 
-	//std::vector<int> clone(vector.begin(), vector.end());
-	std::vector<std::vector<int>::iterator> test;
-	ft::vector<int>::iterator ft_it(viktor.begin());
-	std::vector<int>::iterator std_it(vector.begin());
+	//STD_Container mi_copied_cont(su_fill_cont.begin(), su_fill_cont.end());
+	typename MY_Container::iterator ft_it(mi_fill_cont.begin());
+	typename STD_Container::iterator std_it(su_fill_cont.begin());
 
 	//REFERENCING
-	const ft::vector<int>	c_viktor(3, 42);
-	ft::vector<int>	vacio;
-	int & num1(viktor[0]);
+	const MY_Container	c_mi_fill_cont(3, 42);
+	MY_Container	vacio;
+	int & num1(mi_fill_cont[0]);
 	
-	PRINT << "Referenced by viktor[]: " << num1 << END;
+	PRINT << "Referenced by mi_fill_cont[]: " << num1 << END;
 
 	try
 	{
-		int & num2(viktor.at(5));
+		int & num2(mi_fill_cont.at(5));
 		PRINT << "Referenced by at(): " << num2 << END;
 	}
 	catch(const std::out_of_range & e)
@@ -426,7 +778,7 @@ void	my_veritable_vector(void)
 
 	try
 	{
-		int & num2(viktor.at(6));
+		int & num2(mi_fill_cont.at(6));
 		PRINT << "Referenced by at(): " << num2 << END;
 	}
 	catch(const std::out_of_range & e)
@@ -445,51 +797,52 @@ void	my_veritable_vector(void)
 	}
 	
 	//CONST REFERENCING
-	// Const int reference to const vector int, this is fine.
-	const int & c_num(c_viktor[5]);
-	// // Compiler will not allow this as c_viktor is const.
-	// int & num3(c_viktor[5]);
+	// Const int reference to const su_fill_cont int, this is fine.
+	const int & c_num(c_mi_fill_cont[5]);
+	// // Compiler will not allow this as c_mi_fill_cont is const.
+	// int & num3(c_mi_fill_cont[5]);
 
 	// This is all fine, read-only
 	PRINT << "Const Reference: " << c_num << END;
 
-	// // Compiler will not allow this as c_viktor is const.
-	//c_viktor[0] = 8;
+	// // Compiler will not allow this as c_mi_fill_cont is const.
+	//c_mi_fill_cont[0] = 8;
 	
 
 	//FRONT AND BACK
-	PRINT << "Front: " << viktor.front() << NL
-	<< "Back: " << viktor.back() << NL
-	<< "Const Front: " << c_viktor.front() << NL
-	<< "Const Back: " << c_viktor.back() << END;
+	PRINT << "Front: " << mi_fill_cont.front() << NL
+	<< "Back: " << mi_fill_cont.back() << NL
+	<< "Const Front: " << c_mi_fill_cont.front() << NL
+	<< "Const Back: " << c_mi_fill_cont.back() << END;
 
 	//This is fine
-	viktor.front() = 5;
-	viktor.back() = 10;
+	mi_fill_cont.front() = 5;
+	mi_fill_cont.back() = 10;
 
-	// // Compiler should not allow this as c_viktor is const.
-	// c_viktor.front() = 5;
-	// c_viktor.back() = 10;
+	// // Compiler should not allow this as c_mi_fill_cont is const.
+	// c_mi_fill_cont.front() = 5;
+	// c_mi_fill_cont.back() = 10;
 
 	//COMPARISON TEST
-	PRINT << "viktor == assigned?: " << std::boolalpha << (viktor == assigned) << END;
-	PRINT << "viktor != assigned?: " << std::boolalpha << (viktor != assigned) << END;
-	PRINT << "viktor == viktor?: " << std::boolalpha << (viktor == viktor) << END;
-	PRINT << "viktor != viktor?: " << std::boolalpha << (viktor != viktor) << END;
-	PRINT << "viktor < assigned?: " << std::boolalpha << (viktor < assigned) << END;
-	PRINT << "viktor > assigned?: " << std::boolalpha << (viktor > assigned) << END;
-	PRINT << "viktor < viktor?: " << std::boolalpha << (viktor < viktor) << END;
-	PRINT << "viktor > viktor?: " << std::boolalpha << (viktor > viktor) << END;
-	PRINT << "viktor <= assigned?: " << std::boolalpha << (viktor <= assigned) << END;
-	PRINT << "viktor >= assigned?: " << std::boolalpha << (viktor >= assigned) << END;
-	PRINT << "viktor <= viktor?: " << std::boolalpha << (viktor <= viktor) << END;
-	PRINT << "viktor >= viktor?: " << std::boolalpha << (viktor >= viktor) << END;
+	PRINT << "mi_fill_cont == mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont == mi_assigned_cont) << END;
+	PRINT << "mi_fill_cont != mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont != mi_assigned_cont) << END;
+	PRINT << "mi_fill_cont == mi_fill_cont?: " << std::boolalpha << (mi_fill_cont == mi_fill_cont) << END;
+	PRINT << "mi_fill_cont != mi_fill_cont?: " << std::boolalpha << (mi_fill_cont != mi_fill_cont) << END;
+	PRINT << "mi_fill_cont < mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont < mi_assigned_cont) << END;
+	PRINT << "mi_fill_cont > mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont > mi_assigned_cont) << END;
+	PRINT << "mi_fill_cont < mi_fill_cont?: " << std::boolalpha << (mi_fill_cont < mi_fill_cont) << END;
+	PRINT << "mi_fill_cont > mi_fill_cont?: " << std::boolalpha << (mi_fill_cont > mi_fill_cont) << END;
+	PRINT << "mi_fill_cont <= mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont <= mi_assigned_cont) << END;
+	PRINT << "mi_fill_cont >= mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont >= mi_assigned_cont) << END;
+	PRINT << "mi_fill_cont <= mi_fill_cont?: " << std::boolalpha << (mi_fill_cont <= mi_fill_cont) << END;
+	PRINT << "mi_fill_cont >= mi_fill_cont?: " << std::boolalpha << (mi_fill_cont >= mi_fill_cont) << END;
 
 	//DEBUG i know i know, my iterators aren't done yet ok? it will take up a thousand characters eventually i swear! xD
 	for (size_t i = 0; i < 4; ++i)
 		PRINT << *ft_it++ << END;
 	for (size_t i = 0; i < 4; ++i)
 		PRINT << *std_it++ << END;
+	return (ret);
 }
 
 int main(void)
@@ -499,7 +852,7 @@ int main(void)
 	else
 		PRINT << RED "KO" << END;
 	
-	my_veritable_vector();	
+	my_veritable_vector<ft::vector<int>, std::vector<int> >();
 
 	//quick make_pair test
 	ft::pair<int, char>	pair_chorra(42, 42);

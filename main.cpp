@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/16 04:11:15 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/16 04:14:44 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 #include <iomanip>
 #include <vector>
 #include <cstring>
-
-#include <functional>
 
 #define GRN "\e[1;32m"
 #define RED "\e[1;31m"

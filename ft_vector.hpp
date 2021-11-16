@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/16 12:45:07 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/16 13:21:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ namespace ft
 			typedef ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			
-			/* CONSTRUCTORS */
+			/* ---- CONSTRUCTORS, DESTRUCTOR, ASSIGNMENT OVERLOAD ---- */
 				
 			/* DEFAULT CONSTRUCTOR */
 			/*
@@ -384,7 +384,7 @@ namespace ft
 				return (*this);
 			}
 
-			/* ELEMENT ACCESS */
+			/* ---- ELEMENT ACCESS ---- */
 
 			/* BRACKETS OPERATOR OVERLOAD */
 			/*
@@ -442,7 +442,7 @@ namespace ft
 				return ((*this)[_size - 1]);
 			}
 
-			/* ITERATORS */
+			/* ---- ITERATORS ---- */
 
 			/* BEGIN AND END METHODS */
 			/*
@@ -512,9 +512,9 @@ namespace ft
 				return (ft::reverse_iterator<const_iterator>(const_iterator(this->begin())));
 			}
 
-			/* MODIFIERS */
+			/* ---- MODIFIERS ---- */
 
-			/* ASSIGN METHODS */
+			/* RANGE ASSIGN */
 			/*
 			** This function replaces the container's elements with the elements
 			** between first and last, destroying pre-existing elements and
@@ -540,7 +540,7 @@ namespace ft
 				}
 				CATCH_RESERVE_EXCEPTIONS
 			}
-			
+			/* FILL ASSIGN */
 			/*
 			** This function replaces the container's elements with n instances
 			** of the value val, destroying pre-existing elements and reserving
@@ -605,8 +605,22 @@ namespace ft
 					_alloc.destroy(&(_arr[--_size])); //valid for vector only; only place _size decrements
 			}
 
-			/* ERASE METHODS */
-			
+			/* CLEAR */
+			/*
+			** This function destroys any objects constructed in the array in
+			** reverse order, and then deallocates the memory occupied by the
+			** array, using the provided allocator object. By default,
+			** std::allocator. The allocator wants a raw pointer, not
+			** iterator shenanigans, hence the dereferencing and referencing.
+			**
+			** The size is set to 0. Capacity is NOT affected.
+			*/
+			void				clear(void) {
+				for (reverse_iterator rit = this->rbegin(), rend = this->rend(); rit != rend; ++rit)
+					_alloc.destroy(&(*rit));
+				this->_size = 0;
+			}
+
 			/* SINGLE ELEMENT ERASE */
 			/*
 			**
@@ -619,6 +633,7 @@ namespace ft
 			*/
 			iterator			erase(iterator pos) {
 				iterator it = pos;
+
 				_alloc.destroy(&(*pos));
 				for (iterator end = this->end(); it + 1 != end; ++it)
 					*it = *(it + 1);
@@ -640,22 +655,18 @@ namespace ft
 			** If invalid range is passed behaviour is undefined.
 			*/
 			iterator			erase(iterator first, iterator last) {
-				size_type	eraseCount;
-				iterator	end = this->end();
+				size_type	eraseCount = last - first;
 				iterator	it;
-				eraseCount = last - first;
+
 				for (it = first; it != last; ++it)
 					_alloc.destroy(&(*it));
-				for (it = first; it + eraseCount != end; ++it)
+				for (it = first; it + eraseCount != this->end(); ++it)
 					*it = *(it + eraseCount);
 				for (size_type i = 0; i < eraseCount; ++i)
 					pop_back();
 				return  (last - eraseCount);
 			}
-			
-			/* INSERT METHODS */
 
-			
 			/* SINGLE ELEMENT INSERT */
 			/*
 			** This function inserts the value passed as val at the position pos
@@ -694,6 +705,7 @@ namespace ft
 			*/						
 			iterator			insert(iterator pos, value_type const & val) {
 				iterator it(NULL);
+
 				try
 				{
 					size_type	pos_index = (pos - this->begin());
@@ -738,7 +750,7 @@ namespace ft
 			** The resize method may throw an exception upon reallocation. If
 			** this happens, the operation is aborted before the container is
 			** altered and the exception is handled by insert, printing the
-			** error for the user and returning a NULL iterator.
+			** error for the user.
 			*/
 			void				insert(iterator pos, size_type n, T const & val) {
 				try
@@ -793,20 +805,10 @@ namespace ft
 					for (iterator it(this->begin() + pos_index); first != last; ++first, ++it)
 						*it = *first;
 				}
-				catch(const std::length_error & e) //we'll handle push_back exceptions here
-				{
-					PRNTERR << RED << e.what() << END;
-				}
-				catch(const std::bad_alloc & e)
-				{
-					PRNTERR << RED << e.what() << END;
-				}
-				catch(const std::exception & e)
-				{
-					PRNTERR << RED << e.what() << END;
-				}
+				CATCH_RESERVE_EXCEPTIONS
 			}
 
+			/* SWAP */
 			/*
 			** This function does what it says on the tin.
 			*/
@@ -826,23 +828,54 @@ namespace ft
 				src._capacity = org_cap;
 			}
 
-			/* Capacity */
+			// This works too for the template specialization, but in STL it's a
+			// free function, so...
+			// template<typename _Tp>
+			// friend void	swap(ft::vector<_Tp> & x, ft::vector<_Tp> & y) {
+			// 	x.swap(y);
+			// }
+
+			/* ---- CAPACITY ---- */
 			
+			/* EMPTY */
+			/*
+			** This method returns true if the container is empty. Otherwise it
+			** returns false.
+			*/
 			bool				empty(void) const {
 				if (!size())
 					return (true);
 				return (false);
 			}
 
+			/* SIZE */
+			/*
+			** This method returns the number of ELEMENTS in the container, NOT
+			** its allocated memory!
+			*/
 			size_type			size(void) const {
 				return (_size);
 			}
+
+			/* MAX_SIZE */
+			/*
+			** This method returns the container's maximum size, for which we
+			** use its allocator's maximum size.
+			*/
 			size_type			max_size(void) const {
 				return (_alloc.max_size());
 			}
+
+			/* CAPACITY */
+			/*
+			** This method returns the container's CAPACITY, which is its total
+			** allocated memory.
+			*/
 			size_type			capacity(void) const {
 				return (_capacity);
 			}
+
+			/* RESERVE */
 			/*
 			** This is an array, so any reallocation means copying over all the
 			** contents of the prior array.
@@ -896,21 +929,8 @@ namespace ft
 					}
 				}
 			}
-			/*
-			** This function destroys any objects constructed in the array in
-			** reverse order, and then deallocates the memory occupied by the
-			** array, using the provided allocator object. By default,
-			** std::allocator. The allocator wants a raw pointer, not
-			** iterator shenanigans, hence the dereferencing and referencing.
-			**
-			** The size is set to 0. Capacity is NOT affected.
-			*/
-			void				clear(void) {
-				for (reverse_iterator rit = this->rbegin(), rend = this->rend(); rit != rend; ++rit)
-					_alloc.destroy(&(*rit));
-				this->_size = 0;
-			}
 
+			/* RESIZE */
 			/*
 			** This function resizes the container by new_size elements. If the
 			** new size is greater than the current size, the value passed as an
@@ -924,7 +944,7 @@ namespace ft
 			** segmentation fault. I made that type unsigned for a reason, you
 			** know. :p
 			**
-			** The resize function rethrows all exceptions potentially thrown by
+			** The resize function RETHROWS all exceptions potentially thrown by
 			** push_back (via reserve), breaking out of the push_back loop if
 			** any are thrown. The container should be left in the last healthy
 			** state before the exception was thrown.
@@ -940,7 +960,7 @@ namespace ft
 						while (_size < new_size)
 							push_back(value); // may throw exception; exception will break us out of the loop with _size unchanged
 					}
-					catch(const std::length_error & e) //we'll handle push_back exceptions here
+					catch(const std::length_error & e) //we RETHROW push_back exceptions here
 					{
 						throw ;
 					}
@@ -955,13 +975,7 @@ namespace ft
 				}
 			}
 
-			
-
-			// template<typename _Tp>
-			// friend void	swap(ft::vector<_Tp> & x, ft::vector<_Tp> & y) {
-			// 	x.swap(y);
-			// }
-
+			/* GET ALLOCATOR */
 			/*
 			** This function returns a copy of the instantiated allocator.
 			*/
@@ -981,6 +995,8 @@ namespace ft
 	// maybe i'll free it. i don't know. maybe not. aren't some containers not
 	// swappable? i wouldn't have to enable_if them, would I?? :O because I'm
 	// leaving them as friends if THAT's the case.
+
+	/* SWAP TEMPLATE SPECIALIZATION */
 	/*
 	** This is an std::swap specialization for my ft::vector. I have no idea how
 	** it finds this and knows what to do with it, it isn't even in the std
@@ -1021,6 +1037,8 @@ namespace ft
 	void	swap(ft::vector<T, Alloc> & x, ft::vector<T, Alloc> & y) {
 		x.swap(y);
 	}
+
+	/* ---- RELATIONAL OPERATOR OVERLOADS ---- */
 
 	template<typename T, typename Alloc>
 	bool	operator==(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {

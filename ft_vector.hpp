@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/16 13:21:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/16 13:25:17 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 #define END RST << std::endl
 
 #define GROWTH_FACTOR 2
-/* This catch block is used after every call to reserve */
+/* This catch block is used to catch reserve exceptions */
 #define CATCH_RESERVE_EXCEPTIONS	catch (std::length_error & e) \
 									{ \
 										PRNTERR << RED << e.what() << END; \
@@ -62,7 +62,6 @@ namespace ft
 			template<typename iT>
 			struct Iterator : public ft::iterator_traits<iT>
 			{
-
 				//Constructible
 				Iterator(void) : _m_ptr(NULL) {}
 				explicit Iterator(typename Iterator::pointer ptr) : _m_ptr(ptr) {}

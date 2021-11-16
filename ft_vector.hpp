@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/15 01:31:57 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/16 04:08:12 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -422,6 +422,14 @@ namespace ft
 				return ((*this)[_size - 1]);
 			}
 
+			/*
+			** This function replaces the container's elements with the elements
+			** between first and last, destroying pre-existing elements and
+			** reserving additional memory as needed, and constructing the new
+			** elements in place.
+			**
+			** This is the behaviour of push_back, so that's what we use.
+			*/
 			template<typename InputIt>
 			void				assign(InputIt first, InputIt last,
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type* = NULL) {
@@ -429,11 +437,11 @@ namespace ft
 
 				try
 				{
-					reserve(new_size); 	//reserve will do nothing if new_size is not greater than capacity
+					reserve(new_size); 	//reserve will do nothing if new_size is not greater than capacity; reserve throws
 					clear(); 			//reserve already calls clear if it had to reallocate, but there is no harm calling it
 										//again, it will do nothing if the container is already clear.
 					for ( ; first != last; ++first)
-						push_back(*first);
+						push_back(*first); //rethrows from reserve, but shouldn't here as enough memory should be pre-reserved
 				}
 				CATCH_RESERVE_EXCEPTIONS
 			}
@@ -995,34 +1003,34 @@ namespace ft
 	}
 
 	template<typename T, typename Alloc>
-	bool	operator==(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+	bool	operator==(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
 		if (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()))
 			return (true);
 		return (false);
 	}
 
 	template<typename T, typename Alloc>
-	bool	operator!=(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+	bool	operator!=(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
 		return(!operator==(lhs, rhs)); //a!=b == !a==b
 	}
 
 	template<typename T, typename Alloc>
-	bool	operator<(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+	bool	operator<(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
 		return(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
 	template<typename T, typename Alloc>
-	bool	operator>(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+	bool	operator>(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
 		return(operator<(rhs, lhs)); //a>b == b<a
 	}
 
 	template<typename T, typename Alloc>
-	bool	operator<=(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+	bool	operator<=(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
 		return(!operator<(rhs, lhs)); //a<=b == !b<a
 	}
 	
 	template<typename T, typename Alloc>
-	bool	operator>=(vector<T, Alloc> & lhs, vector<T, Alloc> & rhs) {
+	bool	operator>=(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
 		return(!operator<(lhs, rhs)); //a>=b == !a<b
 	}
 };

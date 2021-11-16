@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/16 02:10:54 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/16 04:11:15 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #define GRN "\e[1;32m"
 #define RED "\e[1;31m"
 #define YEL "\e[1;33m"
+#define BLU "\e[1;36m"
 #define RST "\e[0m"
 #define PRINT std::cout
 #define NL "\n"
@@ -333,6 +334,51 @@ void	elemc_compare_log(STD_Container const & lhs, MY_Container const & rhs)
 			<< TAB << color << std::setw(17) << rhs.size() << TAB << std::setw(17) << lhs.size() << END;
 }
 
+template<class STD_Container, class MY_Container>
+void	comparison_operator_log(STD_Container const & su_cont1, STD_Container const & su_cont2,
+								MY_Container const & mi_cont1, MY_Container const & mi_cont2, bool & ret)
+{
+	char const *	color;
+
+	PRINT 	<< YEL "RELATIONAL OPERATOR CHECKS:" << END;
+	check (((mi_cont1 == mi_cont2) == (su_cont1 == su_cont2)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 == mi_cont2: " << std::boolalpha << SET << (mi_cont1 == mi_cont2)
+			<< TAB << ALN << YEL "su_cont1 == su_cont2: " << std::boolalpha << SET << (su_cont1 == su_cont2) << END;
+	check (((mi_cont1 != mi_cont2) == (su_cont1 != su_cont2)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 != mi_cont2: " << std::boolalpha << SET << (mi_cont1 != mi_cont2)
+			<< TAB << ALN << YEL "su_cont1 != su_cont2: " << std::boolalpha << SET << (su_cont1 != su_cont2) << END;
+	check (((mi_cont1 == mi_cont1) == (su_cont1 == su_cont1)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 == mi_cont1: " << std::boolalpha << SET << (mi_cont1 == mi_cont1)
+			<< TAB << ALN << YEL "su_cont1 == su_cont1: " << std::boolalpha << SET << (su_cont1 == su_cont1) << END;
+	check (((mi_cont1 != mi_cont1) == (su_cont1 != su_cont1)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 != mi_cont1: " << std::boolalpha << SET << (mi_cont1 != mi_cont1)
+			<< TAB << ALN << YEL "su_cont1 != su_cont1: " << std::boolalpha << SET << (su_cont1 != su_cont1) << END;
+	check (((mi_cont1 > mi_cont2) == (su_cont1 > su_cont2)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 > mi_cont2:  " << std::boolalpha << SET << (mi_cont1 > mi_cont2)
+			<< TAB << ALN << YEL "su_cont1 > su_cont2:  " << std::boolalpha << SET << (su_cont1 > su_cont2) << END;
+	check (((mi_cont1 < mi_cont2) == (su_cont1 < su_cont2)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 < mi_cont2:  " << std::boolalpha << SET << (mi_cont1 < mi_cont2)
+			<< TAB << ALN << YEL "su_cont1 < su_cont2:  " << std::boolalpha << SET << (su_cont1 < su_cont2) << END;
+	check (((mi_cont1 > mi_cont1) == (su_cont1 > su_cont1)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 > mi_cont1:  " << std::boolalpha << SET << (mi_cont1 > mi_cont1)
+			<< TAB << ALN << YEL "su_cont1 > su_cont1:  " << std::boolalpha << SET << (su_cont1 > su_cont1) << END;
+	check (((mi_cont1 < mi_cont1) == (su_cont1 < su_cont1)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 < mi_cont1:  " << std::boolalpha << SET << (mi_cont1 < mi_cont1)
+			<< TAB << ALN << YEL "su_cont1 < su_cont1:  " << std::boolalpha << SET << (su_cont1 < su_cont1) << END;
+	check (((mi_cont1 >= mi_cont2) == (su_cont1 >= su_cont2)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 >= mi_cont2: " << std::boolalpha << SET << (mi_cont1 >= mi_cont2)
+			<< TAB << ALN << YEL "su_cont1 >= su_cont2: " << std::boolalpha << SET << (su_cont1 >= su_cont2) << END;
+	check (((mi_cont1 <= mi_cont2) == (su_cont1 <= su_cont2)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 <= mi_cont2: " << std::boolalpha << SET << (mi_cont1 <= mi_cont2)
+			<< TAB << ALN << YEL "su_cont1 <= su_cont2: " << std::boolalpha << SET << (su_cont1 <= su_cont2) << END;
+	check (((mi_cont1 >= mi_cont1) == (su_cont1 >= su_cont1)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 >= mi_cont1: " << std::boolalpha << SET << (mi_cont1 >= mi_cont1)
+			<< TAB << ALN << YEL "su_cont1 >= su_cont1: " << std::boolalpha << SET << (su_cont1 >= su_cont1) << END;
+	check (((mi_cont1 <= mi_cont1) == (su_cont1 <= su_cont1)), color, ret);
+	PRINT	<< TAB << ALN << YEL "mi_cont1 <= mi_cont1: " << std::boolalpha << SET << (mi_cont1 <= mi_cont1)
+			<< TAB << ALN << YEL "su_cont1 <= su_cont1: " << std::boolalpha << SET << (su_cont1 <= su_cont1) << END;	
+}
+
 /*
 ** This function will take the result of any comparison as comp. If the result
 ** is true, the color is set to green. If it is false, the color is set to red
@@ -469,6 +515,16 @@ bool	my_veritable_vector(void)
 	su_fill_cont.push_back(69);
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
+	PRINT	<< NL
+			<< TAB << YEL "Adding -42 and -21 via push_back to: " << NL
+			<< TAB << "  mi_copied_cont.push_back(-42...)" << NL
+			<< TAB << "  su_copied_cont.push_back(-42...)" << END;
+	mi_copied_cont.push_back(-42);
+	mi_copied_cont.push_back(-21);
+	su_copied_cont.push_back(-42);
+	su_copied_cont.push_back(-21);
+	elemc_compare_log(su_copied_cont, mi_copied_cont);
+	cont_check_log(su_copied_cont, mi_copied_cont, ret);
 	
 	//RESERVE CHECK
 	PRINT	<< YEL "RESERVE CHECK" << NL
@@ -748,100 +804,185 @@ bool	my_veritable_vector(void)
 	su_fill_cont.get_allocator().deallocate(su_allocated_array, 4); // I am really feeling that high level abstraction right now! xD
 	//Look ma, no leaks!
 
-	//ASSIGN
-	mi_copied_cont.push_back(-42);
-	mi_copied_cont.push_back(-21);
+
+	//DEBUG
+	// I FORGOT THE OTHER ASSIGN OVERLOAD!!!! PUT IT IN!!!! xD
+	//DEBUG
+	//ASSIGN CHECK
+	PRINT	<< YEL "ASSIGN CHECK" << NL
+			<< TAB << "Assigning by range:" << NL
+			<< TAB << "  mi_fill_cont.assign(mi_copied_cont.begin(), mi_copied_cont.end())" << NL
+			<< TAB << "  su_fill_cont.assign(su_copied_cont.begin(), su_copied_cont.end())" << END;
 	mi_fill_cont.assign(mi_copied_cont.begin(), mi_copied_cont.end());
-	for (typename MY_Container::iterator it = mi_fill_cont.begin(), end = mi_fill_cont.end(); it != end; ++it)
-		PRINT << "Assign...: " << *it << NL;
+	su_fill_cont.assign(su_copied_cont.begin(), su_copied_cont.end());
+	elemc_compare_log(su_fill_cont, mi_fill_cont);
+	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 
-	//STD_Container mi_copied_cont(su_fill_cont.begin(), su_fill_cont.end());
-	typename MY_Container::iterator ft_it(mi_fill_cont.begin());
-	typename STD_Container::iterator std_it(su_fill_cont.begin());
-
-	//REFERENCING
-	const MY_Container	c_mi_fill_cont(3, 42);
-	MY_Container	vacio;
-	int & num1(mi_fill_cont[0]);
-	
-	PRINT << "Referenced by mi_fill_cont[]: " << num1 << END;
-
+	//REFERENCING CHECKS
+	//Referencing by []
+	PRINT	<< YEL "REFERENCING CHECKS" << NL
+			<< TAB << "Referencing by []:" << NL
+			<< TAB << "  mi_fill_cont[4])" << NL
+			<< TAB << "  su_fill_cont[4])" << END;
+	compare_log(mi_fill_cont[4] == su_fill_cont[4], ret, "fill_cont[4]", msg_offset);
+	PRINT	<< std::setw(msg_offset) << mi_fill_cont[4] << std::setw(msg_offset) << su_fill_cont[4] << END;
+	//Referencing by &alias via []
+	PRINT	<< NL
+			<< TAB << YEL "Referencing by &alias via [] (same thing):" << NL
+			<< TAB << "  &mi_num1(mi_fill_cont[4]))" << NL
+			<< TAB << "  &su_num1(su_fill_cont[4]))" << END;
+	typename MY_Container::value_type &		mi_num1(mi_fill_cont[4]);
+	typename STD_Container::value_type &	su_num1(su_fill_cont[4]);
+	compare_log(mi_num1 == su_num1, ret, "num1 ref", msg_offset);
+	PRINT	<< std::setw(msg_offset) << mi_num1 << TAB << std::setw(msg_offset) << su_num1 << END;
+	//Referencing by container.at() member function
+	//at() throws exceptions for out-of-bounds references
+	PRINT	<< NL
+			<< TAB << YEL "Referencing in-bounds by container.at():" << NL
+			<< TAB << "  mi_fill_cont.at(5)" << NL
+			<< TAB << "  su_fill_cont.at(5)" << END;
 	try
 	{
-		int & num2(mi_fill_cont.at(5));
-		PRINT << "Referenced by at(): " << num2 << END;
+		compare_log(mi_fill_cont.at(5) == su_fill_cont.at(5), ret, "fill_cont.at(5)", msg_offset);
+		PRINT << std::setw(msg_offset) << mi_fill_cont.at(5) << TAB << std::setw(msg_offset) << su_fill_cont.at(5) << END;
 	}
 	catch(const std::out_of_range & e)
 	{
-		PRNTERR << e.what() << END;
+		PRNTERR << TAB << RED << e.what() << END;
 	}
 
+	PRINT	<< NL
+			<< TAB << YEL "Referencing out-of-bounds by container.at() (my message):" << NL
+			<< TAB << "  mi_fill_cont.at(6)" << NL
+			<< TAB << "  su_fill_cont.at(6)" << END;
 	try
 	{
-		int & num2(mi_fill_cont.at(6));
-		PRINT << "Referenced by at(): " << num2 << END;
+		compare_log(mi_fill_cont.at(6) == su_fill_cont.at(6), ret, "fill_cont.at(6)", msg_offset);
+		PRINT << std::setw(msg_offset) << mi_fill_cont.at(6) << TAB << std::setw(msg_offset) << su_fill_cont.at(6) << END;
 	}
 	catch(const std::out_of_range & e)
 	{
-		PRNTERR << e.what() << END;
+		PRNTERR << TAB << BLU << e.what() << END;
 	}
-
+	PRINT	<< NL
+			<< TAB << YEL "Referencing out-of-bounds by container.at() (STL message):" << NL
+			<< TAB << "  mi_fill_cont.at(6)" << NL
+			<< TAB << "  su_fill_cont.at(6)" << END;
 	try
 	{
-		int & num2(vacio.at(0));
-		PRINT << "Referenced by at(): " << num2 << END;
+		compare_log(su_fill_cont.at(6) == mi_fill_cont.at(6), ret, "fill_cont.at(6)", msg_offset);
+		PRINT << std::setw(msg_offset) << mi_fill_cont.at(6) << TAB << std::setw(msg_offset) << su_fill_cont.at(6) << END;
 	}
 	catch(const std::out_of_range & e)
 	{
-		PRNTERR << e.what() << END;
+		PRNTERR << TAB << BLU << e.what() << END; // OK, so which is clearer, my message, or STL message? xD
 	}
-	
+	PRINT	<< NL
+			<< TAB << YEL "Referencing empty container.at() (my message):" << NL
+			<< TAB << "  mi_vacio.at(0)" << NL
+			<< TAB << "  su_vacio.at(0)" << END;
+	try
+	{
+		MY_Container	mi_vacio;
+		STD_Container	su_vacio;
+		
+		compare_log(mi_vacio.at(0) == su_vacio.at(0), ret, "vacio.at(0)", msg_offset);
+		PRINT << std::setw(msg_offset) << mi_vacio.at(0) << TAB << std::setw(msg_offset) << su_vacio.at(0) << END;
+	}
+	catch(const std::out_of_range & e)
+	{
+		PRNTERR << TAB << BLU << e.what() << END;
+	}
+	PRINT	<< NL
+			<< TAB << YEL "Referencing empty container.at() (STL message):" << NL
+			<< TAB << "  mi_vacio_cont.at(0)" << NL
+			<< TAB << "  su_vacio_cont.at(0)" << END;
+	try
+	{
+		MY_Container	mi_vacio;
+		STD_Container	su_vacio;
+		
+		compare_log(su_vacio.at(0) == mi_vacio.at(0), ret, "vacio.at(0)", msg_offset);
+		PRINT << std::setw(msg_offset) << mi_vacio.at(0) << TAB << std::setw(msg_offset) << su_vacio.at(0) << END;
+	}
+	catch(const std::out_of_range & e)
+	{
+		PRNTERR << TAB << BLU << e.what() << END;
+	}
 	//CONST REFERENCING
-	// Const int reference to const su_fill_cont int, this is fine.
-	const int & c_num(c_mi_fill_cont[5]);
-	// // Compiler will not allow this as c_mi_fill_cont is const.
-	// int & num3(c_mi_fill_cont[5]);
+	PRINT	<< NL
+			<< TAB << YEL "Copy-creating const containers:"
+			<< TAB << "  c_mi_copied_cont(mi_copied_cont)" << NL
+			<< TAB << "  c_su_copied_cont(mi_copied_cont)" << END;
+			const MY_Container	c_mi_copied_cont(mi_copied_cont);
+			const STD_Container	c_su_copied_cont(su_copied_cont);
+	PRINT	<< TAB << YEL "Referencing const containers (by []):" << NL
+			<< TAB << "  c_mi_copied_cont[2]" << NL
+			<< TAB << "  c_su_copied_cont[2]" << END;
+		compare_log(c_mi_copied_cont[2] == c_su_copied_cont[2], ret, "const copied_cont[2]", msg_offset);
+		PRINT << std::setw(msg_offset) << c_mi_copied_cont[2] << std::setw(msg_offset) << c_su_copied_cont[2] << END;
+	//COMPILE-TIME TESTS
+	{
+		// Const int reference to const c_fill_cont type_value, this is fine.
+		typename MY_Container::const_reference	c_mi_num(c_mi_copied_cont[2]);
+		typename STD_Container::const_reference	c_su_num(c_su_copied_cont[2]);
+		compare_log(c_mi_num == c_su_num, ret, "const num", msg_offset);
+		PRINT << std::setw(msg_offset) << c_mi_copied_cont[2] << TAB << std::setw(msg_offset) << c_su_copied_cont[2] << END;
+		// // Compiler will not allow this as c_fill_cont is const.
+		// typename MY_Container::reference & mi_num(c_mi_copied_cont[2]);
+		// typename STD_Container::reference & su_num(c_su_copied_cont[2]);
 
-	// This is all fine, read-only
-	PRINT << "Const Reference: " << c_num << END;
+		// // Compiler will also not allow this as c_mi_copied_cont is const.
+		//c_mi_copied_cont[0] = 8;
+		//c_su_copied_cont[0] = 8;
+	}
 
-	// // Compiler will not allow this as c_mi_fill_cont is const.
-	//c_mi_fill_cont[0] = 8;
-	
+	//FRONT AND BACK CHECKS
+	PRINT	<< YEL "FRONT AND BACK CHECKS" << NL
+			<< TAB << "Calling front():" << NL
+			<< TAB << "  mi_fill_cont.front()" << NL
+			<< TAB << "  su_fill_cont.front()" << END;
+	compare_log(mi_fill_cont.front() == su_fill_cont.front(), ret, "fill_cont.front()", msg_offset);
+	PRINT	<< std::setw(msg_offset) << mi_fill_cont.front() << TAB << std::setw(msg_offset) << su_fill_cont.front() << END;
+			
+	PRINT	<< NL
+			<< TAB << YEL "Calling back():" << NL
+			<< TAB << "  mi_fill_cont.back()" << NL
+			<< TAB << "  su_fill_cont.back()" << END;
+	compare_log(mi_fill_cont.back() == su_fill_cont.back(), ret, "fill_cont.back()", msg_offset);
+	PRINT	<< std::setw(msg_offset) << mi_fill_cont.back() << TAB << std::setw(msg_offset) << su_fill_cont.back() << END;
 
-	//FRONT AND BACK
-	PRINT << "Front: " << mi_fill_cont.front() << NL
-	<< "Back: " << mi_fill_cont.back() << NL
-	<< "Const Front: " << c_mi_fill_cont.front() << NL
-	<< "Const Back: " << c_mi_fill_cont.back() << END;
+	PRINT	<< NL
+			<< TAB << YEL "Calling front() const:" << NL
+			<< TAB << "  c_mi_copied_cont.front()" << NL
+			<< TAB << "  c_su_copied_cont.front()" << END;
+	compare_log(c_mi_copied_cont.front() == c_su_copied_cont.front(), ret, "const copied_cont.front()", msg_offset);
+	PRINT	<< std::setw(msg_offset) << c_mi_copied_cont.front() << TAB << std::setw(msg_offset) << c_su_copied_cont.front() << END;
 
-	//This is fine
-	mi_fill_cont.front() = 5;
-	mi_fill_cont.back() = 10;
+	PRINT	<< NL
+			<< TAB << YEL "Calling back() const:" << NL
+			<< TAB << "  c_mi_copied_cont.back()" << NL
+			<< TAB << "  c_su_copied_cont.back()" << END;
+	compare_log(c_mi_copied_cont.back() == c_su_copied_cont.back(), ret, "const copied_cont.back()", msg_offset);
+	PRINT	<< std::setw(msg_offset) << c_mi_copied_cont.back() << TAB << std::setw(msg_offset) << c_su_copied_cont.back() << END;
+	//COMPILE-TIME TESTS
+	{
+		//This is fine
+		mi_fill_cont.front() = 5;
+		mi_fill_cont.back() = 10;
+		su_fill_cont.front() = 5;
+		su_fill_cont.back() = 10;
 
-	// // Compiler should not allow this as c_mi_fill_cont is const.
-	// c_mi_fill_cont.front() = 5;
-	// c_mi_fill_cont.back() = 10;
+		// // Compiler should not allow this as c_copied_cont is const.
+		// c_mi_copied_cont.front() = 5;
+		// c_mi_copied_cont.back() = 10;
+		// c_su_copied_cont.front() = 5;
+		// c_su_copied_cont.back() = 10;
+	}
 
-	//COMPARISON TEST
-	PRINT << "mi_fill_cont == mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont == mi_assigned_cont) << END;
-	PRINT << "mi_fill_cont != mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont != mi_assigned_cont) << END;
-	PRINT << "mi_fill_cont == mi_fill_cont?: " << std::boolalpha << (mi_fill_cont == mi_fill_cont) << END;
-	PRINT << "mi_fill_cont != mi_fill_cont?: " << std::boolalpha << (mi_fill_cont != mi_fill_cont) << END;
-	PRINT << "mi_fill_cont < mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont < mi_assigned_cont) << END;
-	PRINT << "mi_fill_cont > mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont > mi_assigned_cont) << END;
-	PRINT << "mi_fill_cont < mi_fill_cont?: " << std::boolalpha << (mi_fill_cont < mi_fill_cont) << END;
-	PRINT << "mi_fill_cont > mi_fill_cont?: " << std::boolalpha << (mi_fill_cont > mi_fill_cont) << END;
-	PRINT << "mi_fill_cont <= mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont <= mi_assigned_cont) << END;
-	PRINT << "mi_fill_cont >= mi_assigned_cont?: " << std::boolalpha << (mi_fill_cont >= mi_assigned_cont) << END;
-	PRINT << "mi_fill_cont <= mi_fill_cont?: " << std::boolalpha << (mi_fill_cont <= mi_fill_cont) << END;
-	PRINT << "mi_fill_cont >= mi_fill_cont?: " << std::boolalpha << (mi_fill_cont >= mi_fill_cont) << END;
+	//COMPARISON CHECKS
+	comparison_operator_log(su_fill_cont, su_assigned_cont, mi_fill_cont, mi_assigned_cont, ret);
 
-	//DEBUG i know i know, my iterators aren't done yet ok? it will take up a thousand characters eventually i swear! xD
-	for (size_t i = 0; i < 4; ++i)
-		PRINT << *ft_it++ << END;
-	for (size_t i = 0; i < 4; ++i)
-		PRINT << *std_it++ << END;
 	return (ret);
 }
 
@@ -851,8 +992,10 @@ int main(void)
 		PRINT << GRN "OK" << END;
 	else
 		PRINT << RED "KO" << END;
-	
-	my_veritable_vector<ft::vector<int>, std::vector<int> >();
+	if (my_veritable_vector<ft::vector<int>, std::vector<int> >())
+		PRINT << GRN "OK" << END;
+	else
+		PRINT << RED "KO" << END;
 
 	//quick make_pair test
 	ft::pair<int, char>	pair_chorra(42, 42);

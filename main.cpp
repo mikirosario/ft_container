@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/16 12:42:04 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/19 16:11:31 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "type_traits.hpp"
 #include "algorithm.hpp"
 #include "utility.hpp"
+#include "ft_bintree.hpp"
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -1043,53 +1044,61 @@ bool	my_veritable_vector(void)
 
 int main(void)
 {	
-	if (iterator_tests())
-		PRINT << GRN "OK" << END;
-	else
-		PRINT << RED "KO" << END;
-	if (my_veritable_vector<ft::vector<int>, std::vector<int> >())
-		PRINT << GRN "OK" << END;
-	else
-		PRINT << RED "KO" << END;
+	ft::bintree	test;
 
-	//quick make_pair test
-	ft::pair<int, char>	pair_chorra(42, 42);
-	std::pair<int, char> std_pair_chorra(42, 42);
+	test.push_back(3);
+	test.push_back(8);
+	test.push_back(2);
+	test.push_back(4);
 
-	PRINT << YEL "MY PAIR_CHORRA: " GRN << pair_chorra.first << YEL ", " GRN << pair_chorra.second << END;
-	PRINT << YEL "STD PAIR_CHORRA: " GRN << std_pair_chorra.first << YEL ", " GRN << std_pair_chorra.second << END;
 
-	//enable_if test
-	//Change to non-integral (double, float, etc.) to test. :)
-	PRINT << YEL "ENABLE_IF TEST:" << NL;
-	int	i = 1;
-	PRINT << TAB << ALN << "i is odd: " << std::boolalpha << GRN << ft::is_odd(i) << END;
+	// if (iterator_tests())
+	// 	PRINT << GRN "OK" << END;
+	// else
+	// 	PRINT << RED "KO" << END;
+	// if (my_veritable_vector<ft::vector<int>, std::vector<int> >())
+	// 	PRINT << GRN "OK" << END;
+	// else
+	// 	PRINT << RED "KO" << END;
 
-	std::string	test1 = "Apple";
-	std::string test2 = "honey";
-	std::string test3 = "honey";
-	bool std_ret;
+	// //quick make_pair test
+	// ft::pair<int, char>	pair_chorra(42, 42);
+	// std::pair<int, char> std_pair_chorra(42, 42);
 
-	std_ret = std::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
+	// PRINT << YEL "MY PAIR_CHORRA: " GRN << pair_chorra.first << YEL ", " GRN << pair_chorra.second << END;
+	// PRINT << YEL "STD PAIR_CHORRA: " GRN << std_pair_chorra.first << YEL ", " GRN << std_pair_chorra.second << END;
 
-	PRINT << GRN << std::boolalpha << std_ret << END;
+	// //enable_if test
+	// //Change to non-integral (double, float, etc.) to test. :)
+	// PRINT << YEL "ENABLE_IF TEST:" << NL;
+	// int	i = 1;
+	// PRINT << TAB << ALN << "i is odd: " << std::boolalpha << GRN << ft::is_odd(i) << END;
 
-	std_ret = ft::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
-	PRINT << GRN << std::boolalpha << std_ret << END;
+	// std::string	test1 = "Apple";
+	// std::string test2 = "honey";
+	// std::string test3 = "honey";
+	// bool std_ret;
 
-	std_ret = ft::equal<std::string::iterator, std::string::iterator>(test2.begin(), test2.end(), test3.begin());
-	PRINT << GRN << std::boolalpha << std_ret << END;
+	// std_ret = std::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
 
-	std_ret = ft::equal<std::string::iterator, std::string::iterator>(test2.begin(), test2.end(), test1.begin());
-	PRINT << GRN << std::boolalpha << std_ret << END;
-	// //DEBUG
-	// {
-	// 	PRINT << YEL << "THE GREAT IS_INTEGRAL TEST!" << NL
-	// 	<< "Double Is Integral?" << std::boolalpha << " " << std::is_integral<double>::value << NL
-	// 	<< "Float Is Integral?" << std::boolalpha << " " << std::is_integral<float>::value << NL
-	// 	<< "Unsigned Int Is Integral?" << std::boolalpha << " " << std::is_integral<unsigned int>::value << END;
-	// }
-	// //DEBUG
+	// PRINT << GRN << std::boolalpha << std_ret << END;
+
+	// std_ret = ft::lexicographical_compare<std::string::iterator, std::string::iterator>(test1.begin(), test1.end(), test2.begin(), test2.end());
+	// PRINT << GRN << std::boolalpha << std_ret << END;
+
+	// std_ret = ft::equal<std::string::iterator, std::string::iterator>(test2.begin(), test2.end(), test3.begin());
+	// PRINT << GRN << std::boolalpha << std_ret << END;
+
+	// std_ret = ft::equal<std::string::iterator, std::string::iterator>(test2.begin(), test2.end(), test1.begin());
+	// PRINT << GRN << std::boolalpha << std_ret << END;
+	// // //DEBUG
+	// // {
+	// // 	PRINT << YEL << "THE GREAT IS_INTEGRAL TEST!" << NL
+	// // 	<< "Double Is Integral?" << std::boolalpha << " " << std::is_integral<double>::value << NL
+	// // 	<< "Float Is Integral?" << std::boolalpha << " " << std::is_integral<float>::value << NL
+	// // 	<< "Unsigned Int Is Integral?" << std::boolalpha << " " << std::is_integral<unsigned int>::value << END;
+	// // }
+	// // //DEBUG
 
 
 	return (0);

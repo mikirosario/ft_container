@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/19 16:11:31 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/19 20:57:40 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1050,6 +1050,14 @@ int main(void)
 	test.push_back(8);
 	test.push_back(2);
 	test.push_back(4);
+	test.push_back(42);
+	test.push_back(65);
+	test.push_back(21);
+	test.push_back(1);
+	test.push_back(5);
+	test.push_back(6);
+	test.print();
+
 
 
 	// if (iterator_tests())

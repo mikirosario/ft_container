@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_list.hpp                                        :+:      :+:    :+:   */
+/*   ft_map.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/11/19 13:43:03 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/19 14:27:30 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //DEVECTOR :P
 
-#ifndef FT_VECTOR_H
-# define FT_VECTOR_H
+#ifndef FT_MAP_H
+# define FT_MAP_H
 
 //precompiled header?
 #include <memory>
@@ -57,16 +57,10 @@
 namespace ft
 {
 	template<typename T, typename Alloc = std::allocator<T> >
-	class list
+	class map
 	{
 		private:
-			template<typename lnT>
-			struct List_Node
-			{
-				lnT			data;
-				List_Node	*prev;
-				List_Node	*next;
-			};
+
 			template<typename iT, typename Category>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
@@ -152,35 +146,9 @@ namespace ft
 					return (this->_m_ptr);
 				}
 				protected:
-					typename Iterator::pointer	_m_ptr;
+					rb_tree_type_when_its_done_xD *	_m_ptr;
 			};
-			typedef struct List_Node<T>							list_node;
-			list_node *		lst_new(T data) {
-				list_node *		new_node = new list_node;
-				
-				if (new_node)
-				{
-					new_node->data = data;
-					new_node->prev = NULL;
-					new_node->next = NULL;
-				}
-				return (new_node);
-			}
-			void			lst_add_back(list_node * lst, list_node * new_node) {
-				while (lst->next != NULL)
-					lst = lst->next;
-				new_node->prev = lst;
-				lst->next = new_node;
-			}
-			void			lst_free(list_node * lst) {
-				list_node *		next;
-				for ( ; lst != NULL; lst = next) // use iterators when done?
-				{
-					next = lst->next;
-					delete lst;
-					lst = NULL;
-				}
-			}
+
 		public:
 			typedef T													value_type;
 			typedef Alloc												allocator_type;
@@ -201,7 +169,7 @@ namespace ft
 			size_type			_capacity;
 			size_type			_size; //object count
 			allocator_type		_alloc;
-			list_node *			_list_head;
+			rb_tree_node_type_when_its_done_xD *			_tree_root;
 	};
 
 	// both of these methods seem to work for swap

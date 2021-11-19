@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/16 13:25:17 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/19 13:37:05 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ namespace ft
 	class vector
 	{
 		private:
-			template<typename iT>
-			struct Iterator : public ft::iterator_traits<iT>
+			template<typename iT, typename Category>
+			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
 				//Constructible
 				Iterator(void) : _m_ptr(NULL) {}
@@ -147,18 +147,18 @@ namespace ft
 					typename Iterator::pointer	_m_ptr;
 			};
 		public:
-			typedef T											value_type;
-			typedef Alloc										allocator_type;
-			typedef std::size_t									size_type;
-			typedef std::ptrdiff_t								difference_type;
-			typedef value_type&									reference;
-			typedef const value_type&							const_reference;
-			typedef value_type*									pointer;
-			typedef const value_type*							const_pointer;
-			typedef Iterator<T>									iterator;
-			typedef Iterator<const T>							const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
-			typedef ft::reverse_iterator<iterator>				reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
+			typedef T													value_type;
+			typedef Alloc												allocator_type;
+			typedef std::size_t											size_type;
+			typedef std::ptrdiff_t										difference_type;
+			typedef value_type&											reference;
+			typedef const value_type&									const_reference;
+			typedef value_type*											pointer;
+			typedef const value_type*									const_pointer;
+			typedef Iterator<T, std::random_access_iterator_tag>		iterator;
+			typedef Iterator<const T, std::random_access_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef ft::reverse_iterator<iterator>						reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 			
 			/* ---- CONSTRUCTORS, DESTRUCTOR, ASSIGNMENT OVERLOAD ---- */
 				

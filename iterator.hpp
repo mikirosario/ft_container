@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/16 12:52:23 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/19 13:39:11 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@
 
 namespace ft
 {
-	template<typename T>
+	template<typename T, typename Category>
 	struct iterator_traits
 	{
-		typedef std::random_access_iterator_tag			iterator_category;
+		//typedef std::random_access_iterator_tag			iterator_category;
+		typedef Category								iterator_category;
 		typedef std::ptrdiff_t							difference_type;
 		typedef	T										value_type;
 		typedef value_type *							pointer;
@@ -32,7 +33,7 @@ namespace ft
 	template<class Iter>
 	//could inherit from iterator_traits to define traits more locally??
 	struct reverse_iterator {
-		typedef std::random_access_iterator_tag			iterator_category; //un poco cutre, pero... ;)
+		typedef typename Iter::iterator_category		iterator_category; //un poco cutre, pero... ;)
 		reverse_iterator(void) : current(Iter::_m_ptr) {}
 		reverse_iterator(Iter const & normal_iterator) : current(normal_iterator) {}
 		reverse_iterator(reverse_iterator const & src) : current(src.current) {}

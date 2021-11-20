@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/19 20:57:40 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/20 17:48:34 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "algorithm.hpp"
 #include "utility.hpp"
 #include "ft_bintree.hpp"
+#include "ft_bintree_pair.hpp"
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -1044,20 +1045,30 @@ bool	my_veritable_vector(void)
 
 int main(void)
 {	
-	ft::bintree	test;
+	ft::bintree<char>	test;
+	ft::bintree_pair<std::string, int>	test2;
 
-	test.push_back(3);
-	test.push_back(8);
-	test.push_back(2);
-	test.push_back(4);
-	test.push_back(42);
-	test.push_back(65);
-	test.push_back(21);
-	test.push_back(1);
-	test.push_back(5);
-	test.push_back(6);
+	test.push_back('c');
+	test.push_back('u');
+	test.push_back('a');
+	test.push_back('r');
+	test.push_back('e');
+	test.push_back('n');
+	test.push_back('t');
+	test.push_back('A');
+	test.push_back('y');
+	test.push_back('d');
 	test.print();
 
+	test2.push_back("cuarenta y dos", 42);
+	test2.push_back("uno", 1);
+	test2.push_back("noventa y nueve", 99);
+	test2.push_back("veintisiete", 27);
+	test2.push_back("dos", 2);
+	test2.push_back("sesenta y ocho", 68);
+	test2.push_back("ochenta y tres", 83);
+	test2.push_back("treinta y cuatro", 34);
+	test2.print();
 
 
 	// if (iterator_tests())
@@ -1069,7 +1080,12 @@ int main(void)
 	// else
 	// 	PRINT << RED "KO" << END;
 
-	// //quick make_pair test
+	//quick make_pair test
+	// using ft::make_pair;
+	// ft::pair<int, char> pair_chorra = make_pair(42, 42);
+	// std::pair<int, char> std_pair_chorra = std::make_pair(42, 42);
+	// std::cout << "STD PAIR CHORRA: " << std_pair_chorra.first << " " << std_pair_chorra.second << std::endl;
+	// std::cout << "FT PAIR CHORRA: " << pair_chorra.first << " " << pair_chorra.second << std::endl;
 	// ft::pair<int, char>	pair_chorra(42, 42);
 	// std::pair<int, char> std_pair_chorra(42, 42);
 

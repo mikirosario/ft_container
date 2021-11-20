@@ -1,17 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bintree.hpp                                     :+:      :+:    :+:   */
+/*   ft_bintree_pair.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/20 16:25:24 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/20 17:45:58 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_BINTREE_H
-# define FT_BINTREE_H
+#ifndef FT_BINTREE_PAIR_H
+# define FT_BINTREE_PAIR_H
+
+#include "utility.hpp"
 
 //DEBUG
 			#ifdef __linux__
@@ -32,11 +34,11 @@
 
 namespace ft
 {
-	template<typename T>
-	class bintree
+	template<typename T1, typename T2>
+	class bintree_pair
 	{
 		public:
-			typedef T	data_type;
+			typedef ft::pair<T1, T2>	data_type;
 		private:
 			/*
 			** This enum field will define a node color as red or black.
@@ -47,8 +49,8 @@ namespace ft
 			}				t_color;
 
 			/*
-			** For the single-value implementation of ft::bintree the data type
-			** will be T.
+			** For the double-value implementation of ft::bintree the data type
+			** will be ft::pair<T1, T2>.
 			*/
 			typedef struct	s_bstnode
 			{
@@ -90,14 +92,17 @@ namespace ft
 			** A pointer to the new binary tree node is returned to the caller.
 			** If the memory reservation fails, a NULL pointer is returned.
 			*/
-			t_bstnode	*create_new_node(t_bstnode *parent, data_type data)
+			t_bstnode	*create_new_node(t_bstnode *parent, T1 key, T2 value)
 			{
 				t_bstnode	*node;
-
+				//DEBUG
+				//ft::pair<T1, T2> test(make_pair(key, value));
+				//DEBUG
+				
 				node = new t_bstnode;
 				if (node != NULL)
 				{
-					node->data = data;
+					node->data = ft::make_pair(key, value);
 					node->parent = parent;
 					node->left = NULL;
 					node->right = NULL;
@@ -108,8 +113,10 @@ namespace ft
 
 			/*
 			** This function will search the binary tree whose 'root' is passed
-			** as the first argument for the value passed as 'data' in the
-			** second argument.
+			** as the first argument for the KEY value passed as 'data' in the
+			** second argument. T1 is considered the KEY value type. All
+			** comparisons and sorting in this binary tree implementation are on
+			** the KEY values, which is pair.first.
 			**
 			** If the root node pointer is not NULL and the data is not present
 			** in that node, this function will recursively call itself, passing
@@ -123,14 +130,14 @@ namespace ft
 			** a pointer to the node containing the data is returned. If it is
 			** not present in the tree, a NULL pointer is returned.	
 			*/
-			t_bstnode	*ft_bintree_search(t_bstnode *root, data_type data)
+			t_bstnode	*ft_bintree_search(t_bstnode *root, T1 key)
 			{
-				if (root == NULL || root->data == data)
+				if (root == NULL || root->data.first == key)
 					return (root);
-				else if (data <= root->data)
-					return (ft_bintree_search(root->left, data));
+				else if (key <= root->data.first)
+					return (ft_bintree_search(root->left, key));
 				else
-					return (ft_bintree_search(root->right, data));
+					return (ft_bintree_search(root->right, key));
 			}
 
 			/*
@@ -438,23 +445,23 @@ namespace ft
 			** for frequent searches, such as of ordered key values.
 			*/
 			t_bstnode	*ft_bintree_insert(t_bstnode *parent, t_bstnode *root, \
-			data_type data)
+			T1 key, T2 value)
 			{
 				if (root == NULL)
-					root = create_new_node(parent, data);
-				else if (data <= root->data)
-					root->left = ft_bintree_insert(root, root->left, data);
+					root = create_new_node(parent, key, value);
+				else if (key <= root->data.first)
+					root->left = ft_bintree_insert(root, root->left, key, value);
 				else
-					root->right = ft_bintree_insert(root, root->right, data);
+					root->right = ft_bintree_insert(root, root->right, key, value);
 				return (root);
 			}
 
-			t_bstnode	*ft_bintree_add(t_bstnode *&root, data_type data)
+			t_bstnode	*ft_bintree_add(t_bstnode *&root, T1 key, T2 value)
 			{
 				t_bstnode	*new_node;
 
-				root = ft_bintree_insert(NULL, root, data);
-				new_node = ft_bintree_search(root, data);
+				root = ft_bintree_insert(NULL, root, key, value);
+				new_node = ft_bintree_search(root, key);
 				ft_bintree_balance(&root, new_node);
 				return (root);
 			}
@@ -739,7 +746,7 @@ namespace ft
 				while (offset_left++ < var->hpos + offset)
 					std::cout << " ";
 					//write(1, " ", 1);
-				n = root->data / 10;
+				n = root->data.second / 10;
 				digits = 1;
 				while (n && digits++)
 					n /= 10;
@@ -752,7 +759,7 @@ namespace ft
 				else
 					std::cout << BHBLK;
 					//write(1, BHBLK, 7);
-				std::cout << root->data;
+				std::cout << root->data.second;
 				std::cout << RESET;
 				//write(1, RESET, 4);
 			}
@@ -1088,15 +1095,15 @@ namespace ft
 			//DEBUG
 			t_bstnode	*_root;
 		public:
-			bintree(void) : _root(NULL) {};
-			~bintree(void) {
+			bintree_pair(void) : _root(NULL) {};
+			~bintree_pair(void) {
 				//debug
 				//std::cout << "freeeeedom" << std::endl;
 				//debug
 				ft_bintree_free(_root);
 			}
-			void	push_back(data_type data){
-				ft_bintree_add(_root, data);
+			void	push_back(T1 key, T2 value){
+				ft_bintree_add(_root, key, value);
 			}
 			void	print(void) {
 				ft_bintree_print(_root, 0);

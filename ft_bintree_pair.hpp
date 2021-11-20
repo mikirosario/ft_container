@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/20 18:24:57 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/20 18:52:34 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,6 +314,8 @@ namespace ft
 			** -- CORRECTION CASES --
 			** The cases are, if the offending node's PARENT is a LEFT child:
 			**
+			** LEFT CASE:
+			**
 			** Case 0:	The node is the tree root.
 			** Case 1:  The node's uncle is red.
 			** Case 2:  The node's uncle is black, and the node is the parent's
@@ -326,6 +328,8 @@ namespace ft
 			** If the offending node's parent is a RIGHT child the cases are the same, but with left
 			** and right switched:
 			**
+			** RIGHT CASE:
+			**
 			** Case 0:	The node is the tree root.
 			** Case 1:  The node's uncle is red.
 			** Case 2:  The node's uncle is black, and the node is the parent's
@@ -335,10 +339,15 @@ namespace ft
 			**			right child, so it forms a line with the parent and
 			**			grandparent.
 			**
+			** RIGHT CASE 0 and 1 and LEFT CASE 0 and 1 are always the same, so
+			** cases 0 and 1 are evaluated first.
+			**
 			** If a rotation is needed, it goes in the opposite direction of the
 			** node's direction from the parent. That is, if the node is a right
 			** child a left rotation would be needed, and if it is a left child
-			** a right rotation would be needed.
+			** a right rotation would be needed. So we call separate functions:
+			** left_case if the parent is a LEFT child, and right_case if the
+			** parent is a RIGHT child.
 			**
 			** -- ALGORITHMIC PROCEDURE --
 			** First we define the node's parent, grandparent and uncle.
@@ -366,7 +375,6 @@ namespace ft
 			** Lastly, if we have emerged from the while, we colour the tree
 			** root black, as this is obligatory.
 			*/
-
 			void	ft_bintree_balance(t_bstnode **root, t_bstnode *new_node)
 			{
 				t_bstnode	*granny;

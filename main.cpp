@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/20 17:48:34 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/21 00:53:40 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1045,31 +1045,46 @@ bool	my_veritable_vector(void)
 
 int main(void)
 {	
-	ft::bintree<char>	test;
-	ft::bintree_pair<std::string, int>	test2;
+	ft::bintree<int>	ex1;
+	ft::bintree<int>	ex2;
+	ft::bintree_pair<int, int>	test2;
 
-	test.push_back('c');
-	test.push_back('u');
-	test.push_back('a');
-	test.push_back('r');
-	test.push_back('e');
-	test.push_back('n');
-	test.push_back('t');
-	test.push_back('A');
-	test.push_back('y');
-	test.push_back('d');
-	test.print();
+	ex1.push_back(58);
+	ex1.push_back(26);
+	ex1.push_back(2);
+	ex1.push_back(42);
+	ex1.push_back(15);
+	ex1.print();
 
-	test2.push_back("cuarenta y dos", 42);
-	test2.push_back("uno", 1);
-	test2.push_back("noventa y nueve", 99);
-	test2.push_back("veintisiete", 27);
-	test2.push_back("dos", 2);
-	test2.push_back("sesenta y ocho", 68);
-	test2.push_back("ochenta y tres", 83);
-	test2.push_back("treinta y cuatro", 34);
+
+	ex2.push_back(42);
+	ex2.push_back(15);
+	ex2.push_back(58);
+	ex2.push_back(2);
+	ex2.push_back(26);
+	ex2.print();
+
+	// test2.push_back("cuarenta y dos", 42);
+	// test2.push_back("uno", 1);
+	// test2.push_back("noventa y nueve", 99);
+	// test2.push_back("veintisiete", 27);
+	// test2.push_back("dos", 2);
+	// test2.push_back("sesenta y ocho", 68);
+	// test2.push_back("ochenta y tres", 83);
+	// test2.push_back("treinta y cuatro", 34);
+	// test2.print();
+
+	test2.push_back(42, 42);
+	test2.push_back(1, 1);
+	test2.push_back(99, 99);
+	test2.push_back(27, 27);
+	test2.push_back(2, 2);
+	test2.push_back(68, 68);
+	test2.push_back(83, 83);
+	test2.push_back(34, 34);
 	test2.print();
 
+	std::cout << (test2.getPrevNode(test2.getNextNode(test2.getRootNode())))->data.second << std::endl;
 
 	// if (iterator_tests())
 	// 	PRINT << GRN "OK" << END;

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/20 16:25:24 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/20 18:24:15 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ namespace ft
 			*/
 			typedef enum	e_color
 			{
-				btRED = 0, btBLK
+				btBLK = 0, btRED
 			}				t_color;
 
 			/*
@@ -101,7 +101,7 @@ namespace ft
 					node->parent = parent;
 					node->left = NULL;
 					node->right = NULL;
-					node->color = btBLK;
+					node->color = btRED;
 				}
 				return (node);
 			}
@@ -346,22 +346,18 @@ namespace ft
 			**
 			** If the uncle is red, it is Case 1.
 			**
-			// // DEBUG
-			// // WILL HAVE TO REVIEW THIS BECAUSE IT ALL SEEMS TO BE THE EXACT
-			// // INVERSE IN THE CODE FROM WHAT THIS DESCRIPTION STATES.
-			// ** To correct a violation in Case 1, the node's parent, grandparent
-			// ** and uncle are recoloured. The grandparent is coloured red, and
-			// ** the parent and uncle black. The node pointer then moves up to the
-			// ** grandparent to check the grandparent's compliance with red-black
-			// ** rules after the change.
-			// **
-			// ** If the uncle is black, it is either Case 2 or 3. Depending on
-			// ** whether it is a left case or right case, we call the left_case
-			// ** and right_case functions, respectively, to handle it.
-			// **
-			// ** Lastly, if we have emerged from the while, we colour the tree
-			// ** root black, as this is obligatory.
-			// // DEBUG
+			** To correct a violation in Case 1, the node's parent, grandparent
+			** and uncle are recoloured. The grandparent is coloured red, and
+			** the parent and uncle black. The node pointer then moves up to the
+			** grandparent to check the grandparent's compliance with red-black
+			** rules after the change.
+			**
+			** If the uncle is black, it is either Case 2 or 3. Depending on
+			** whether it is a left case or right case, we call the left_case
+			** and right_case functions, respectively, to handle it.
+			**
+			** Lastly, if we have emerged from the while, we colour the tree
+			** root black, as this is obligatory.
 			*/
 
 			void	ft_bintree_balance(t_bstnode **root, t_bstnode *new_node)
@@ -370,7 +366,7 @@ namespace ft
 				t_bstnode	*parent;
 				t_bstnode	*uncle;
 
-				while (new_node != *root && new_node->color == btBLK && new_node->parent->color == btBLK)
+				while (new_node != *root && new_node->color == btRED && new_node->parent->color == btRED)
 				{
 					parent = new_node->parent;
 					granny = new_node->parent->parent;
@@ -378,11 +374,11 @@ namespace ft
 						uncle = granny->right;
 					else
 						uncle = granny->left;
-					if (uncle != NULL && uncle->color == btBLK)
+					if (uncle != NULL && uncle->color == btRED)
 					{
-						granny->color = btBLK;
-						parent->color = btRED;
-						uncle->color = btRED;
+						granny->color = btRED;
+						parent->color = btBLK;
+						uncle->color = btBLK;
 						new_node = granny;
 					}
 					else if (parent == granny->left)
@@ -390,7 +386,7 @@ namespace ft
 					else
 						new_node = right_case(new_node, parent, granny, root);
 				}
-				(*root)->color = btRED;
+				(*root)->color = btBLK;
 			}
 
 

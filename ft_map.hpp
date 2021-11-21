@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/11/20 22:19:24 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/21 13:44:39 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <iostream>
 //precompiled header?
 
+#include "ansi_codes.hpp"
 #include "type_traits.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
@@ -32,26 +33,22 @@
 //#include <type_traits>
 //DEBUG CODE
 
-#define RED "\e[1;31m"
-#define RST "\e[0m"
 #define PRNTERR std::cerr
-#define NL "\n"
-#define TAB "\t"
-#define END RST << std::endl
+#define END TXT_RST << std::endl
 
 #define GROWTH_FACTOR 2
 /* This catch block is used to catch reserve exceptions */
 #define CATCH_RESERVE_EXCEPTIONS	catch (std::length_error & e) \
 									{ \
-										PRNTERR << RED << e.what() << END; \
+										PRNTERR << TXT_BRED << e.what() << END; \
 									} \
 									catch (std::bad_alloc & e) \
 									{ \
-										PRNTERR << RED << e.what() << END; \
+										PRNTERR << TXT_BRED << e.what() << END; \
 									} \
 									catch (std::exception & e) \
 									{ \
-										PRNTERR << RED << e.what() << END; \
+										PRNTERR << TXT_BRED << e.what() << END; \
 									} \
 
 namespace ft

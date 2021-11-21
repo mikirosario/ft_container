@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/21 00:52:23 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/21 13:41:26 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,9 @@ namespace ft
 	template<typename T1, typename T2>
 	class bintree_pair
 	{
+		/* NEEDFUL TYPEDEFS */
 		public:
 			typedef ft::pair<T1, T2>	data_type;
-		private:
-			/*
-			** This enum field will define a node color as red or black.
-			*/
-			typedef enum	e_color
-			{
-				btBLK = 0, btRED
-			}				t_color;
 
 			/*
 			** For the double-value implementation of ft::bintree the data type
@@ -55,12 +48,20 @@ namespace ft
 			*/
 			typedef struct	s_bstnode
 			{
+				/*
+				** This enum field will define a node color as red or black.
+				*/
+				typedef enum	e_bstcolor
+				{
+					BLK = 0, RED
+				}				t_bstcolor;
 				struct s_bstnode				*parent;
 				struct s_bstnode				*left;
 				struct s_bstnode				*right;
 				data_type						data;
-				t_color							color;
+				t_bstcolor						color;
 			}				t_bstnode;
+		private:
 			/*
 			** This recursive function finds the depth of a binary tree.
 			** Might make this iterative in future.
@@ -107,7 +108,7 @@ namespace ft
 					node->parent = parent;
 					node->left = NULL;
 					node->right = NULL;
-					node->color = btRED;
+					node->color = t_bstnode::RED;
 				}
 				return (node);
 			}
@@ -221,7 +222,7 @@ namespace ft
 			t_bstnode	*left_case(t_bstnode *new_node, t_bstnode *parent, t_bstnode *granny, \
 			t_bstnode **root)
 			{
-				t_color	tmpc;
+				typename t_bstnode::t_bstcolor	tmpc;
 
 				if (new_node == parent->right)
 				{
@@ -271,7 +272,7 @@ namespace ft
 			t_bstnode	*right_case(t_bstnode *new_node, t_bstnode *parent, t_bstnode *granny, \
 			t_bstnode **root)
 			{
-				t_color	tmpc;
+				typename t_bstnode::t_bstcolor	tmpc;
 
 				if (new_node == parent->left)
 				{
@@ -382,7 +383,7 @@ namespace ft
 				t_bstnode	*parent;
 				t_bstnode	*uncle;
 
-				while (new_node != *root && new_node->color == btRED && new_node->parent->color == btRED)
+				while (new_node != *root && new_node->color == t_bstnode::RED && new_node->parent->color == t_bstnode::RED)
 				{
 					parent = new_node->parent;
 					granny = new_node->parent->parent;
@@ -390,11 +391,11 @@ namespace ft
 						uncle = granny->right;
 					else
 						uncle = granny->left;
-					if (uncle != NULL && uncle->color == btRED)
+					if (uncle != NULL && uncle->color == t_bstnode::RED)
 					{
-						granny->color = btRED;
-						parent->color = btBLK;
-						uncle->color = btBLK;
+						granny->color = t_bstnode::RED;
+						parent->color = t_bstnode::BLK;
+						uncle->color = t_bstnode::BLK;
 						new_node = granny;
 					}
 					else if (parent == granny->left)
@@ -402,7 +403,7 @@ namespace ft
 					else
 						new_node = right_case(new_node, parent, granny, root);
 				}
-				(*root)->color = btBLK;
+				(*root)->color = t_bstnode::BLK;
 			}
 
 
@@ -546,90 +547,6 @@ namespace ft
 
 			//DEBUG
 
-			/*
-			** Regular bold text
-			*/
-
-			# define BBLK "\e[1;30m"
-			# define BRED "\e[1;31m"
-			# define BGRN "\e[1;32m"
-			# define BYEL "\e[1;33m"
-			# define BBLU "\e[1;34m"
-			# define BMAG "\e[1;35m"
-			# define BCYN "\e[1;36m"
-			# define BWHT "\e[1;37m"
-
-			/*
-			**Regular underlined text
-			*/
-
-			# define UBLK "\e[4;30m"
-			# define URED "\e[4;31m"
-			# define UGRN "\e[4;32m"
-			# define UYEL "\e[4;33m"
-			# define UBLU "\e[4;34m"
-			# define UMAG "\e[4;35m"
-			# define UCYN "\e[4;36m"
-			# define UWHT "\e[4;37m"
-
-			/*
-			** Regular background
-			*/
-
-			# define BLKB "\e[40m"
-			# define REDB "\e[41m"
-			# define GRNB "\e[42m"
-			# define YELB "\e[43m"
-			# define BLUB "\e[44m"
-			# define MAGB "\e[45m"
-			# define CYNB "\e[46m"
-			# define WHTB "\e[47m"
-
-			/*
-			** High intensity background 
-			*/
-
-			# define BLKHB "\e[0;100m"
-			# define REDHB "\e[0;101m"
-			# define GRNHB "\e[0;102m"
-			# define YELHB "\e[0;103m"
-			# define BLUHB "\e[0;104m"
-			# define MAGHB "\e[0;105m"
-			# define CYNHB "\e[0;106m"
-			# define WHTHB "\e[0;107m"
-
-			/*
-			** High intensity text
-			*/
-
-			# define HBLK "\e[0;90m"
-			# define HRED "\e[0;91m"
-			# define HGRN "\e[0;92m"
-			# define HYEL "\e[0;93m"
-			# define HBLU "\e[0;94m"
-			# define HMAG "\e[0;95m"
-			# define HCYN "\e[0;96m"
-			# define HWHT "\e[0;97m"
-
-			/*
-			** Bold high intensity text
-			*/
-
-			# define BHBLK "\e[1;90m"
-			# define BHRED "\e[1;91m"
-			# define BHGRN "\e[1;92m"
-			# define BHYEL "\e[1;93m"
-			# define BHBLU "\e[1;94m"
-			# define BHMAG "\e[1;95m"
-			# define BHCYN "\e[1;96m"
-			# define BHWHT "\e[1;97m"
-
-			/*
-			** Reset
-			*/
-
-			# define RESET "\e[0m"
-
 			typedef struct s_bsttermcaps
 			{
 				char	termbuf[2048];
@@ -744,10 +661,10 @@ namespace ft
 
 				offset_left = var->hpos - offset;
 				curpos = tgoto(p->tcaps.cur_mov, offset_left, p->var.vpos - 1);
-				std::cout << curpos << BHWHT << WHTB;
+				std::cout << curpos << TXT_BHWHT << TXT_WHTB;
 				// write(1, curpos, std::strlen(curpos));
-				// write(1, BHWHT, 7);
-				// write(1, WHTB, 5);
+				// write(1, TXT_BHWHT, 7);
+				// write(1, TXT_WHTB, 5);
 				while (offset_left++ < var->hpos + offset)
 					std::cout << " ";
 					//write(1, " ", 1);
@@ -759,14 +676,14 @@ namespace ft
 				//write(1, curpos, std::strlen(curpos));
 				std::cout << curpos;
 				if (root->color)
-					std::cout << BHRED;
-					//write(1, BHRED, 7);
+					std::cout << TXT_BHRED;
+					//write(1, TXT_BHRED, 7);
 				else
-					std::cout << BHBLK;
-					//write(1, BHBLK, 7);
+					std::cout << TXT_BHBLK;
+					//write(1, TXT_BHBLK, 7);
 				std::cout << root->data.second;
-				std::cout << RESET;
-				//write(1, RESET, 4);
+				std::cout << TXT_RST;
+				//write(1, TXT_RST, 4);
 			}
 
 			/*
@@ -795,8 +712,8 @@ namespace ft
 			{
 				char	*curpos;
 
-				//write(1, BHWHT, 7);
-				std::cout << BHWHT;
+				//write(1, TXT_BHWHT, 7);
+				std::cout << TXT_BHWHT;
 				if (root->left)
 				{
 					curpos = tgoto(p->tcaps.cur_mov, var->hpos - offset - 1, p->var.vpos);
@@ -813,8 +730,8 @@ namespace ft
 					// write(1, curpos, std::strlen(curpos));
 					// write(1, "\\", 1);
 				}
-				std::cout << RESET;
-				// write(1, RESET, 4);
+				std::cout << TXT_RST;
+				// write(1, TXT_RST, 4);
 			}
 
 			/*
@@ -1116,6 +1033,7 @@ namespace ft
 			t_bstnode *	getRootNode(void) const {
 				return (_root);
 			}
+
 			/*
 			** Esta función busca el MENOR de los nodos MAYORES que 'node'.
 			**
@@ -1173,6 +1091,7 @@ namespace ft
 					node = NULL;
 				return (const_cast<t_bstnode *>(node));
 			}
+
 			/*
 			** Esta función busca el MAYOR de los nodos MENORES que 'node'.
 			**
@@ -1186,8 +1105,8 @@ namespace ft
 			** envuelve esta clase, ya que no admite duplicados.
 			**
 			** Si en ninguno de los dos casos se encuentra un nodo menor, o si
-			** 'node' carece de tanto de hijo izquierdo como de padre, entonces
-			** ya es el menor de los nodos.
+			** 'node' carece tanto de hijo izquierdo como de padre, entonces ya
+			** es el menor de los nodos.
 			**
 			** -- VALOR DE RETORNO --
 			** Se devuelve un puntero al mayor de los nodos menores que 'node'.

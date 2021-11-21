@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/19 13:37:05 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/21 13:36:52 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,26 +30,26 @@
 //#include <type_traits>
 //DEBUG CODE
 
-#define RED "\e[1;31m"
-#define RST "\e[0m"
+#define TXT_BRED "\e[1;31m"
+#define TXT_RST "\e[0m"
 #define PRNTERR std::cerr
 #define NL "\n"
 #define TAB "\t"
-#define END RST << std::endl
+#define END TXT_RST << std::endl
 
 #define GROWTH_FACTOR 2
 /* This catch block is used to catch reserve exceptions */
 #define CATCH_RESERVE_EXCEPTIONS	catch (std::length_error & e) \
 									{ \
-										PRNTERR << RED << e.what() << END; \
+										PRNTERR << TXT_BRED << e.what() << END; \
 									} \
 									catch (std::bad_alloc & e) \
 									{ \
-										PRNTERR << RED << e.what() << END; \
+										PRNTERR << TXT_BRED << e.what() << END; \
 									} \
 									catch (std::exception & e) \
 									{ \
-										PRNTERR << RED << e.what() << END; \
+										PRNTERR << TXT_BRED << e.what() << END; \
 									} \
 
 
@@ -191,15 +191,15 @@ namespace ft
 				}
 				catch(const std::length_error & e) //we'll handle push_back exceptions here
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 				catch(const std::bad_alloc & e)
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 				catch(const std::exception & e)
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 			}
 			
@@ -242,15 +242,15 @@ namespace ft
 				}
 				catch(const std::length_error & e) //we'll handle push_back exceptions here
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 				catch(const std::bad_alloc & e)
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 				catch(const std::exception & e)
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 			}
 
@@ -301,15 +301,15 @@ namespace ft
 				}
 				catch(const std::length_error & e) //we'll handle push_back exceptions here
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 				catch(const std::bad_alloc & e)
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 				catch(const std::exception & e)
 				{
-					PRNTERR << RED << e.what() << END;
+					PRNTERR << TXT_BRED << e.what() << END;
 				}
 			}
 

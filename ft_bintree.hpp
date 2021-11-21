@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/21 13:49:12 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/21 17:44:21 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,40 +26,85 @@
 			#include <stdio.h>
 //DEBUG
 
-
+#include "ft_abintree.hpp"
 #include <iostream>
 #include <cstring>
 
 namespace ft
 {
-	template<typename T>
-	class bintree
+	template<typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<typename ft::Abintree<T>::t_bstnode> >
+	class bintree : public ft::Abintree<T>
 	{
-		/* NEEDFUL TYPEDEFS */
+		// /* NEEDFUL TYPEDEFS */
 		public:
-			typedef T	data_type;
-
 			/*
-			** For the single-value implementation of ft::bintree the data type
-			** will be T.
+			** Yet more C++ loveliness. These typedefs are defined in the base
+			** class Abintree, but need to be re-typedeffed like this. Why?
+			** Because the base class is templated, and you might create a
+			** template specialization of the base class where your typedef
+			** names are redefined as variables or functions. So, how is the
+			** compiler supposed to be sure they are actually typenames you
+			** naughty programmer expecting simple things to be simple?
+			**
+			** So you have to reassure it, "yes compiler, don't worry, it's a
+			** typename, now go look it up."
+			**
+			** OMG, KILL ME NOW!! WHY, BJARNE, WHY!?
 			*/
-			typedef struct	s_bstnode
-			{
-				/*
-				** This enum field will define a node color as red or black.
-				*/
-				typedef enum	e_bstcolor
-				{
-					BLK = 0, RED
-				}				t_bstcolor;
-				struct s_bstnode				*parent;
-				struct s_bstnode				*left;
-				struct s_bstnode				*right;
-				data_type						data;
-				t_bstcolor						color;
-			}				t_bstnode;
-		private:
+			typedef typename bintree::data_type	data_type;
+			typedef typename bintree::t_bstnode	t_bstnode;
+			typedef Alloc						allocator_type;
 
+		// 	/*
+		// 	** For the single-value implementation of ft::bintree the data type
+		// 	** will be T.
+		// 	*/
+		// 	typedef struct	s_bstnode
+		// 	{
+		// 		/*
+		// 		** This enum field will define a node color as red or black.
+		// 		*/
+		// 		typedef enum	e_bstcolor
+		// 		{
+		// 			BLK = 0, RED
+		// 		}				t_bstcolor;
+		// 		struct s_bstnode				*parent;
+		// 		struct s_bstnode				*left;
+		// 		struct s_bstnode				*right;
+		// 		data_type						data;
+		// 		t_bstcolor						color;
+		// 	}				t_bstnode;
+		private:
+			allocator_type	_alloc;
+			/*
+			** I died and went to C++ heaven after my problem with typedefs in
+			** a templated parent class. This is what I found here: referencing
+			** member variables from a templated parent class is also an ISSUE.
+			**
+			** Compile-time examination does not instantiate the template parent
+			** class of a template class, so the compiler interprets that any
+			** variables referenced in the derived class scope are independent,
+			** and duly complains that it can't find where they are defined,
+			** UNLESS you explicitly tell it that they are dependent on the
+			** parent class...
+			**
+			** One way to do that is with 'using Parent<T>::var', meaning, "Hey,
+			** compiler! When I say var, I mean the one Abintree<T> defines,
+			** mmkay?"
+			**
+			** Another way is to use this->var everywhere. Does that mean the
+			** 'this' pointer is of type Parent<T> * and it's using polymorphic
+			** shenanigans? :?
+			**
+			** Whatever the case, I am using the first solution, mainly so I
+			** have somewhere convenient to put this study note. :P
+			**
+			** I'll just make t_bstnode inherited from a parent class, he said.
+			** Then I can pass it to the allocator via the parent class, he
+			** said. IT'LL BE EASY, HE SAID! Two hours later...
+			*/
+			using Abintree<T>::_root;
+			
 			/*
 			** This recursive function finds the depth of a binary tree.
 			** Might make this iterative in future.
@@ -96,7 +141,8 @@ namespace ft
 			{
 				t_bstnode	*node;
 
-				node = new t_bstnode;
+				node = _alloc.allocate(1);
+				_alloc.construct(node, t_bstnode());
 				if (node != NULL)
 				{
 					node->data = data;
@@ -468,7 +514,9 @@ namespace ft
 			t_bstnode	*node_delete(t_bstnode *node)
 			{
 				std::memset(node, 0, sizeof(t_bstnode));
-				delete node;
+				_alloc.destroy(node);
+				_alloc.deallocate(node, sizeof(t_bstnode));
+				//delete node;
 				return (NULL);
 			}
 
@@ -1008,9 +1056,8 @@ namespace ft
 			}
 
 			//DEBUG
-			t_bstnode	*_root;
 		public:
-			bintree(void) : _root(NULL) {};
+			bintree(void) : Abintree<T>() {};
 			~bintree(void) {
 				//debug
 				//std::cout << "freeeeedom" << std::endl;

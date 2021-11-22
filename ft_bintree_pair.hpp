@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/22 01:35:36 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 02:24:26 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,13 +120,13 @@ namespace ft
 				}
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
-					return (this->_m_ptr == rhs._m_ptr);
+					return (this->_m_ptr == rhs._m_ptr); //si las direcciones son iguales las keys son iguales cauenlaleche
 				}
 				bool	operator!=(Iterator const & rhs) const {
 					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
 				bool	operator<(Iterator const & rhs) const {
-					return (this->_m_ptr->data.first < rhs._m_ptr->data.first);
+					return (key_compare()(this->_m_ptr->data.first, rhs._m_ptr->data.first));
 				}
 				bool	operator>(Iterator const & rhs) const {
 					return (rhs < *this); //a>b == b<a
@@ -282,8 +282,8 @@ namespace ft
 					else if (node->parent != NULL)
 					{
 						t_bstnode const *	ascendent_node = node;
-						ascendent_node = node->parent;													//DEBUG
-						while (ascendent_node != NULL && ascendent_node->data.first < node->data.first) //replace with comp obj
+						ascendent_node = node->parent;
+						while (ascendent_node != NULL && key_compare()(ascendent_node->data.first, node->data.first))
 							ascendent_node = ascendent_node->parent;
 						node = ascendent_node;
 					}
@@ -339,8 +339,8 @@ namespace ft
 					}
 					else if (node->parent != NULL)
 					{
-						t_bstnode const *	ascendent_node = node;											//replace with comp obj
-						while (ascendent_node != NULL && !(ascendent_node->data.first < node->data.first) ) //replace with comp obj
+						t_bstnode const *	ascendent_node = node;
+						while (ascendent_node != NULL && !key_compare()(ascendent_node->data.first, node->data.first) )
 							ascendent_node = ascendent_node->parent;
 						node = ascendent_node;
 					}
@@ -397,9 +397,13 @@ namespace ft
 			*/
 			t_bstnode	*bintree_search(t_bstnode *root, T1 key)
 			{
-				if (root == NULL || root->data.first == key)
+										//key_compare()(root->data.first, key) is false & key_compare()(key, root->data.first) is false
+										//is just a way of saying if (root->data.first < key is false and key < root->data.first is also false)
+										//which is just a way of saying "if they are equal"
+										//this hideousness is required by the assignment, i'm so sorry. :P
+				if (root == NULL || !key_compare()(root->data.first, key) & !key_compare()(key, root->data.first)) //if (root == NULL || root->data.first == key) :P
 					return (root);
-				else if (key <= root->data.first)
+				else if (key_compare()(key, root->data.first) || !key_compare()(root->data.first, key)) // if (key <= root->data.first) :P truly sorry about this :P
 					return (bintree_search(root->left, key));
 				else
 					return (bintree_search(root->right, key));
@@ -407,9 +411,9 @@ namespace ft
 
 			t_bstnode	*bintree_search(t_bstnode *root, T1 key, typename Iterator<t_bstnode, std::bidirectional_iterator_tag>::difference_type & hops)
 			{
-				if (root == NULL || root->data.first == key)
+				if (root == NULL || !key_compare()(root->data.first, key) & !key_compare()(key, root->data.first))
 					return (root);
-				else if (key <= root->data.first)
+				else if (key_compare()(key, root->data.first) || !key_compare()(root->data.first, key))
 					return (bintree_search(root->left, key, ++hops));
 				else
 					return (bintree_search(root->right, key, ++hops));
@@ -463,12 +467,19 @@ namespace ft
 			{
 				if (root == NULL)
 					root = create_new_node(parent, key, value);
-				else if (key <= root->data.first)
+				else if (key_compare()(key, root->data.first) || !key_compare()(root->data.first, key)) //if (key <= root-data.first)
 					root->left = bintree_insert(root, root->left, key, value);
 				else
 					root->right = bintree_insert(root, root->right, key, value);
 				return (root);
 			}
+
+			/*
+			** To save cycles on an already obscenely inefficient structure for
+			** insertions, we quickly compare key values on every new addition
+			** to the tree and save the addresses of the nodes with the min and
+			** max values.
+			*/
 
 			t_bstnode	*bintree_add(t_bstnode *&root, T1 key, T2 value)
 			{
@@ -477,9 +488,9 @@ namespace ft
 				root = bintree_insert(NULL, root, key, value);
 				new_node = bintree_search(root, key);
 				bintree_balance(&root, new_node);
-				if (_min == NULL || key < _min->data.first)
+				if (_min == NULL || key_compare()(key, _min->data.first)) //if (_min == NULL || key < _min->data.first)
 					_min = bintree_search(root, key);
-				else if (_max == NULL || key > _max->data.first)
+				else if (_max == NULL || key_compare()(_max->data.first, key)) //if (_max == NULL || key > _max->data.first)
 					_max = bintree_search(root, key);
 				return (root);
 			}
@@ -655,8 +666,8 @@ namespace ft
 				else if (node->parent != NULL)
 				{
 					t_bstnode const *	ascendent_node = node;
-					ascendent_node = node->parent;													//DEBUG
-					while (ascendent_node != NULL && ascendent_node->data.first < node->data.first) //replace with comp obj
+					ascendent_node = node->parent;
+					while (ascendent_node != NULL && key_compare()(ascendent_node->data.first, node->data.first))
 						ascendent_node = ascendent_node->parent;
 					node = ascendent_node;
 				}
@@ -712,8 +723,8 @@ namespace ft
 				}
 				else if (node->parent != NULL)
 				{
-					t_bstnode const *	ascendent_node = node;											//replace with comp obj
-					while (ascendent_node != NULL && !(ascendent_node->data.first < node->data.first) ) //replace with comp obj
+					t_bstnode const *	ascendent_node = node;
+					while (ascendent_node != NULL && !key_compare()(ascendent_node->data.first, node->data.first) )
 						ascendent_node = ascendent_node->parent;
 					node = ascendent_node;
 				}

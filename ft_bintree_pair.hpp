@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/22 14:29:55 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 16:34:21 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 namespace ft
 {
-	template< typename T1, typename T2, typename Compare = std::less<T1>,
+	template< typename T1, typename T2, typename Compare = ft::less<T1>,
 	typename Alloc = std::allocator< typename ft::Abintree< ft::pair<T1, T2> >::t_bstnode > >
 	class bintree_pair : public ft::Abintree< ft::pair<T1, T2> >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2> >::t_bstnode, int/*DEBUG*/ >
 	{

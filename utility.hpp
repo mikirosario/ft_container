@@ -6,12 +6,14 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 21:01:02 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/22 01:37:27 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 16:35:12 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILITY_H
 # define UTILITY_H
+
+#include <functional>
 
 namespace ft
 {
@@ -34,6 +36,14 @@ namespace ft
 	{
 		return (pair<T1, T2>(x, y));
 	}
+
+	template<typename T>
+	struct less
+	{
+		bool	operator()(T const & lhs, T const & rhs) const {
+			return (lhs < rhs);
+		}
+	};
 };
 
 #endif

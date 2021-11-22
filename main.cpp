@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/22 14:08:34 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 17:24:49 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1041,7 +1041,10 @@ int main(void)
 	//size_t				i;
 	ft::bintree<int>	ex1;
 	ft::bintree<int>	ex2;
-	ft::bintree_pair<int, int>	test2;
+
+	typedef ft::bintree_pair<std::string, std::string>	Dictionary;
+	
+	Dictionary	test2;
 
 	ex1.push_back(58);
 	ex1.push_back(26);
@@ -1058,6 +1061,20 @@ int main(void)
 	ex2.push_back(26);
 	ex2.print();
 
+
+	test2.push_back("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo.");
+	test2.push_back("ordenador", "ORDENADOR: \t\t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios.");
+	test2.push_back("piscina", "PISCINA: \t\t\t\tEscabechina de aspirantes a estudiantes.");
+	test2.push_back("arbol binario de rojos y negros", "ÁRBOL BINARIO DE ROJOS Y NEGROS: \tEstructura de datos incestuosa que reduce el tiempo de búsqueda a costa de hacer de tu padre el hijo de ti y de tu abuelo.");
+	test2.push_back("tig", "TIG: \t\t\t\t\tTrabajo de interés general.");
+	test2.push_back("lista enlazada", "LISTA ENLAZADA: \t\t\tEstructura de datos en la que cada elemento enlaza el siguiente y el anterior. Lentas en comparaciones e iteraciones, pero rápidas en inserciones y borrados.");
+	test2.push_back("array", "ARRAY: \t\t\t\t\tEstructura de datos contiguos en memoria RAM. Rápidos en comparaciones e iteraciones, pero lentos en inserciones y borrados.");
+	test2.push_back("marvin", "MARVIN: \t\t\t\tRobot cascarrabias.");
+	test2.push_back("norminette", "NORMINETTE: \t\t\t\tGuía de estilo que asegura que nadie podrá entender tu código.");
+	test2.push_back("cafe", "CAFÉ: \t\t\t\t\tBien de primera necesidad para la supervivencia elaborada a partir de granos de café molidos y agua.");
+	test2.push_back("agua", "AGUA: \t\t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe).");
+	test2.push_back("compilador", "COMPILADOR: \t\t\t\tÚnico profesor en activo de 42.");
+	
 	// test2.push_back("cuarenta y dos", 42);
 	// test2.push_back("uno", 1);
 	// test2.push_back("noventa y nueve", 99);
@@ -1068,15 +1085,15 @@ int main(void)
 	// test2.push_back("treinta y cuatro", 34);
 	// test2.print();
 
-	test2.push_back(42, 42);
-	test2.push_back(1, 1);
-	test2.push_back(99, 99);
-	test2.push_back(27, 27);
-	test2.push_back(2, 2);
-	test2.push_back(68, 68);
-	test2.push_back(83, 83);
-	test2.push_back(34, 34);
-	test2.print();
+	// test2.push_back(42, 42);
+	// test2.push_back(1, 1);
+	// test2.push_back(99, 99);
+	// test2.push_back(27, 27);
+	// test2.push_back(2, 2);
+	// test2.push_back(68, 68);
+	// test2.push_back(83, 83);
+	// test2.push_back(34, 34);
+	// //test2.print();
 
 	// ft::bintree<int>::iterator ex1end = ex1.end();	
 	// (void)ex1end;
@@ -1105,17 +1122,19 @@ int main(void)
 	// if (ex42 == ex1.end())
 	// 	PRINT << "bleh" << END;
 
-	for (ft::bintree_pair<int, int>::iterator it = test2.begin(), end = test2.end(); it != end; ++it)
+	PRINT << "EL ABECEDARIO DE 42" << END;
+	
+	for (Dictionary::iterator it = test2.begin(), end = test2.end(); it != end; ++it)
 		PRINT << it->data.second << END;
 	
 	PRINT << TXT_NL;
 	
-	for (ft::bintree_pair<int, int>::iterator it = test2.end() - 1, end = test2.begin() - 1; it != end; --it)
+	for (Dictionary::iterator it = test2.end() - 1, end = test2.begin() - 1; it != end; --it)
 		PRINT << it->data.second << END;
 
 	PRINT << TXT_NL;
 	
-	for (ft::bintree_pair<int, int>::reverse_iterator it = test2.rbegin(), end = test2.rend(); it != end; ++it)
+	for (Dictionary::reverse_iterator it = test2.rbegin(), end = test2.rend(); it != end; ++it)
 		PRINT << it->data.second << END;
 
 	

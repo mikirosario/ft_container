@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/22 14:06:33 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 14:31:05 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,7 +358,7 @@ namespace ft
 			** A pointer to the new binary tree node is returned to the caller.
 			** If the memory reservation fails, a NULL pointer is returned.
 			*/
-			t_bstnode	*create_new_node(t_bstnode *parent, data_type data)
+			t_bstnode *	create_new_node(t_bstnode * parent, data_type const & data)
 			{
 				t_bstnode	*node;
 
@@ -392,7 +392,7 @@ namespace ft
 			** a pointer to the node containing the data is returned. If it is
 			** not present in the tree, a NULL pointer is returned.	
 			*/
-			t_bstnode	*bintree_search(t_bstnode *root, key_type key) const
+			t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
 			{
 				if (root == NULL || root->data == key)
 					return (root);
@@ -445,8 +445,8 @@ namespace ft
 			** arrays for frequent insertions and deletions, but more efficient
 			** for frequent searches, such as of ordered key values.
 			*/
-			t_bstnode	*bintree_insert(t_bstnode *parent, t_bstnode *root, \
-			data_type data)
+			t_bstnode	*bintree_insert(t_bstnode * parent, t_bstnode * root, \
+			data_type const & data)
 			{
 				if (root == NULL)
 					root = create_new_node(parent, data);
@@ -457,7 +457,7 @@ namespace ft
 				return (root);
 			}
 
-			t_bstnode	*bintree_add(t_bstnode *&root, data_type data)
+			t_bstnode	*bintree_add(t_bstnode *& root, data_type const & data)
 			{
 				t_bstnode	*new_node;
 
@@ -471,7 +471,7 @@ namespace ft
 				return (root);
 			}
 
-			t_bstnode	*node_delete(t_bstnode *node)
+			t_bstnode	*node_delete(t_bstnode * node)
 			{
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
@@ -480,7 +480,7 @@ namespace ft
 				return (NULL);
 			}
 
-			t_bstnode	*root_canal(t_bstnode *root)
+			t_bstnode	*root_canal(t_bstnode * root)
 			{
 				if (root != NULL)
 					if (root->left == NULL && root->right == NULL)
@@ -517,7 +517,7 @@ namespace ft
 			**
 			** I hope you're happy, Valgrind. :(
 			*/
-			t_bstnode	*bintree_free(t_bstnode *root)
+			t_bstnode	*bintree_free(t_bstnode * root)
 			{
 				t_bstnode	*parent;
 
@@ -559,12 +559,14 @@ namespace ft
 				//debug
 				bintree_free(_root);
 			}
-			void	push_back(data_type data){
+			void	push_back(data_type const & data){
 				bintree_add(_root, data);
 			}
+			//DEBUG
 			void	print(void) {
 				this->ft_bintree_print(_root, 0);
 			}
+			//DEBUG
 			t_bstnode *	getRootNode(void) const {
 				return (_root);
 			}

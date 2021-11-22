@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/22 14:07:48 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 14:29:55 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -362,9 +362,9 @@ namespace ft
 			** A pointer to the new binary tree node is returned to the caller.
 			** If the memory reservation fails, a NULL pointer is returned.
 			*/
-			t_bstnode	*create_new_node(t_bstnode *parent, T1 key, T2 value)
+			t_bstnode *	create_new_node(t_bstnode * parent, key_type const & key, mapped_type const & value)
 			{
-				t_bstnode	*node;
+				t_bstnode *	node;
 
 				node = _alloc.allocate(1);
 				_alloc.construct(node, t_bstnode());
@@ -396,7 +396,7 @@ namespace ft
 			** a pointer to the node containing the data is returned. If it is
 			** not present in the tree, a NULL pointer is returned.	
 			*/
-			t_bstnode	*bintree_search(t_bstnode *root, key_type key)
+			t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
 			{
 										//_is_less(root->data.first, key) is false & _is_less(key, root->data.first) is false
 										//is just a way of saying if (root->data.first < key is false and key < root->data.first is also false)
@@ -410,7 +410,7 @@ namespace ft
 					return (bintree_search(root->right, key));
 			}
 
-			t_bstnode	*bintree_search(t_bstnode *root, T1 key, typename Iterator<t_bstnode, std::bidirectional_iterator_tag>::difference_type & hops)
+			t_bstnode *	bintree_search(t_bstnode *root, key_type const & key, typename Iterator<t_bstnode, std::bidirectional_iterator_tag>::difference_type & hops) const
 			{
 				if (root == NULL || !_is_less(root->data.first, key) & !_is_less(key, root->data.first))
 					return (root);
@@ -463,8 +463,8 @@ namespace ft
 			** arrays for frequent insertions and deletions, but more efficient
 			** for frequent searches, such as of ordered key values.
 			*/
-			t_bstnode	*bintree_insert(t_bstnode *parent, t_bstnode *root, \
-			T1 key, T2 value)
+			t_bstnode *	bintree_insert(t_bstnode * parent, t_bstnode *root, \
+			key_type const & key, mapped_type const & value)
 			{
 				if (root == NULL)
 					root = create_new_node(parent, key, value);
@@ -482,7 +482,7 @@ namespace ft
 			** max values.
 			*/
 
-			t_bstnode	*bintree_add(t_bstnode *&root, T1 key, T2 value)
+			t_bstnode	*bintree_add(t_bstnode *& root, key_type const & key, mapped_type const & value)
 			{
 				t_bstnode	*new_node;
 
@@ -496,7 +496,7 @@ namespace ft
 				return (root);
 			}
 
-			t_bstnode	*node_delete(t_bstnode *node)
+			t_bstnode	*node_delete(t_bstnode * node)
 			{
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
@@ -504,7 +504,7 @@ namespace ft
 				return (NULL);
 			}
 
-			t_bstnode	*root_canal(t_bstnode *root)
+			t_bstnode	*root_canal(t_bstnode * root)
 			{
 				if (root != NULL)
 					if (root->left == NULL && root->right == NULL)
@@ -541,7 +541,7 @@ namespace ft
 			**
 			** I hope you're happy, Valgrind. :(
 			*/
-			t_bstnode	*bintree_free(t_bstnode *root)
+			t_bstnode	*bintree_free(t_bstnode * root)
 			{
 				t_bstnode	*parent;
 

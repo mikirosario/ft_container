@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/21 20:15:05 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 00:28:09 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ namespace ft
 				typedef T		data_type;
 
 				/*
-				** For the single-value implementation of ft::bintree the data type
-				** will be T.
+				** For the double-value implementation of ft::bintree the data type
+				** will be ft::pair<X,Y>.
 				*/
 				typedef struct	s_bstnode
 				{
@@ -45,9 +45,12 @@ namespace ft
 		protected:
 			/* VARIABLES */
 			t_bstnode *		_root;
+			t_bstnode *		_min;
+			t_bstnode *		_max;
+			t_bstnode		_end;
 			
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			Abintree(void) : _root(NULL) {}
+			Abintree(void) : _root(NULL), _min(NULL), _max(NULL) {}
 
 			/* COMMON RED-BLACK BINARY SEARCH TREE FUNCTIONS */
 			

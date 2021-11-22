@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/21 21:29:18 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 01:36:24 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1077,6 +1077,20 @@ int main(void)
 	test2.push_back(83, 83);
 	test2.push_back(34, 34);
 	test2.print();
+
+
+	for (ft::bintree_pair<int, int>::iterator it = test2.begin(), end = test2.end(); it != end; ++it)
+		PRINT << (*it).data.second << END;
+	
+	PRINT << TXT_NL;
+	
+	for (ft::bintree_pair<int, int>::iterator it = test2.end() - 1, end = test2.begin() - 1; it != end; --it)
+		PRINT << (*it).data.second << END;
+
+	PRINT << TXT_NL;
+	
+	for (ft::bintree_pair<int, int>::reverse_iterator it = test2.rbegin(), end = test2.rend(); it != end; ++it)
+		PRINT << (*it).data.second << END;
 
 
 	// if (iterator_tests())

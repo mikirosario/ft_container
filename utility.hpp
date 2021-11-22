@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 21:01:02 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/20 18:00:39 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/22 01:37:27 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ namespace ft
 	{
 		typedef T1	first_type;
 		typedef T2	second_type;
+
 		T1			first;
 		T2			second;
 		pair(void) : first(), second() {}

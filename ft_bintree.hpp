@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/21 21:00:33 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/21 22:24:38 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ namespace ft
 			typedef typename bintree::data_type	data_type;
 			typedef typename bintree::t_bstnode	t_bstnode;
 			typedef Alloc						allocator_type;
+			typedef Compare						key_compare;
 
 		private:
 			allocator_type	_alloc;

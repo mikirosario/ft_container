@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/22 00:28:09 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 12:14:09 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ namespace ft
 			t_bstnode *		_root;
 			t_bstnode *		_min;
 			t_bstnode *		_max;
-			t_bstnode		_end;
 			
 			/* CONSTRUCTORS AND DESTRUCTOR */
 			Abintree(void) : _root(NULL), _min(NULL), _max(NULL) {}

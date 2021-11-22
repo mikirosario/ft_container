@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/22 17:24:49 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 00:49:40 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1060,6 +1060,10 @@ int main(void)
 	ex2.push_back(2);
 	ex2.push_back(26);
 	ex2.print();
+	ft::bintree<int>::iterator del_this(ex2.begin());
+	ex2.erase(&(del_this[3]));
+	PRINT << "MIEDO" << END;
+	ex2.print();
 
 
 	test2.push_back("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo.");
@@ -1110,6 +1114,7 @@ int main(void)
 		PRINT << it->data << END;
 
 	PRINT << TXT_NL;
+	PRINT << "EX2 POST-DELETE" << END;
 
 	for (ft::bintree<int>::iterator it = ex2.begin(), end = ex2.end(); it != end; ++it)
 		PRINT << it->data << END;

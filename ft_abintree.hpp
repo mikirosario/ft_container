@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/22 12:14:09 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 00:43:13 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,35 +21,39 @@ namespace ft
 	class Abintree
 	{
 		public:
-				typedef T		data_type;
+			typedef T		data_type;
 
+			/*
+			** For the double-value implementation of ft::bintree the data type
+			** will be ft::pair<X,Y>.
+			*/
+			typedef struct	s_bstnode
+			{
 				/*
-				** For the double-value implementation of ft::bintree the data type
-				** will be ft::pair<X,Y>.
+				** This enum field will define a node color as red or black.
 				*/
-				typedef struct	s_bstnode
+				typedef enum	e_bstcolor
 				{
-					/*
-					** This enum field will define a node color as red or black.
-					*/
-					typedef enum	e_bstcolor
-					{
-						BLK = 0, RED
-					}				t_bstcolor;
-					struct s_bstnode				*parent;
-					struct s_bstnode				*left;
-					struct s_bstnode				*right;
-					data_type						data;
-					t_bstcolor						color;
-				}				t_bstnode;
+					BLK = 0, RED
+				}				t_bstcolor;
+				struct s_bstnode				*parent;
+				struct s_bstnode				*left;
+				struct s_bstnode				*right;
+				data_type						data;
+				t_bstcolor						color;
+				
+				private:
+					struct s_bstnode &	operator=(struct s_bstnode const & src) { *this = src; } //nodes can't be assigned
+			}				t_bstnode;
 		protected:
 			/* VARIABLES */
 			t_bstnode *		_root;
 			t_bstnode *		_min;
 			t_bstnode *		_max;
+			std::size_t		_size;
 			
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			Abintree(void) : _root(NULL), _min(NULL), _max(NULL) {}
+			Abintree(void) : _root(NULL), _min(NULL), _max(NULL), _size(0) {}
 
 			/* COMMON RED-BLACK BINARY SEARCH TREE FUNCTIONS */
 			

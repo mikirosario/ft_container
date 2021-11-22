@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/22 01:27:00 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 13:54:50 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ namespace ft
 			return (*(this->current - 1));
 		}
 		typename Iter::pointer		operator->(void) const {
-			return (&(*this->current - 1));
+			return (&(*(this->current - 1)));
 		}
 		typename Iter::reference	operator[](typename Iter::difference_type const & n) const {
 			return (current[-n-1]);

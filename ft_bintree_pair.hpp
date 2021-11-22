@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/22 13:35:07 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 14:07:48 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,7 @@ namespace ft
 					return(*this->_m_ptr);
 				}
 				typename Iterator::reference	operator[](typename Iterator::difference_type pos) const {
-					return (*(this->_m_ptr + pos));
+					return (*(*this + pos));
 				}
 				//aaaaah!!!! -> . ... claro!!!! :D
 				typename Iterator::pointer		operator->(void) const {

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/22 13:39:01 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/22 14:08:34 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1082,17 +1082,20 @@ int main(void)
 	// (void)ex1end;
 
 	for (ft::bintree<int>::iterator it = ex1.begin(), end = ex1.end(); it != end; ++it)
-		PRINT << (*it).data << END;
+		PRINT << it->data << END;
+
+	ft::bintree<int>::iterator reftest = ex1.begin();
+	PRINT << "REFTEST: " << reftest[2].data << END;
 
 	PRINT << TXT_NL;
 
 	for (ft::bintree<int>::reverse_iterator it = ex1.rbegin(), end = ex1.rend(); it != end; ++it)
-		PRINT << (*it).data << END;
+		PRINT << it->data << END;
 
 	PRINT << TXT_NL;
 
 	for (ft::bintree<int>::iterator it = ex2.begin(), end = ex2.end(); it != end; ++it)
-		PRINT << (*it).data << END;
+		PRINT << it->data << END;
 
 	PRINT << TXT_NL;
 
@@ -1103,17 +1106,17 @@ int main(void)
 	// 	PRINT << "bleh" << END;
 
 	for (ft::bintree_pair<int, int>::iterator it = test2.begin(), end = test2.end(); it != end; ++it)
-		PRINT << (*it).data.second << END;
+		PRINT << it->data.second << END;
 	
 	PRINT << TXT_NL;
 	
 	for (ft::bintree_pair<int, int>::iterator it = test2.end() - 1, end = test2.begin() - 1; it != end; --it)
-		PRINT << (*it).data.second << END;
+		PRINT << it->data.second << END;
 
 	PRINT << TXT_NL;
 	
 	for (ft::bintree_pair<int, int>::reverse_iterator it = test2.rbegin(), end = test2.rend(); it != end; ++it)
-		PRINT << (*it).data.second << END;
+		PRINT << it->data.second << END;
 
 	
 

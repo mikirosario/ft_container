@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 03:53:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 04:18:14 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,19 @@ namespace ft
 				private:
 					struct s_bstnode &	operator=(struct s_bstnode const & src) { *this = src; } //nodes can't be assigned
 			}				t_bstnode;
+			typedef std::size_t	size_type;
+			
+			/* COMMON METHODS */
+
+			size_type size(void) const {
+				return(_size);
+			}
 		protected:
 			/* VARIABLES */
 			t_bstnode *		_root;
 			t_bstnode *		_min;
 			t_bstnode *		_max;
-			std::size_t		_size;
+			size_type		_size;
 			
 			/* CONSTRUCTORS AND DESTRUCTOR */
 			Abintree(void) : _root(NULL), _min(NULL), _max(NULL), _size(0) {}

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/23 02:44:56 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 04:22:42 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1102,6 +1102,7 @@ int main(void)
 	// ft::bintree<int>::iterator ex1end = ex1.end();	
 	// (void)ex1end;
 
+	PRINT << TXT_NL << "Tree size: " << ex1.size() << END;
 	for (ft::bintree<int>::iterator it = ex1.begin(), end = ex1.end(); it != end; ++it)
 		PRINT << it->data << END;
 
@@ -1128,6 +1129,8 @@ int main(void)
 	// 	PRINT << "bleh" << END;
 
 	PRINT << "EL ABECEDARIO DE 42" << END;
+
+	PRINT << TXT_NL << "Dictionary size: " << test2.size() << END;
 	
 	for (Dictionary::iterator it = test2.begin(), end = test2.end(); it != end; ++it)
 		PRINT << it->data.second << END;
@@ -1137,6 +1140,7 @@ int main(void)
 	test2.erase(test2.getNode("marvin"));
 	PRINT << TXT_NL;
 
+	PRINT << TXT_NL << "Dictionary size: " << test2.size() << END;
 	for (Dictionary::iterator it = test2.end() - 1, end = test2.begin() - 1; it != end; --it)
 		PRINT << it->data.second << END;
 
@@ -1144,8 +1148,6 @@ int main(void)
 	
 	for (Dictionary::reverse_iterator it = test2.rbegin(), end = test2.rend(); it != end; ++it)
 		PRINT << it->data.second << END;
-
-	
 
 	// if (iterator_tests())
 	// 	PRINT << TXT_BGRN "OK" << END;

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 03:53:06 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 04:19:30 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ namespace ft
 			*/
 			typedef typename bintree::data_type	data_type;
 			typedef typename bintree::t_bstnode	t_bstnode;
+			typedef typename bintree::size_type	size_type;
 
 			/* STL CONTAINER STYLE TYPEDEFS */
 			typedef Alloc								allocator_type;
@@ -540,12 +541,12 @@ namespace ft
 				return (root);
 			}
 
-			t_bstnode	*node_delete(t_bstnode * node)
+			t_bstnode *	node_delete(t_bstnode * node)
 			{
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
 				_alloc.deallocate(node, sizeof(t_bstnode));
-				//delete node;
+				--_size;
 				return (NULL);
 			}
 

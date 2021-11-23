@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 03:53:36 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 04:19:13 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ namespace ft
 			*/
 			typedef typename bintree_pair::data_type	data_type;
 			typedef typename bintree_pair::t_bstnode	t_bstnode;
+			typedef typename bintree_pair::size_type	size_type;
 
 			/* STL CONTAINER STYLE TYPEDEFS */
 			typedef Alloc								allocator_type;
@@ -559,11 +560,12 @@ namespace ft
 				return (root);
 			}
 
-			t_bstnode	*node_delete(t_bstnode * node)
+			t_bstnode *	node_delete(t_bstnode * node)
 			{
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
 				_alloc.deallocate(node, sizeof(t_bstnode));
+				--_size;
 				return (NULL);
 			}
 
@@ -715,9 +717,11 @@ namespace ft
 			void	erase(t_bstnode & node) {
 				bintree_delete(&node);
 			}
+			//DEBUG
 			void	print(void) {
 				this->ft_bintree_print(_root, 0);
 			}
+			//DEBUG
 			t_bstnode &	getRootNode(void) const {
 				return (_root);
 			}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_pair.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 04:19:13 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 12:47:07 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -697,7 +697,7 @@ namespace ft
 				}
 				return (root_canal(root));
 			}
-			//
+
 		public:
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
 			typedef Iterator<const t_bstnode, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
@@ -711,7 +711,7 @@ namespace ft
 				//debug
 				bintree_free(_root);
 			}
-			void	push_back(key_type const & key, mapped_type const & value){
+			void	insert(key_type const & key, mapped_type const & value) {
 				bintree_add(_root, ft::make_pair(key, value));
 			}
 			void	erase(t_bstnode & node) {
@@ -729,6 +729,38 @@ namespace ft
 				return (*(bintree_search(_root, key)));
 			}
 
+			/* ---- ITERATORS ---- */
+
+			/* BEGIN AND END METHODS */
+			/*
+			** These functions respectively return iterators to the first
+			** element of the container and the memory address after the last
+			** element of the container. Const containers return
+			** const_iterators, which are actually iterators TO const values
+			** (the iterators themselves can be modified).
+			**
+			** In the binary tree, the address 'after' the last element and
+			** 'before' the first element is virtualized to NULL, which is not
+			** resolvable.
+			**
+			** Each iterator also stores its last resolvable address, so that if
+			** incremented OR decremented from NULL it will return to its last
+			** address.
+			**
+			** Note: If iterators are decremented or incremented past NULL, the
+			** iterator will infinitely toggle between the last address and NULL
+			** until the direction is reversed! So rather than the typical
+			** segmentation fault for iterating out of bounds, you may also get
+			** an infinite loop. Avoiding this behaviour would involve extra
+			** overhead in the iterator and, frankly, I think the binary tree
+			** has more than enough overhead as it is. ;)
+			**
+			** Note: While technically these are bidirectional iterators, full
+			** functionality is implemented. Nevertheless, the inefficiency of
+			** actually iterating on a binary tree is OFF THE CHARTS. Seriously.
+			** Just don't do it. If you need to iterate, use another structure.
+			** The tree is really meant for performing searches.
+			*/
 			iterator begin(void) {
 				return (iterator(_min));
 			}

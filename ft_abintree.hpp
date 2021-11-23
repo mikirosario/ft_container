@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 04:18:14 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 12:17:43 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,13 @@ namespace ft
 			
 			/* COMMON METHODS */
 
-			size_type size(void) const {
+			size_type	size(void) const {
 				return(_size);
 			}
+			bool		empty(void) const {
+				return(_size == 0);
+			}
+
 		protected:
 			/* VARIABLES */
 			t_bstnode *		_root;

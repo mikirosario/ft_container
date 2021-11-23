@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/21 13:36:52 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 12:18:55 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -842,9 +842,7 @@ namespace ft
 			** returns false.
 			*/
 			bool				empty(void) const {
-				if (!size())
-					return (true);
-				return (false);
+				return (_size == 0);
 			}
 
 			/* SIZE */

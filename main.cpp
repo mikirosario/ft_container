@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/23 04:22:42 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 12:48:45 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1046,19 +1046,24 @@ int main(void)
 	
 	Dictionary	test2;
 
-	ex1.push_back(58);
-	ex1.push_back(26);
-	ex1.push_back(2);
-	ex1.push_back(42);
-	ex1.push_back(15);
-	//ex1.print();
-		
+	PRINT << std::boolalpha << "New bintree ex1 is empty: " << ex1.empty() << END;
+	PRINT << "New bintree ex1 size: " << ex1.size() << END;
 
-	ex2.push_back(42);
-	ex2.push_back(15);
-	ex2.push_back(58);
-	ex2.push_back(2);
-	ex2.push_back(26);
+	ex1.insert(58);
+	ex1.insert(26);
+	ex1.insert(2);
+	ex1.insert(42);
+	ex1.insert(15);
+	ex1.print();
+
+	PRINT << std::boolalpha << "Bintree ex1 is empty: " << ex1.empty() << END;
+	PRINT << "Bintree ex1 size: " << ex1.size() << END;
+
+	ex2.insert(42);
+	ex2.insert(15);
+	ex2.insert(58);
+	ex2.insert(2);
+	ex2.insert(26);
 	ex2.print();
 	ft::bintree<int>::iterator del_this(ex2.begin());
 	ex2.erase(del_this[3]);
@@ -1066,37 +1071,37 @@ int main(void)
 	ex2.print();
 
 
-	test2.push_back("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo.");
-	test2.push_back("ordenador", "ORDENADOR: \t\t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios.");
-	test2.push_back("piscina", "PISCINA: \t\t\t\tEscabechina de aspirantes a estudiantes.");
-	test2.push_back("arbol binario de rojos y negros", "ÁRBOL BINARIO DE ROJOS Y NEGROS: \tEstructura de datos incestuosa que reduce el tiempo de búsqueda a costa de hacer de tu padre el hijo de ti y de tu abuelo.");
-	test2.push_back("tig", "TIG: \t\t\t\t\tTrabajo de interés general.");
-	test2.push_back("lista enlazada", "LISTA ENLAZADA: \t\t\tEstructura de datos en la que cada elemento enlaza el siguiente y el anterior. Lentas en comparaciones e iteraciones, pero rápidas en inserciones y borrados.");
-	test2.push_back("array", "ARRAY: \t\t\t\t\tEstructura de datos contiguos en memoria RAM. Rápidos en comparaciones e iteraciones, pero lentos en inserciones y borrados.");
-	test2.push_back("marvin", "MARVIN: \t\t\t\tRobot cascarrabias.");
-	test2.push_back("norminette", "NORMINETTE: \t\t\t\tGuía de estilo que asegura que nadie podrá entender tu código.");
-	test2.push_back("cafe", "CAFÉ: \t\t\t\t\tBien de primera necesidad para la supervivencia elaborada a partir de granos de café molidos y agua.");
-	test2.push_back("agua", "AGUA: \t\t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe).");
-	test2.push_back("compilador", "COMPILADOR: \t\t\t\tÚnico profesor en activo de 42.");
+	test2.insert("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo.");
+	test2.insert("ordenador", "ORDENADOR: \t\t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios.");
+	test2.insert("piscina", "PISCINA: \t\t\t\tEscabechina de aspirantes a estudiantes.");
+	test2.insert("arbol binario de rojos y negros", "ÁRBOL BINARIO DE ROJOS Y NEGROS: \tEstructura de datos incestuosa que reduce el tiempo de búsqueda a costa de hacer de tu padre el hijo de ti y de tu abuelo.");
+	test2.insert("tig", "TIG: \t\t\t\t\tTrabajo de interés general.");
+	test2.insert("lista enlazada", "LISTA ENLAZADA: \t\t\tEstructura de datos en la que cada elemento enlaza el siguiente y el anterior. Lentas en comparaciones e iteraciones, pero rápidas en inserciones y borrados.");
+	test2.insert("array", "ARRAY: \t\t\t\t\tEstructura de datos contiguos en memoria RAM. Rápidos en comparaciones e iteraciones, pero lentos en inserciones y borrados.");
+	test2.insert("marvin", "MARVIN: \t\t\t\tRobot cascarrabias.");
+	test2.insert("norminette", "NORMINETTE: \t\t\t\tGuía de estilo que asegura que nadie podrá entender tu código.");
+	test2.insert("cafe", "CAFÉ: \t\t\t\t\tBien de primera necesidad para la supervivencia elaborada a partir de granos de café molidos y agua.");
+	test2.insert("agua", "AGUA: \t\t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe).");
+	test2.insert("compilador", "COMPILADOR: \t\t\t\tÚnico profesor en activo de 42.");
 	
-	// test2.push_back("cuarenta y dos", 42);
-	// test2.push_back("uno", 1);
-	// test2.push_back("noventa y nueve", 99);
-	// test2.push_back("veintisiete", 27);
-	// test2.push_back("dos", 2);
-	// test2.push_back("sesenta y ocho", 68);
-	// test2.push_back("ochenta y tres", 83);
-	// test2.push_back("treinta y cuatro", 34);
+	// test2.insert("cuarenta y dos", 42);
+	// test2.insert("uno", 1);
+	// test2.insert("noventa y nueve", 99);
+	// test2.insert("veintisiete", 27);
+	// test2.insert("dos", 2);
+	// test2.insert("sesenta y ocho", 68);
+	// test2.insert("ochenta y tres", 83);
+	// test2.insert("treinta y cuatro", 34);
 	// test2.print();
 
-	// test2.push_back(42, 42);
-	// test2.push_back(1, 1);
-	// test2.push_back(99, 99);
-	// test2.push_back(27, 27);
-	// test2.push_back(2, 2);
-	// test2.push_back(68, 68);
-	// test2.push_back(83, 83);
-	// test2.push_back(34, 34);
+	// test2.insert(42, 42);
+	// test2.insert(1, 1);
+	// test2.insert(99, 99);
+	// test2.insert(27, 27);
+	// test2.insert(2, 2);
+	// test2.insert(68, 68);
+	// test2.insert(83, 83);
+	// test2.insert(34, 34);
 	// //test2.print();
 
 	// ft::bintree<int>::iterator ex1end = ex1.end();	

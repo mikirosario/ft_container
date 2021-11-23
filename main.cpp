@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/23 12:48:45 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/23 17:47:43 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1054,6 +1054,15 @@ int main(void)
 	ex1.insert(2);
 	ex1.insert(42);
 	ex1.insert(15);
+	ex1.insert(15);
+	ex1.insert(15);
+	ex1.insert(15);
+	ex1.insert(15);
+	ex1.insert(15);
+	ex1.print();
+
+	PRINT << TXT_NL << "El gilipollas insert: " << TXT_NL;
+	ex1.insert((ex1.end() + 1), 3);
 	ex1.print();
 
 	PRINT << std::boolalpha << "Bintree ex1 is empty: " << ex1.empty() << END;
@@ -1069,6 +1078,7 @@ int main(void)
 	ex2.erase(del_this[3]);
 	PRINT << "MIEDO" << END;
 	ex2.print();
+
 
 
 	test2.insert("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo.");
@@ -1152,6 +1162,15 @@ int main(void)
 	PRINT << TXT_NL;
 	
 	for (Dictionary::reverse_iterator it = test2.rbegin(), end = test2.rend(); it != end; ++it)
+		PRINT << it->data.second << END;
+
+	Dictionary	new_dictionary;
+
+	PRINT << TXT_NL << "RANGE INSERTED DICTIONARY" << TXT_NL << END;
+	
+	new_dictionary.insert(test2.begin(), test2.end());
+
+	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
 		PRINT << it->data.second << END;
 
 	// if (iterator_tests())

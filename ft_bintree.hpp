@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 12:47:25 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/23 17:46:34 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -520,6 +520,8 @@ namespace ft
 				t_bstnode * 	new_node;
 				key_type const	new_key = data; //I was worried it might not jive with a std::move instruction if I ever use one :p
 
+				if (bintree_search(root, new_key)) //ban duplicate keys
+					return (NULL);
 				try
 				{
 					root = bintree_insert(NULL, root, data, new_node);
@@ -692,10 +694,41 @@ namespace ft
 				//debug
 				bintree_free(_root);
 			}
-			
-			void	insert(data_type const & data) {
-				bintree_add(_root, data);
+
+			/* INSERT SINGLE ELEMENT */
+			ft::pair<iterator, bool> insert(value_type const & data) {
+				t_bstnode *	new_node = bintree_add(_root, data);
+				bool		return_status = new_node ? true : false;
+				return (ft::make_pair(iterator(new_node), return_status));
 			}
+			
+			//DEBUG
+			/* INSERT SINGLE ELEMENT WITH HINT */
+			/*
+			** The 'position' iterator serves as a hint, if you more or less
+			** know where in the tree your data will be inserted. Time is
+			** optimized if 'position' is the node that will precede the new
+			** element. Note that this is NOT necessarily the last key value
+			** in sequential order.
+			*/
+			//DEBUG
+			iterator	insert(iterator position, value_type const & data) {
+				iterator * tonti = &position;
+				++tonti;
+				return (insert(data).first);
+			}
+			
+			/* INSERT RANGE OF ELEMENTS */
+			/*
+			** 
+			*/
+			template<typename InputIt>
+			void		insert(InputIt first, InputIt last, typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL)
+			{
+				for ( ; first != last; ++first)
+					insert(first->data);
+			}
+
 			void	erase(t_bstnode & node) {
 				bintree_delete(&node);
 			}

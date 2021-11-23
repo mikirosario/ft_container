@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/22 16:34:21 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 01:22:14 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ namespace ft
 			using Abintree<data_type>::left_case;
 			using Abintree<data_type>::right_case;
 			using Abintree<data_type>::bintree_balance;
+			using Abintree<data_type>::fix_double_black;
 
 			/* BINTREE_PAIR ITERATOR */
 			/* THEY POINT TO NODE */
@@ -504,6 +505,69 @@ namespace ft
 				return (NULL);
 			}
 
+			/* BINTREE_DELETE */
+			/*
+			** Deletes a node from a binary tree. You have NO idea the HORROR,
+			** the PAIN that this implies. It's much worse than mere insertion.
+			** SO much worse. You monster.
+			*/
+			t_bstnode * bintree_delete(t_bstnode * node) {
+				if (node == NULL)
+					return (NULL);
+				if (node == _min)
+					_min = &(*(iterator(_min) + 1));
+				if (node == _max)
+					_max = &(*(iterator(_max) - 1));
+				if (node->right == NULL && node->left == NULL) //it's a leaf/both children are NULL
+				{
+					if (node->parent != NULL)
+					{
+						if (node->parent->right == node)
+							node->parent->right = NULL;
+						else
+							node->parent->left = NULL;
+					}
+					if (node->color == t_bstnode::RED) //NULLs are black, so if original node is RED
+						node->color = t_bstnode::BLK; //replacement node is BLACK
+					else // if both original node and replacement node are BLACK
+						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
+					node_delete(node);
+				}
+				else if (node->left == NULL) //has only right child
+				{
+					//node == v
+					//node->right == u
+					node->data = node->right->data; //copy child to node
+					if (node->color == t_bstnode::RED || node->right->color == t_bstnode::RED) //if either original node or replacement node are RED...
+						node->color = t_bstnode::BLK; //replacement node is BLACK
+					else //if both original node and replacement node are BLACK...
+						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
+					node->right = node_delete(node->right); //delete the original child
+				}
+				else if (node->right == NULL) //has only left child
+				{
+					node->data = node->left->data; // copy child to node
+					if (node->color == t_bstnode::RED || node->left->color == t_bstnode::RED)  //if either original node or replacement node are RED...
+						node->color = t_bstnode::BLK; //replacement node is BLACK
+					else //if both original node and replacement node are BLACK...
+						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
+					node->left = node_delete(node->left); //delete the original child
+				}
+				else //has two children
+				{
+					//get successor node, swap data with it, and delete the successor
+					t_bstnode * successor = node->right;
+					value_type	data;
+					while (successor->left != NULL)
+						successor = successor->left;
+					data = node->data;
+					node->data = successor->data;
+					successor->data = node->data;
+					bintree_delete(successor);
+				}
+				return (NULL);
+			}
+
 			t_bstnode	*root_canal(t_bstnode * root)
 			{
 				if (root != NULL)
@@ -583,8 +647,11 @@ namespace ft
 				//debug
 				bintree_free(_root);
 			}
-			void	push_back(T1 key, T2 value){
+			void	push_back(key_type const & key, mapped_type const & value){
 				bintree_add(_root, key, value);
+			}
+			void	erase(t_bstnode & node) {
+				bintree_delete(&node);
 			}
 			void	print(void) {
 				this->ft_bintree_print(_root, 0);
@@ -593,7 +660,7 @@ namespace ft
 				return (_root);
 			}
 			t_bstnode &	getNode(key_type const & key) const {
-				return (bintree_search(_root, key));
+				return (*(bintree_search(_root, key)));
 			}
 
 			iterator begin(void) {

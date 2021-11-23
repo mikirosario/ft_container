@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 00:50:48 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 01:21:34 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ namespace ft
 			using Abintree<data_type>::left_case;
 			using Abintree<data_type>::right_case;
 			using Abintree<data_type>::bintree_balance;
+			using Abintree<data_type>::fix_double_black;
 
 			/* BINTREE ITERATOR */
 			/* THEY POINT TO NODE */
@@ -482,142 +483,12 @@ namespace ft
 				return (NULL);
 			}
 
-			//moves down the node passed as 'node' and moves the node passed as 'new_parent' in its place
-			void		move_down(t_bstnode * node, t_bstnode * new_parent) {
-				if (node->parent != NULL)
-				{
-					if (node->parent->left == node) //if i am left child
-						node->parent->left = new_parent; //my child is now my parent's left child
-					else //if i am right child
-						node->parent->right = new_parent; //my child is now my parent's right child
-				}
-				new_parent->parent = node->parent; //my child's parent is now my parent
-				node->parent = new_parent; //my child is now my parent
-			}
-
-			void		fix_double_black_right_rotate(t_bstnode * node) {
-				//new parent will be node's left child
-				t_bstnode * new_parent = node->left;
-				//update root if current node is root
-				if (_root == node)
-					_root = new_parent;
-				move_down(node, new_parent);
-				node->left = new_parent->right; //my new parent's (who used to be my child) right child is now my left child
-				if (new_parent->right != NULL)
-					new_parent->right->parent = node; //if the child I inherited from my former child/new parent is not NULL, its parent is now me
-				new_parent->right = node; //my new parent's right child is now me.
-			}
-
-			void		fix_double_black_left_rotate(t_bstnode * node) {
-				// new parent will be node's right child
-				t_bstnode * new_parent = node->right;
-				//update root if current node is root
-				if (_root == node)
-					_root = new_parent;
-				move_down(node, new_parent);
-				node->right = new_parent->left;  //my new parent's (who used to be my child) left child is now my right child
-				if (new_parent->left != NULL)
-					new_parent->left->parent = node; //if the child I inherited from my former child/new parent is not NULL, its parent is now me
-				new_parent->left = node; //my new parent's left child is now me.
-			}
-
-			/* Function to single-black the double-blacks. MÁTAME PLS  */
-			void		fix_double_black(t_bstnode * node) {
-				if (node->parent == NULL) //if we0re at the tree root, stop this madness
-					return ;
-				
-				enum	help
-				{
-					LEFT_CHILD = 0, RIGHT_CHILD
-				};
-				enum help	my_sibling;
-				enum help	myself;
-				t_bstnode *	sibling;
-				
-				if (node->parent->left == node) //if I am the left child
-				{
-					sibling = node->parent->right;
-					my_sibling = RIGHT_CHILD;
-					myself = LEFT_CHILD;
-				}
-				else //if I am the right child
-				{
-					sibling = node->parent->left;
-					my_sibling = LEFT_CHILD;
-					myself = RIGHT_CHILD;
-				}
-				if (sibling == NULL) //if I am an only child, "push" the double black up to my parent!? o_O
-					fix_double_black(node->parent);
-				else
-				{
-					if (sibling->color == t_bstnode::RED) //I have a red sibling
-					{
-						node->parent->color = t_bstnode::RED;
-						sibling->color = t_bstnode::BLK;
-						if (my_sibling == LEFT_CHILD) //left case
-							fix_double_black_right_rotate(node->parent); 
-						else //right case
-							fix_double_black_left_rotate(node->parent);
-						fix_double_black(node);
-					}
-					else //I have a black sibling
-					{
-						bool sibling_right_child_is_red = (sibling->right != NULL && sibling->right->color == t_bstnode::RED);
-						bool sibling_left_child_is_red = (sibling->left != NULL && sibling->left->color == t_bstnode::RED);
-						//sibling has at least one red child
-						if (sibling_right_child_is_red || sibling_left_child_is_red)
-						{
-							//sibling's left child is red
-							if (sibling_left_child_is_red)
-							{
-								//sibling is a left child
-								if (my_sibling == LEFT_CHILD) //left left case (sibling is left child with left red child)
-								{
-									sibling->left->color = sibling->color;
-									sibling->color = node->parent->color;
-									fix_double_black_right_rotate(node->parent);
-								}
-								//sibling is a right child
-								else // right left case (sibling is right child with left red child)
-								{
-									sibling->left->color = node->parent->color;
-									fix_double_black_right_rotate(sibling);
-									fix_double_black_left_rotate(node->parent);
-								}
-							}
-							//sibling's right child is red
-							else
-							{
-								//sibling is a left child
-								if (my_sibling == LEFT_CHILD) //left right case (sibling is a left child with right red child)
-								{
-									sibling->right->color = node->parent->color;
-									fix_double_black_left_rotate(sibling);
-									fix_double_black_right_rotate(node->parent);
-								}
-								//sibling is a right child
-								else // right right case (sibling is a right child with right red child)
-								{
-									sibling->right->color = sibling->color;
-									sibling->color = node->parent->color;
-									fix_double_black_left_rotate(node->parent);
-								}
-							}
-							node->parent->color = t_bstnode::BLK;
-						}
-						//sibling has two black children
-						else
-						{
-							sibling->color = t_bstnode::RED;
-							if (node->parent->color == t_bstnode::BLK)	
-								fix_double_black(node->parent);
-							else
-								node->parent->color = t_bstnode::BLK;
-						}
-					}
-				}
-			}
-
+			/* BINTREE_DELETE */
+			/*
+			** Deletes a node from a binary tree. You have NO idea the HORROR,
+			** the PAIN that this implies. It's much worse than mere insertion.
+			** SO much worse. You monster.
+			*/
 			t_bstnode * bintree_delete(t_bstnode * node) {
 				if (node == NULL)
 					return (NULL);
@@ -664,7 +535,7 @@ namespace ft
 				{
 					//get successor node, swap data with it, and delete the successor
 					t_bstnode * successor = node->right;
-					mapped_type data;
+					value_type	data;
 					while (successor->left != NULL)
 						successor = successor->left;
 					data = node->data;
@@ -757,8 +628,8 @@ namespace ft
 			void	push_back(data_type const & data){
 				bintree_add(_root, data);
 			}
-			void	erase(t_bstnode * node) {
-				bintree_delete(node);
+			void	erase(t_bstnode & node) {
+				bintree_delete(&node);
 			}
 			//DEBUG
 			void	print(void) {

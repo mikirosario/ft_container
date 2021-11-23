@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/23 00:49:40 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 01:23:34 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1061,7 +1061,7 @@ int main(void)
 	ex2.push_back(26);
 	ex2.print();
 	ft::bintree<int>::iterator del_this(ex2.begin());
-	ex2.erase(&(del_this[3]));
+	ex2.erase(del_this[3]);
 	PRINT << "MIEDO" << END;
 	ex2.print();
 
@@ -1133,7 +1133,10 @@ int main(void)
 		PRINT << it->data.second << END;
 	
 	PRINT << TXT_NL;
-	
+	PRINT << "DELETE MARVIN'S ENTRY xD" TXT_NL;
+	test2.erase(test2.getNode("marvin"));
+	PRINT << TXT_NL;
+
 	for (Dictionary::iterator it = test2.end() - 1, end = test2.begin() - 1; it != end; --it)
 		PRINT << it->data.second << END;
 

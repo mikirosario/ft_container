@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/23 01:23:34 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 02:44:56 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1051,7 +1051,7 @@ int main(void)
 	ex1.push_back(2);
 	ex1.push_back(42);
 	ex1.push_back(15);
-	ex1.print();
+	//ex1.print();
 		
 
 	ex2.push_back(42);

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 01:21:34 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/23 03:53:06 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 #include "ft_abintree.hpp"
 #include <iostream>
-
+#include <exception>
 
 namespace ft
 {
@@ -349,34 +349,6 @@ namespace ft
 					return (const_cast<t_bstnode *>(node));
 				}
 			};
-			
-			/*
-			** This function dynamically reserves memory in heap for a new node
-			** in a binary tree and sets the data segment of that node to the
-			** value of the argument. The left and right child pointers are
-			** nulled. Each node is RED by default.
-			**
-			** -- RETURN VALUES --
-			** A pointer to the new binary tree node is returned to the caller.
-			** If the memory reservation fails, a NULL pointer is returned.
-			*/
-			t_bstnode *	create_new_node(t_bstnode * parent, data_type const & data)
-			{
-				t_bstnode	*node;
-
-				node = _alloc.allocate(1);
-				if (node != NULL)
-				{
-					_alloc.construct(node, t_bstnode());
-					node->data = data;
-					node->parent = parent;
-					node->left = NULL;
-					node->right = NULL;
-					node->color = t_bstnode::RED;
-					++_size;
-				}
-				return (node);
-			}
 
 			/*
 			** This function will search the binary tree whose 'root' is passed
@@ -390,7 +362,7 @@ namespace ft
 			** node, until either a NULL pointer or a node with matching data is
 			** found.
 			**
-			** -- RETURN VALUES --
+			** -- RETURN VALUE --
 			** If the 'data' passed as the second argument is found in the tree,
 			** a pointer to the node containing the data is returned. If it is
 			** not present in the tree, a NULL pointer is returned.	
@@ -405,6 +377,44 @@ namespace ft
 					return (bintree_search(root->right, key));
 			}
 
+			/* CREATE_NEW_NODE */
+			/*
+			** This function dynamically reserves memory in heap for a new node
+			** in a binary tree and sets the data segment of that node to the
+			** value of the argument. The left and right child pointers are
+			** nulled. Each node is RED by default.
+			**
+			** -- RETURN VALUE / EXCEPTIONS --
+			** A pointer to the new binary tree node is returned to the caller.
+			** If the memory reservation fails, a NULL pointer is returned and
+			** a bad_alloc exception is rethrown to the caller.
+			*/
+			t_bstnode *	create_new_node(t_bstnode * parent, data_type const & data) throw (std::bad_alloc, std::exception)
+			{
+				t_bstnode	*node = NULL;
+
+				try
+				{
+					node = _alloc.allocate(1);
+					_alloc.construct(node, t_bstnode());
+					node->data = data;
+					node->parent = parent;
+					node->left = NULL;
+					node->right = NULL;
+					node->color = t_bstnode::RED;
+				}
+				catch (std::bad_alloc const & e)
+				{
+					throw ;
+				}
+				catch (std::exception const & e)
+				{
+					throw ;
+				}
+				return (node);
+			}
+
+			/* BINTREE_INSERT */
 			/*
 			** This function inserts a node into a binary tree. If passed a NULL
 			** pointer, a root node will be created.
@@ -447,30 +457,86 @@ namespace ft
 			** This makes the structure relatively less efficient than lists and
 			** arrays for frequent insertions and deletions, but more efficient
 			** for frequent searches, such as of ordered key values.
+			**
+			** -- RETURN VALUE / EXCEPTIONS --
+			** This function returns a pointer to the root of the tree passed as
+			** an argument. If memory allocation failed, a bad_alloc exception
+			** is rethrown to the caller. If memory allocation succeeded, the
+			** address of the newly created node is written to the new_node
+			** pointer, a reference to which is passed as an argument.
 			*/
 			t_bstnode	*bintree_insert(t_bstnode * parent, t_bstnode * root, \
-			data_type const & data)
+			data_type const & data, t_bstnode *& new_node) throw (std::bad_alloc, std::exception)
 			{
 				if (root == NULL)
-					root = create_new_node(parent, data);
+				{
+					try
+					{
+						root = create_new_node(parent, data);
+						new_node = root;
+					}
+					catch (std::bad_alloc const & e)
+					{
+						throw ;
+					}
+					catch (std::exception const & e)
+					{
+						throw ;
+					}
+				}
 				else if (data <= root->data)
-					root->left = bintree_insert(root, root->left, data);
+					root->left = bintree_insert(root, root->left, data, new_node);
 				else
-					root->right = bintree_insert(root, root->right, data);
+					root->right = bintree_insert(root, root->right, data, new_node);
 				return (root);
 			}
 
+			/* BINTREE_ADD */
+			/*
+			** This function is an adaptation of my original red-black binary
+			** tree insert node gateway function in C. The new public method in
+			** the C++ class calls this function directly to push new data onto
+			** the tree.
+			**
+			** This function allocates memory. The insert and create_new_node
+			** functions, being dependent on memory allocation, now throw
+			** exceptions if memory allocation is impossible. The exceptions are
+			** safely caught and handled here before any part of the
+			** pre-existing tree is modified.
+			**
+			** If allocation succeeds the function, balances the tree as needed,
+			** updates the tree _size variable, and updates the _min and _max
+			** pointers if needed. The new_node pointer is invalidated by
+			** bintree_balance so its associated key must be searched for again
+			** to get the final address.
+			**
+			** -- RETURN VALUE --
+			** A pointer to the root of the tree is returned. If the root
+			** changed due to balancing, this will be a pointer to the new root.
+			*/
 			t_bstnode	*bintree_add(t_bstnode *& root, data_type const & data)
 			{
-				t_bstnode	*new_node;
+				t_bstnode * 	new_node;
+				key_type const	new_key = data; //I was worried it might not jive with a std::move instruction if I ever use one :p
 
-				root = bintree_insert(NULL, root, data);
-				new_node = bintree_search(root, data);
-				bintree_balance(&root, new_node);
-				if (_min == NULL || _is_less(data, _min->data)) //if (_min == NULL || data < _min->data)
-					_min = bintree_search(root, data);
-				if (_max == NULL || _is_less(_max->data, data)) //if (_max == NULL || data > _max->data)
-					_max = bintree_search(root, data);
+				try
+				{
+					root = bintree_insert(NULL, root, data, new_node);
+					bintree_balance(&root, new_node);
+					++_size;
+					if (_min == NULL || _is_less(new_key, _min->data)) //if (_min == NULL || new_key < _min->data)
+						_min = bintree_search(root, new_key);
+					if (_max == NULL || _is_less(_max->data, new_key)) //if (_max == NULL || new_key > _max->data)
+						_max = bintree_search(root, new_key);
+				}
+				catch(std::bad_alloc const & e)
+				{
+					std::cerr << e.what() << std::endl;
+				}
+				catch(std::exception const & e)
+				{
+					std::cerr << e.what() << std::endl;
+				}
 				return (root);
 			}
 

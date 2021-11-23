@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/23 17:47:43 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/23 19:41:12 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1060,6 +1060,9 @@ int main(void)
 	ex1.insert(15);
 	ex1.insert(15);
 	ex1.print();
+
+	PRINT << TXT_NL << "Count 15s: " << ex1.count(15) << TXT_NL << std::endl;
+	PRINT << TXT_NL << "Count 32s: " << ex1.count(32) << TXT_NL << std::endl;
 
 	PRINT << TXT_NL << "El gilipollas insert: " << TXT_NL;
 	ex1.insert((ex1.end() + 1), 3);

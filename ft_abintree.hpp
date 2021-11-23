@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 12:17:43 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/23 21:08:55 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ namespace ft
 			bool		empty(void) const {
 				return(_size == 0);
 			}
-
 		protected:
 			/* VARIABLES */
 			t_bstnode *		_root;

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 17:46:39 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/23 21:10:46 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -700,6 +700,25 @@ namespace ft
 				return (root_canal(root));
 			}
 
+			/* RECURSIVE COUNT */
+			/*
+			** Should I be a lambda? Could I be a lambda? Recursive lambdas?
+			**
+			** Anyway, this is just a recursive counting function that
+			** counts all instances of a key in a binary tree and returns
+			** the result. It's redundant in ft::map because duplicates
+			** aren't allowed, but, unlike a tree that handles duplicates,
+			** a recursive counter is pretty easy to code. So, why not? ;)
+			*/
+			size_type	recursive_count(t_bstnode * node, key_type const & key) const {
+				node = bintree_search(node, key);
+
+				if (node == NULL)
+					return (0);
+				else
+					return (1 + recursive_count(node->right, key) + recursive_count(node->left, key));
+			}
+
 		public:
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
 			typedef Iterator<const t_bstnode, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
@@ -763,6 +782,17 @@ namespace ft
 			}
 			t_bstnode &	getNode(key_type const & key) const {
 				return (*(bintree_search(_root, key)));
+			}
+			
+			/* COUNT */
+			/*
+			** Returns the number of elements containing the key passed as key.
+			** For this tree this will always be either 0 or 1 as duplicates are
+			** not allowed, but a private recursive counting function is called
+			** that will also work with multimap trees. If I ever make one. ;p
+			*/
+			size_type	count(key_type const & key) const {
+				return (recursive_count(_root, key));
 			}
 
 			/* ---- ITERATORS ---- */

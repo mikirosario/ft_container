@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/23 19:41:12 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/24 16:00:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1071,14 +1071,36 @@ int main(void)
 	PRINT << std::boolalpha << "Bintree ex1 is empty: " << ex1.empty() << END;
 	PRINT << "Bintree ex1 size: " << ex1.size() << END;
 
+	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(30)->data << END;
+	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(43)->data << END;
+	//PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(59)->data << END;
+	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(1)->data << END;
+	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(4)->data << END;
+	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(16)->data << END;
+	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(14)->data << END;
+	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(25)->data << END;
+	ex1.insert(43);
+	ex1.print();
+
 	ex2.insert(42);
 	ex2.insert(15);
 	ex2.insert(58);
 	ex2.insert(2);
 	ex2.insert(26);
 	ex2.print();
+
+	PRINT << TXT_NL << "Insert 27 " << END;
+
+	ex2.insert(27);
+	ex2.print();
+
+
 	ft::bintree<int>::iterator del_this(ex2.begin());
 	ex2.erase(del_this[3]);
+
+
+
+
 	PRINT << "MIEDO" << END;
 	ex2.print();
 
@@ -1175,6 +1197,12 @@ int main(void)
 
 	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
 		PRINT << it->data.second << END;
+
+
+	std::string str_mayor("aaab");
+	std::string str_menor("aaaa");
+
+	PRINT << TXT_NL << std::lexicographical_compare(str_menor.begin(), str_menor.end(), str_mayor.begin(), str_mayor.end()) << END;
 
 	// if (iterator_tests())
 	// 	PRINT << TXT_BGRN "OK" << END;

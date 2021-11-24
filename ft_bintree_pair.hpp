@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 21:10:46 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/24 13:18:52 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -772,6 +772,9 @@ namespace ft
 			void		erase(t_bstnode & node) {
 				bintree_delete(&node);
 			}
+			void		clear(void) {
+				this->_root = bintree_free(this->_root);
+			}
 			//DEBUG
 			void		print(void) {
 				this->ft_bintree_print(_root, 0);
@@ -782,6 +785,19 @@ namespace ft
 			}
 			t_bstnode &	getNode(key_type const & key) const {
 				return (*(bintree_search(_root, key)));
+			}
+
+			t_bstnode	* getLowerBound(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
+				if (node == NULL)
+					return (parent);
+				else if (node->data.first >= key)
+					return (node);
+				else
+					return (getLowerBound(node->right, node->parent, key));
+			}
+
+			iterator	lower_bound(key_type const & key) {
+				return (getLowerBound(_root, NULL, key));
 			}
 			
 			/* COUNT */

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/23 21:10:10 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/24 16:00:04 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -750,6 +750,9 @@ namespace ft
 			void	erase(t_bstnode & node) {
 				bintree_delete(&node);
 			}
+			void		clear(void) {
+				_root = bintree_free(this->_root);
+			}
 			//DEBUG
 			void	print(void) {
 				this->ft_bintree_print(_root, 0);
@@ -760,6 +763,31 @@ namespace ft
 			}
 			t_bstnode *	getNode(key_type const & key) const {
 				return (bintree_search(_root, key));
+			}
+
+			/*
+			** Returns the address of the node with the next greatest or equal
+			** key to the key passed as 'key'. If 'key' is less than all tree
+			** node keys, the node with the lowest key is returned. If 'key' is
+			** greater than all tree node keys, NULL is returned.
+			*/
+			t_bstnode	* getLowerBound(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
+				if (node == NULL)
+					return (const_cast<t_bstnode *>(parent));
+				else if (node->data == key)
+					return (const_cast<t_bstnode *>(node));
+				else if (key > node->data)
+					return (getLowerBound(node->right, node, key));
+				else
+					return (getLowerBound(node->left, node, key));
+			}
+
+			iterator	lower_bound(key_type const & key) {
+				t_bstnode * lbound = getLowerBound(_root, NULL, key);
+				iterator ret(lbound);
+				if (lbound != NULL && lbound->data < key)
+					++ret;
+				return (ret);
 			}
 			
 			/* COUNT */

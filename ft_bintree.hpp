@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 11:49:55 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 15:15:51 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -351,21 +351,22 @@ namespace ft
 				}
 			};
 
+			/* BINTREE SEARCH */
 			/*
 			** This function will search the binary tree whose 'root' is passed
-			** as the first argument for the value passed as 'data' in the
-			** second argument.
+			** as the first argument for the value passed as 'key' in the second
+			** argument.
 			**
-			** If the root node pointer is not NULL and the data is not present
+			** If the root node pointer is not NULL and the key is not present
 			** in that node, this function will recursively call itself, passing
 			** the pointer to the left or right branches of that node, as the
-			** data is less than, equal to or greater than the data within the
-			** node, until either a NULL pointer or a node with matching data is
+			** key is less than, equal to or greater than the key within the
+			** node, until either a NULL pointer or a node with matching key is
 			** found.
 			**
 			** -- RETURN VALUE --
-			** If the 'data' passed as the second argument is found in the tree,
-			** a pointer to the node containing the data is returned. If it is
+			** If the 'key' passed as the second argument is found in the tree,
+			** a pointer to the node containing the key is returned. If it is
 			** not present in the tree, a NULL pointer is returned.	
 			*/
 			t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
@@ -837,6 +838,58 @@ namespace ft
 					++ret;
 				return(ret);
 			}
+
+			/* EQUAL RANGE */
+			/*
+			** This function returns the bounds of a range containing all nodes
+			** with a key equal to 'key', wherein the first iterator points to
+			** the beginning of the range and the second iterator points past
+			** the end of the range. This tree implementation only admits unique
+			** keys, so at most the range will consist of one node (the one
+			** pointed to by the first iterator).
+			**
+			** If no match exists for 'key' then both iterators will point to
+			** the node that would come after 'key'.
+			**
+			** The idea here is, imagine that you have a dictionary and one of
+			** the keys is 'light', with multiple possible definitions. So you
+			** have multiple 'lights' (not in a map, since it only admits unique
+			** keys, but maybe in a multimap). For example:
+			**
+			** KEY		VAL
+			** light	electromagnetic wave
+			** light	elementary particle
+			** light	luminous, bright
+			** light	low in weight
+			** lot		plot of land
+			**
+			** So, lower_bound("light") will return the first 'light',
+			** upper_bound("light") will return 'lot', and now you can iterate
+			** through the range, like so:
+			**
+			** for (it = lower_bound("light"), end = upper_bound("light"); it != end; ++it)
+			**	do_stuff
+			**
+			** Or using for_each, if you're into that sort of thing, of course.
+			** I happen to enjoy writing for loops. ;)
+			**
+			** In other words, you have a range of equal values - an
+			** 'equal_range'.
+			**
+			** That's probably what you want the *_bound functions for, so the
+			** equal_range function just directly retrieves that range for you
+			** and sticks it in a pair with two iterators.
+			**
+			** This is all explained terribly in the reference manuals, because
+			** C++ is all about making simple things simple. :p
+			*/
+			ft::pair<iterator, iterator>				equal_range(key_type const & key) {
+				return (ft::pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
+			}
+
+			ft::pair<const_iterator, const_iterator>	equal_range(key_type const & key) const {
+				return (ft::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key)));
+			}
 			
 			/* COUNT */
 			/*
@@ -849,6 +902,17 @@ namespace ft
 				return (recursive_count(_root, key));
 			}
 
+			/* FIND */
+			/*
+			** -- RETURN VALUE --
+			** Returns an iterator to the node with a key equal to the argument
+			** passed as 'key'. If no such node exists, returns the end
+			** iterator.
+			*/
+			iterator	find(key_type const & key) {
+				t_bstnode *	node = bintree_search(_root, key);
+				return (node == NULL ? end() : iterator(node));
+			}
 			//DEBUG
 			/* ---- ITERATORS ---- */
 

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 12:31:01 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 15:15:22 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,21 +356,22 @@ namespace ft
 
 			/* METHODS */
 
+			/* BINTREE SEARCH */
 			/*
 			** This function will search the binary tree whose 'root' is passed
-			** as the first argument for the value passed as 'data' in the
-			** second argument.
+			** as the first argument for the value passed as 'key' in the second
+			** argument.
 			**
-			** If the root node pointer is not NULL and the data is not present
+			** If the root node pointer is not NULL and the key is not present
 			** in that node, this function will recursively call itself, passing
 			** the pointer to the left or right branches of that node, as the
-			** data is less than, equal to or greater than the data within the
-			** node, until either a NULL pointer or a node with matching data is
+			** key is less than, equal to or greater than the key within the
+			** node, until either a NULL pointer or a node with matching key is
 			** found.
 			**
-			** -- RETURN VALUES --
-			** If the 'data' passed as the second argument is found in the tree,
-			** a pointer to the node containing the data is returned. If it is
+			** -- RETURN VALUE --
+			** If the 'key' passed as the second argument is found in the tree,
+			** a pointer to the node containing the key is returned. If it is
 			** not present in the tree, a NULL pointer is returned.	
 			*/
 			t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
@@ -387,6 +388,11 @@ namespace ft
 					return (bintree_search(root->right, key));
 			}
 
+			/*
+			** This overloaded version of bintree_search will keep track of how
+			** many node hops were needed to find the matching key, or leaf
+			** child of the closest node, and save the result in 'hops'.
+			*/
 			t_bstnode *	bintree_search(t_bstnode *root, key_type const & key, typename Iterator<t_bstnode, std::bidirectional_iterator_tag>::difference_type & hops) const
 			{
 				if (root == NULL || !_is_less(root->data.first, key) & !_is_less(key, root->data.first))
@@ -930,6 +936,17 @@ namespace ft
 				return (recursive_count(_root, key));
 			}
 
+			/* FIND */
+			/*
+			** -- RETURN VALUE --
+			** Returns an iterator to the node with a key equal to the argument
+			** passed as 'key'. If no such node exists, returns the end
+			** iterator.
+			*/
+			iterator	find(key_type const & key) {
+				t_bstnode *	node = bintree_search(_root, key);
+				return (node == NULL ? end() : iterator(node));
+			}
 			/* ---- ITERATORS ---- */
 
 			/* BEGIN AND END METHODS */

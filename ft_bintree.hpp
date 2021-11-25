@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/24 16:00:04 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/25 04:38:14 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -679,7 +679,23 @@ namespace ft
 					parent = parent->parent;
 				}
 				return (root_canal(root));
-			}		
+			}
+
+			/*
+			** This function returns the node containing the key closest to
+			** 'key'. If the tree contains a node with an exact match to 'key',
+			** then that node is returned.
+			*/
+			t_bstnode	* getNearestKey(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
+				if (node == NULL)
+					return (const_cast<t_bstnode *>(parent));
+				else if (!_is_less(node->data, key) && !_is_less(key, node->data)) //node->data == key
+					return (const_cast<t_bstnode *>(node));
+				else if (_is_less(node->data, key)) //node->data < key
+					return (getNearestKey(node->right, node, key));
+				else
+					return (getNearestKey(node->left, node, key));
+			}
 			
 			/* RECURSIVE COUNT */
 			/*
@@ -765,29 +781,58 @@ namespace ft
 				return (bintree_search(_root, key));
 			}
 
+			/* LOWER BOUND */
 			/*
-			** Returns the address of the node with the next greatest or equal
-			** key to the key passed as 'key'. If 'key' is less than all tree
-			** node keys, the node with the lowest key is returned. If 'key' is
-			** greater than all tree node keys, NULL is returned.
+			** This function first obtains the node containing the key closest
+			** to 'key', or an exact match to 'key', from the getNearestKey
+			** function and creates an iterator out of it. If the node key is
+			** less than 'key', the iterator is incremented by one for the next
+			** highest key. If the node key is greater than or equal to key,
+			** then it is returned directly.
 			*/
-			t_bstnode	* getLowerBound(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
-				if (node == NULL)
-					return (const_cast<t_bstnode *>(parent));
-				else if (node->data == key)
-					return (const_cast<t_bstnode *>(node));
-				else if (key > node->data)
-					return (getLowerBound(node->right, node, key));
-				else
-					return (getLowerBound(node->left, node, key));
-			}
-
 			iterator	lower_bound(key_type const & key) {
-				t_bstnode * lbound = getLowerBound(_root, NULL, key);
-				iterator ret(lbound);
-				if (lbound != NULL && lbound->data < key)
+				t_bstnode *	nearest_key = getNearestKey(_root, NULL, key);
+				iterator	ret(nearest_key);
+
+				if (_is_less(nearest_key->data, key))
 					++ret;
 				return (ret);
+			}
+
+			const_iterator lower_bound(key_type const & key) const {
+				t_bstnode *		nearest_key = getNearestKey(_root, NULL, key);
+				const_iterator	ret(nearest_key);
+
+				if (_is_less(nearest_key->data, key))
+					++ret;
+				return (ret);
+			}
+
+			/* UPPER BOUND */
+			/*
+			** This function first obtains the node containing the key closest
+			** to 'key', or an exact match to 'key', from the getNearestKey
+			** function and creates an iterator out of it. If the node key is
+			** less than or equal to 'key', the iterator is incremented by one
+			** for the next highest key. If the node key is greater than key,
+			** then it is returned directly.
+			*/
+			iterator	upper_bound(key_type const & key) {
+				t_bstnode * nearest_key = getNearestKey(_root, NULL, key);
+				iterator	ret(nearest_key);
+
+				if (_is_less(nearest_key->data, key) || !_is_less(key, nearest_key->data)) //if (nearest_key != NULL && (data <= key))
+					++ret;
+				return(ret);
+			}
+
+			const_iterator	upper_bound(key_type const & key) const {
+				t_bstnode * 	nearest_key = getNearestKey(_root, NULL, key);
+				const_iterator	ret(nearest_key);
+
+				if (_is_less(nearest_key->data, key) || !_is_less(key, nearest_key->data)) //if (nearest_key != NULL && (data <= key))
+					++ret;
+				return(ret);
 			}
 			
 			/* COUNT */

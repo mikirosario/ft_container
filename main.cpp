@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/24 16:00:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/11/25 04:38:56 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1071,14 +1071,26 @@ int main(void)
 	PRINT << std::boolalpha << "Bintree ex1 is empty: " << ex1.empty() << END;
 	PRINT << "Bintree ex1 size: " << ex1.size() << END;
 
-	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(30)->data << END;
-	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(43)->data << END;
-	//PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(59)->data << END;
-	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(1)->data << END;
-	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(4)->data << END;
-	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(16)->data << END;
-	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(14)->data << END;
-	PRINT << TXT_NL << "Lower Bound: " << TXT_NL << ex1.lower_bound(25)->data << END;
+	PRINT 	<< TXT_NL << "Lower Bound: " << ex1.lower_bound(30)->data
+			<< TXT_NL << "Lower Bound: " << ex1.lower_bound(43)->data
+			<< TXT_NL << "Lower Bound: " << (ex1.lower_bound(59) == ex1.end() ? "END" : "ERROR")
+			<< TXT_NL << "Lower Bound: " << ex1.lower_bound(1)->data 
+			<< TXT_NL << "Lower Bound: " << ex1.lower_bound(4)->data 
+			<< TXT_NL << "Lower Bound: " << ex1.lower_bound(16)->data
+			<< TXT_NL << "Lower Bound: " << ex1.lower_bound(14)->data
+			<< TXT_NL << "Lower Bound: " << ex1.lower_bound(25)->data
+			<< END;
+
+	PRINT 	<< TXT_NL << "Upper Bound: " << ex1.upper_bound(30)->data
+			<< TXT_NL << "Upper Bound: " << ex1.upper_bound(43)->data
+			<< TXT_NL << "Upper Bound: " << (ex1.upper_bound(59) == ex1.end() ? "END" : "ERROR")
+			<< TXT_NL << "Upper Bound: " << ex1.upper_bound(1)->data 
+			<< TXT_NL << "Upper Bound: " << ex1.upper_bound(4)->data 
+			<< TXT_NL << "Upper Bound: " << ex1.upper_bound(16)->data
+			<< TXT_NL << "Upper Bound: " << ex1.upper_bound(14)->data
+			<< TXT_NL << "Upper Bound: " << ex1.upper_bound(25)->data
+			<< END;
+
 	ex1.insert(43);
 	ex1.print();
 
@@ -1160,8 +1172,6 @@ int main(void)
 	for (ft::bintree<int>::iterator it = ex2.begin(), end = ex2.end(); it != end; ++it)
 		PRINT << it->data << END;
 
-	PRINT << TXT_NL;
-
 	// ft::bintree<int>::iterator ex42 = *(ex1.getNode(42));
 	// PRINT << (*ex42).data << END;
 	// ++ex42;
@@ -1174,6 +1184,24 @@ int main(void)
 	
 	for (Dictionary::iterator it = test2.begin(), end = test2.end(); it != end; ++it)
 		PRINT << it->data.second << END;
+
+	PRINT 	<< TXT_NL << "Lower Bound 'cafeteria' : " << test2.lower_bound("cafeteria")->data.first
+			<< TXT_NL << "Lower Bound 'marvinovich': " << test2.lower_bound("marvinovich")->data.first
+			<< TXT_NL << "Lower Bound 'tigs': " << (test2.lower_bound("tigs") == test2.end() ? "END" : "ERROR")
+			<< TXT_NL << "Lower Bound 'aguafiestas': " << test2.lower_bound("aguafiestas")->data.first
+			<< TXT_NL << "Lower Bound 'agu': " << test2.lower_bound("agu")->data.first
+			<< TXT_NL << "Lower Bound 'ordenador': " << test2.lower_bound("ordenador")->data.first
+			<< TXT_NL << "Lower Bound: 'tif': " << test2.lower_bound("tif")->data.first
+			<< END;
+
+	PRINT 	<< TXT_NL << "Upper Bound 'cafeteria' : " << test2.upper_bound("cafeteria")->data.first
+			<< TXT_NL << "Upper Bound 'marvinovich': " << test2.upper_bound("marvinovich")->data.first
+			<< TXT_NL << "Upper Bound 'tigs': " << (test2.upper_bound("tigs") == test2.end() ? "END" : "ERROR")
+			<< TXT_NL << "Upper Bound 'aguafiestas': " << test2.upper_bound("aguafiestas")->data.first
+			<< TXT_NL << "Upper Bound 'agu': " << test2.upper_bound("agu")->data.first
+			<< TXT_NL << "Upper Bound 'ordenador': " << test2.upper_bound("ordenador")->data.first
+			<< TXT_NL << "Upper Bound: 'tif': " << test2.upper_bound("tif")->data.first
+			<< END;
 	
 	PRINT << TXT_NL;
 	PRINT << "DELETE MARVIN'S ENTRY xD" TXT_NL;
@@ -1198,11 +1226,6 @@ int main(void)
 	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
 		PRINT << it->data.second << END;
 
-
-	std::string str_mayor("aaab");
-	std::string str_menor("aaaa");
-
-	PRINT << TXT_NL << std::lexicographical_compare(str_menor.begin(), str_menor.end(), str_mayor.begin(), str_mayor.end()) << END;
 
 	// if (iterator_tests())
 	// 	PRINT << TXT_BGRN "OK" << END;

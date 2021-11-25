@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/25 04:38:56 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 12:04:15 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1201,6 +1201,10 @@ int main(void)
 			<< TXT_NL << "Upper Bound 'agu': " << test2.upper_bound("agu")->data.first
 			<< TXT_NL << "Upper Bound 'ordenador': " << test2.upper_bound("ordenador")->data.first
 			<< TXT_NL << "Upper Bound: 'tif': " << test2.upper_bound("tif")->data.first
+			<< END;
+
+	ft::pair<Dictionary::iterator, Dictionary::iterator> ajoyagua(test2.equal_range("a"));
+	PRINT 	<< TXT_NL << "Equal Range 'agua' : " <<  ajoyagua.first->data.first << " " << ajoyagua.second->data.first
 			<< END;
 	
 	PRINT << TXT_NL;

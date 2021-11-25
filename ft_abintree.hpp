@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 03:59:50 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 19:36:12 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,7 @@ namespace ft
 			
 			/* COMMON METHODS */
 
-			size_type	size(void) const {
-				return(_size);
-			}
-			bool		empty(void) const {
-				return(_size == 0);
-			}
+
 		protected:
 			/* VARIABLES */
 			t_bstnode *		_root;

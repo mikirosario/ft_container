@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 15:15:22 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 19:44:14 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -538,18 +538,20 @@ namespace ft
 			**
 			** -- RETURN VALUE --
 			** A pointer to the new node in the tree is returned. If insertion
-			** failed, a NULL pointer is returned.
+			** failed because the node already exists a pointer to the existing
+			** node is returned. If insertion fails due to an allocation error,
+			** a NULL pointer is returned.
 			*/
 			t_bstnode *	bintree_add(t_bstnode *& root, data_type const & new_pair)
 			{
 				t_bstnode *		new_node = NULL;
 				key_type const	new_key = new_pair.first; //I was worried it might not jive with a std::move instruction if I ever use one :p
 
-				if (bintree_search(root, new_key)) //ban duplicate keys
-					return (NULL);
+				if ((new_node = bintree_search(root, new_key)) != NULL) //ban duplicate keys
+					return (new_node);
 				try
 				{
-					root = bintree_insert(NULL, root, new_pair, new_node);
+					root = bintree_insert(NULL, root, new_pair, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
 					bintree_balance(&root, new_node);
 					++_size;
 					if (_min == NULL || _is_less(new_key, _min->data.first)) //if (_min == NULL || new_pair.key < _min->data.key)
@@ -755,14 +757,110 @@ namespace ft
 				//debug
 				bintree_free(_root);
 			}
+
+			/* ---- ITERATORS ---- */
+
+			/* BEGIN AND END METHODS */
+			/*
+			** These functions respectively return iterators to the first
+			** element of the container and the memory address after the last
+			** element of the container. Const containers return
+			** const_iterators, which are actually iterators TO const values
+			** (the iterators themselves can be modified).
+			**
+			** In the binary tree, the address 'after' the last element and
+			** 'before' the first element is virtualized to NULL, which is not
+			** resolvable.
+			**
+			** Each iterator also stores its last resolvable address, so that if
+			** incremented OR decremented from NULL it will return to its last
+			** address.
+			**
+			** Note: If iterators are decremented or incremented past NULL, the
+			** iterator will infinitely toggle between the last address and NULL
+			** until the direction is reversed! So rather than the typical
+			** segmentation fault for iterating out of bounds, you may also get
+			** an infinite loop. Avoiding this behaviour would involve extra
+			** overhead in the iterator and, frankly, I think the binary tree
+			** has more than enough overhead as it is. ;)
+			**
+			** Note: While technically these are bidirectional iterators, full
+			** functionality is implemented. Nevertheless, the inefficiency of
+			** actually iterating on a binary tree is OFF THE CHARTS. Seriously.
+			** Just don't do it. If you need to iterate, use another structure.
+			** The tree is really meant for performing searches.
+			*/
+			iterator begin(void) {
+				return (iterator(_min));
+			}
+			const_iterator begin(void) const {
+				return (const_iterator(_min));
+			}
+			iterator end(void) {
+				return (iterator(_max) + 1);
+			}
+			const_iterator end(void) const {
+				return (const_iterator(_max) + 1);
+			}
+
+			iterator rbegin(void) {
+				return (iterator(_max) + 1);
+			}
+			const_iterator rbegin(void) const {
+				return (const_iterator(_max) + 1);
+			}
+			iterator rend(void) {
+				return (iterator(_min));
+			}
+			const_iterator rend(void) const {
+				return (const_iterator(_min));
+			}
+
+			/* ---- CAPACITY ---- */
+
+			/* SIZE */
+			/*
+			** This method returns the number of ELEMENTS in the container, NOT
+			** its allocated memory!
+			*/
+			size_type	size(void) const {
+				return(_size);
+			}
+
+			/* EMPTY */
+			/*
+			** This method returns true if the container is empty. Otherwise it
+			** returns false.
+			*/
+			bool		empty(void) const {
+				return(_size == 0);
+			}
+
+			/* MAX_SIZE */
+			/*
+			** This method returns the container's maximum size, for which we
+			** use its allocator's maximum size.
+			*/
+			size_type			max_size(void) const {
+				return (_alloc.max_size());
+			}
+
+			/* ELEMENT ACCESS */
+
+			mapped_type &	operator[](key_type const & key) {
+
+				return (((this->insert(ft::make_pair(key, mapped_type()))).first)->data.second); // a reference to the mapped type of a pair(key, mapped_type()), or of an existing key if one already existed
+			}
+
 			/* INSERT BY KEY - VALUE PAIR */
 			void		insert(key_type const & key, mapped_type const & value) {
 				bintree_add(_root, ft::make_pair(key, value));
 			}
 			/* INSERT SINGLE ELEMENT */
 			ft::pair<iterator, bool> insert(value_type const & data) {
+				size_type	old_size = size();
 				t_bstnode *	new_node = bintree_add(_root, data);
-				bool		return_status = new_node ? true : false;
+				bool		return_status = size() > old_size ? true : false;
 				return (ft::make_pair(iterator(new_node), return_status));
 			}
 			//DEBUG
@@ -946,63 +1044,6 @@ namespace ft
 			iterator	find(key_type const & key) {
 				t_bstnode *	node = bintree_search(_root, key);
 				return (node == NULL ? end() : iterator(node));
-			}
-			/* ---- ITERATORS ---- */
-
-			/* BEGIN AND END METHODS */
-			/*
-			** These functions respectively return iterators to the first
-			** element of the container and the memory address after the last
-			** element of the container. Const containers return
-			** const_iterators, which are actually iterators TO const values
-			** (the iterators themselves can be modified).
-			**
-			** In the binary tree, the address 'after' the last element and
-			** 'before' the first element is virtualized to NULL, which is not
-			** resolvable.
-			**
-			** Each iterator also stores its last resolvable address, so that if
-			** incremented OR decremented from NULL it will return to its last
-			** address.
-			**
-			** Note: If iterators are decremented or incremented past NULL, the
-			** iterator will infinitely toggle between the last address and NULL
-			** until the direction is reversed! So rather than the typical
-			** segmentation fault for iterating out of bounds, you may also get
-			** an infinite loop. Avoiding this behaviour would involve extra
-			** overhead in the iterator and, frankly, I think the binary tree
-			** has more than enough overhead as it is. ;)
-			**
-			** Note: While technically these are bidirectional iterators, full
-			** functionality is implemented. Nevertheless, the inefficiency of
-			** actually iterating on a binary tree is OFF THE CHARTS. Seriously.
-			** Just don't do it. If you need to iterate, use another structure.
-			** The tree is really meant for performing searches.
-			*/
-			iterator begin(void) {
-				return (iterator(_min));
-			}
-			const_iterator begin(void) const {
-				return (const_iterator(_min));
-			}
-			iterator end(void) {
-				return (iterator(_max) + 1);
-			}
-			const_iterator end(void) const {
-				return (const_iterator(_max) + 1);
-			}
-
-			iterator rbegin(void) {
-				return (iterator(_max) + 1);
-			}
-			const_iterator rbegin(void) const {
-				return (const_iterator(_max) + 1);
-			}
-			iterator rend(void) {
-				return (iterator(_min));
-			}
-			const_iterator rend(void) const {
-				return (const_iterator(_min));
 			}
 	};
 };

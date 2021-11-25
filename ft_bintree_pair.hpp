@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 04:38:00 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 11:37:56 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -720,19 +720,20 @@ namespace ft
 			}
 
 			/*
-			** Returns the address of the node with nearest key to the key
-			** the key passed as 'key', or with the first key equal to 'key' if
-			** there is one.
+			** This function traverses the tree to the first key equal to 'key'
+			** and returns it. If there is no exactly equal key, it traverses to
+			** the closest LEAF (NULL node) to the key passed as 'key' and
+			** returns its PARENT.
 			*/
-			t_bstnode	* getNearestKey(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
+			t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
 				if (node == NULL)
 					return (const_cast<t_bstnode *>(parent));
 				else if (!_is_less(node->data.first, key) && !_is_less(key, node->data.first)) //node->data.first == key
 					return (const_cast<t_bstnode *>(node));
 				else if (_is_less(node->data.first, key)) //node->data < key
-					return (getNearestKey(node->right, node, key));
+					return (getNearestNode(node->right, node, key));
 				else
-					return (getNearestKey(node->left, node, key));
+					return (getNearestNode(node->left, node, key));
 			}
 
 		public:
@@ -806,14 +807,14 @@ namespace ft
 			/* LOWER BOUND */
 			/*
 			** This function first obtains the node containing the key closest
-			** to 'key', or an exact match to 'key', from the getNearestKey
+			** to 'key', or an exact match to 'key', from the getNearestNode
 			** function and creates an iterator out of it. If the node key is
 			** less than 'key', the iterator is incremented by one for the next
 			** highest key. If the node key is greater than or equal to key,
 			** then it is returned directly.
 			*/
 			iterator		lower_bound(key_type const & key) {
-				t_bstnode *		nearest_key = getNearestKey(_root, NULL, key);
+				t_bstnode *		nearest_key = getNearestNode(_root, NULL, key);
 				iterator		ret(nearest_key);
 
 				if (_is_less(nearest_key->data.first, key))
@@ -822,7 +823,7 @@ namespace ft
 			}
 
 			const_iterator	lower_bound(key_type const & key) const {
-				t_bstnode *		nearest_key = getNearestKey(_root, NULL, key);
+				t_bstnode *		nearest_key = getNearestNode(_root, NULL, key);
 				const_iterator	ret(nearest_key);
 
 				if (_is_less(nearest_key->data.first, key))
@@ -833,14 +834,14 @@ namespace ft
 			/* UPPER BOUND */
 			/*
 			** This function first obtains the node containing the key closest
-			** to 'key', or an exact match to 'key', from the getNearestKey
+			** to 'key', or an exact match to 'key', from the getNearestNode
 			** function and creates an iterator out of it. If the node key is
 			** less than or equal to 'key', the iterator is incremented by one
 			** for the next highest key. If the node key is greater than key,
 			** then it is returned directly.
 			*/
 			iterator		upper_bound(key_type const & key) {
-				t_bstnode * nearest_key = getNearestKey(_root, NULL, key);
+				t_bstnode * nearest_key = getNearestNode(_root, NULL, key);
 				iterator	ret(nearest_key);
 
 				if (_is_less(nearest_key->data.first, key) || !_is_less(key, nearest_key->data.first)) //if (nearest_key != NULL && (data.first <= key))
@@ -849,7 +850,7 @@ namespace ft
 			}
 
 			const_iterator	upper_bound(key_type const & key) const {
-				t_bstnode * 	nearest_key = getNearestKey(_root, NULL, key);
+				t_bstnode * 	nearest_key = getNearestNode(_root, NULL, key);
 				const_iterator	ret(nearest_key);
 
 				if (_is_less(nearest_key->data.first, key) || !_is_less(key, nearest_key->data.first))
@@ -857,6 +858,9 @@ namespace ft
 				return(ret);
 			}
 			
+			// pair<iterator, iterator>	equal_range(key_type const & key) {
+				
+			// }
 			/* COUNT */
 			/*
 			** Returns the number of elements containing the key passed as key.

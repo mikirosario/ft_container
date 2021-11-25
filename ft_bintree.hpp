@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 11:36:49 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 11:49:55 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -784,54 +784,56 @@ namespace ft
 
 			/* LOWER BOUND */
 			/*
-			** This function first obtains the node containing the key closest
-			** to 'key', or an exact match to 'key', from the getNearestNode
-			** function and creates an iterator out of it. If the node key is
-			** less than 'key', the iterator is incremented by one for the next
-			** highest key. If the node key is greater than or equal to key,
-			** then it is returned directly.
+			** This function first obtains the node containing an exact match to
+			** 'key' (if one exists), or else the node that would be closest to
+			** a node containing 'key', from the getNearestNode function, and
+			** creates an iterator out of it. If the nearest_node key is less
+			** than 'key', the iterator is incremented by one for the next
+			** highest key. If the nearest_node key is greater than or equal to
+			** 'key', then it is returned directly.
 			*/
 			iterator	lower_bound(key_type const & key) {
-				t_bstnode *	nearest_key = getNearestNode(_root, NULL, key);
-				iterator	ret(nearest_key);
+				t_bstnode *	nearest_node = getNearestNode(_root, NULL, key);
+				iterator	ret(nearest_node);
 
-				if (_is_less(nearest_key->data, key))
+				if (_is_less(nearest_node->data, key))
 					++ret;
 				return (ret);
 			}
 
 			const_iterator lower_bound(key_type const & key) const {
-				t_bstnode *		nearest_key = getNearestNode(_root, NULL, key);
-				const_iterator	ret(nearest_key);
+				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
+				const_iterator	ret(nearest_node);
 
-				if (_is_less(nearest_key->data, key))
+				if (_is_less(nearest_node->data, key))
 					++ret;
 				return (ret);
 			}
 
 			/* UPPER BOUND */
 			/*
-			** This function first obtains the node containing the key closest
-			** to 'key', or an exact match to 'key', from the getNearestNode
-			** function and creates an iterator out of it. If the node key is
-			** less than or equal to 'key', the iterator is incremented by one
-			** for the next highest key. If the node key is greater than key,
-			** then it is returned directly.
+			** This function first obtains the node containing an exact match to
+			** 'key' (if one exists), or else the node that would be closest to a
+			** node containing 'key', from the getNearestNode function, and
+			** creates an iterator out of it. If the nearest_node key is less
+			** than or equal to 'key', the iterator is incremented by one for
+			** the next highest key. If the nearest_node key is greater than
+			** 'key', then it is returned directly.
 			*/
 			iterator	upper_bound(key_type const & key) {
-				t_bstnode * nearest_key = getNearestNode(_root, NULL, key);
-				iterator	ret(nearest_key);
+				t_bstnode * nearest_node = getNearestNode(_root, NULL, key);
+				iterator	ret(nearest_node);
 
-				if (_is_less(nearest_key->data, key) || !_is_less(key, nearest_key->data)) //if (nearest_key != NULL && (data <= key))
+				if (_is_less(nearest_node->data, key) || !_is_less(key, nearest_node->data)) //if (nearest_node != NULL && (data <= key))
 					++ret;
 				return(ret);
 			}
 
 			const_iterator	upper_bound(key_type const & key) const {
-				t_bstnode * 	nearest_key = getNearestNode(_root, NULL, key);
-				const_iterator	ret(nearest_key);
+				t_bstnode * 	nearest_node = getNearestNode(_root, NULL, key);
+				const_iterator	ret(nearest_node);
 
-				if (_is_less(nearest_key->data, key) || !_is_less(key, nearest_key->data)) //if (nearest_key != NULL && (data <= key))
+				if (_is_less(nearest_node->data, key) || !_is_less(key, nearest_node->data)) //if (nearest_node != NULL && (data <= key))
 					++ret;
 				return(ret);
 			}

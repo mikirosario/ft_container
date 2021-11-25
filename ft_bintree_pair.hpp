@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 19:44:14 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 20:16:27 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -847,6 +847,20 @@ namespace ft
 
 			/* ELEMENT ACCESS */
 
+			/* OPERATOR[] */
+			/*
+			** This function will enable the following syntactic sugar:
+			**
+			** SYNTAX										RESOLUTION
+			** my_bintree["existing_key"];					Reference to value pair of "existing_key".
+			** my_bintree["existing_key"] = "new_value";	Replace value pair of "existing_key" with "new_value".
+			** my_bintree["new_key"];						Insert new pair with "new_key" and default instantiated value.
+			** my_bintree["new_key"] = "new_value";			Insert new pair with "new_key" and "new_value".
+			**
+			** The syntax is an alias for find and insert, so time complexity is
+			** O(log n) for each operation. Clever little invention, wish I'd
+			** thought of it instead of learnt it from the STL. ;)
+			*/
 			mapped_type &	operator[](key_type const & key) {
 
 				return (((this->insert(ft::make_pair(key, mapped_type()))).first)->data.second); // a reference to the mapped type of a pair(key, mapped_type()), or of an existing key if one already existed

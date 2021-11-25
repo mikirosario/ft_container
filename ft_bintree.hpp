@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 19:38:49 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 20:37:42 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -527,7 +527,7 @@ namespace ft
 					return (new_node);
 				try
 				{
-					root = bintree_insert(NULL, root, data, (new_node = NULL)); //note: function does not NULL new_node if insert fails
+					root = bintree_insert(NULL, root, data, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
 					bintree_balance(&root, new_node);
 					++_size;
 					if (_min == NULL || _is_less(new_key, _min->data)) //if (_min == NULL || new_key < _min->data)
@@ -822,7 +822,29 @@ namespace ft
 				return (_alloc.max_size());
 			}
 			
-			
+			/* ELEMENT ACCESS */
+
+			/* OPERATOR[] */
+			/*
+			** This function will enable the following syntactic sugar:
+			**
+			** SYNTAX										RESOLUTION
+			** my_bintree["existing_key"];					Reference to "existing_key".
+			** my_bintree["new_key"];						Insert "new_key".
+			**
+			** The syntax is an alias for find and insert, so time complexity is
+			** O(log n) for each operation. Clever little invention, wish I'd
+			** thought of it instead of learnt it from the STL. ;)
+			**
+			** Note: This is a single-value tree, so keys are the same as
+			** values! Keys cannot be directly overwritten without tree
+			** rebalancing, so this version does NOT support value-editing.
+			*/
+			mapped_type const &	operator[](key_type const & key) {
+
+				return (((this->insert(key)).first)->data); // a reference to the mapped type of a pair(key, mapped_type()), or of an existing key if one already existed
+			}
+
 			/* INSERT SINGLE ELEMENT */
 			
 			ft::pair<iterator, bool> insert(value_type const & data) {

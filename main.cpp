@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/25 19:46:32 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/25 20:31:04 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1209,6 +1209,9 @@ int main(void)
 
 	PRINT	<< TXT_NL << "Print by Reference: " << TXT_NL << test2["arbol binario de rojos y negros"] << END;
 	PRINT	<< TXT_NL << "Insert by Reference: " << TXT_NL << (test2["santana"] = "SANTANA: \t\t\t\tCanario estepario.") << END;
+	PRINT	<< TXT_NL << "Print by Reference: " << TXT_NL << ex1[15] << END;
+	PRINT	<< TXT_NL << "Insert by Reference: " << TXT_NL << ex1[89] << END;
+	ex1.print();
 	
 	PRINT << TXT_NL;
 	PRINT << "DELETE MARVIN'S ENTRY xD" TXT_NL;

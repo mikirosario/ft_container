@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/26 18:23:41 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/26 19:42:20 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ namespace ft
 					if (this->_m_ptr != NULL)
 					{
 						this->_last_node = this->_m_ptr;
-						this->_m_ptr = getNextNode(this->_m_ptr);
+						this->_m_ptr = this->_m_ptr->next;
 					}
 					else
 					{
@@ -157,7 +157,7 @@ namespace ft
 					if (this->_m_ptr != NULL)
 					{
 						this->_last_node = this->_m_ptr;
-						this->_m_ptr = getNextNode(this->_m_ptr);
+						this->_m_ptr = this->_m_ptr->next;
 					}
 					else
 					{
@@ -170,7 +170,7 @@ namespace ft
 					if (this->_m_ptr != NULL)
 					{
 						this->_last_node = this->_m_ptr;
-						this->_m_ptr = getPrevNode(this->_m_ptr);
+						this->_m_ptr = this->_m_ptr->prev;
 					}
 					else
 					{
@@ -184,7 +184,7 @@ namespace ft
 					if (this->_m_ptr != NULL)
 					{
 						this->_last_node = this->_m_ptr;
-						this->_m_ptr = getPrevNode(this->_m_ptr);
+						this->_m_ptr = this->_m_ptr->prev;
 					}
 					else
 					{
@@ -235,121 +235,121 @@ namespace ft
 					typename Iterator::pointer	_m_ptr;
 					typename Iterator::pointer	_last_node;
 					key_compare					_is_less;
-
-				/*
-				** Esta función busca el MENOR de los nodos MAYORES que 'node'.
-				**
-				** Si el nodo a su derecha no es NULL, el MENOR de los nodos MAYORES
-				** que 'node' será el de más a la izquierda del de su derecha.
-				**
-				** Si el nodo a su derecha es NULL, el MENOR de los nodos MAYORES
-				** que 'node' será el primer nodo ascendiente mayor que él.
-				**
-				** Si en ninguno de los dos casos se encuentra un nodo mayor, o
-				** si 'node' carece tanto de hijo derecho como de padre, entonces ya
-				** es el mayor de los nodos.
-				**
-				** -- VALOR DE RETORNO --
-				** Se devuelve un puntero al menor de los nodos mayores que 'node'.
-				** Si 'node' ya es el mayor nodo, se devuelve NULL.
-				**
-				** This function searches for the LEAST of the nodes that are
-				** GREATER than 'node'... eh... I hope that makes sense. I think it
-				** makes more sense in Spanish, so I wrote it for myself in Spanish
-				** for future reference. xD
-				**
-				** If the node to the right of 'node' is not NULL, then the LEAST
-				** of the nodes GREATER than 'node' is the leftmost node from the
-				** node to its right.
-				**
-				** If the node to the right of 'node' is NULL, then the LEAST of
-				** the nodes GREATER than 'node' is the first ascendent node greater
-				** than 'node'.
-				**
-				** If there is no greater node in either case, or if 'node' has no
-				** right child and no parent, then 'node' is already the greatest
-				** node.
-				**
-				** -- RETURN VALUE --
-				** A pointer to the least of the nodes greater than 'node' is
-				** returned. If 'node' is already the greatest, NULL is returned.
-				*/
-				t_bstnode *	getNextNode(t_bstnode const * node) const {
-					if (node->right != NULL)
-					{
-						node = node->right;
-						while (node->left != NULL)
-							node = node->left;
-					}
-					else if (node->parent != NULL)
-					{
-						t_bstnode const *	ascendent_node = node->parent;
-						while (ascendent_node != NULL && _is_less(ascendent_node->data, node->data))
-							ascendent_node = ascendent_node->parent;
-						node = ascendent_node;
-					}
-					else
-						node = NULL;
-					return (const_cast<t_bstnode *>(node));
-				}
-
-				/*
-				** Esta función busca el MAYOR de los nodos MENORES que 'node'.
-				**
-				** Si el nodo a su izquierda no es NULL, el MAYOR de los nodos
-				** MENORES que 'node' será el de más a la derecha del de su
-				** izquierda.
-				**
-				** Si el nodo a su izquierda es NULL, el MAYOR de los nodos MENORES
-				** que 'node' será el primer ascendiente menor que o igual a él.
-				** Nótese que el 'igual a' no será relevante para ft::map, que
-				** envuelve esta clase, ya que no admite duplicados.
-				**
-				** Si en ninguno de los dos casos se encuentra un nodo menor, o si
-				** 'node' carece tanto de hijo izquierdo como de padre, entonces ya
-				** es el menor de los nodos.
-				**
-				** -- VALOR DE RETORNO --
-				** Se devuelve un puntero al mayor de los nodos menores que 'node'.
-				** Si 'node' ya es el menor nodo, se devuelve NULL.
-				**
-				** This function searches for the greatest of the nodes that are
-				** lesser than 'node'.
-				**
-				** If the node to the left of 'node' is not NULL, then the GREATEST
-				** of the nodes that are LESSER than 'node' is the rightmost node
-				** from the node to its left.
-				**
-				** If the node to the left of 'node' is NULL, then the GREATEST of
-				** the nodes that are LESSER than 'node' is the first ascendent node
-				** less than 'node'.
-				**
-				** If there is no lesser node in either case, or if 'node' has no
-				** left child and no parent, then 'node' is already the least node.
-				**
-				** -- RETURN VALUE --
-				** A pointer to the greatest of the nodes lesser than 'node' is
-				** returned. If 'node' is already the least node, NULL is returned.
-				*/
-				t_bstnode * getPrevNode(t_bstnode const * node) const {
-					if (node->left != NULL)
-					{
-						node = node->left;
-						while (node->right != NULL)
-							node = node->right;
-					}
-					else if (node->parent != NULL)
-					{
-						t_bstnode const *	ascendent_node = node;
-						while (ascendent_node != NULL && !_is_less(ascendent_node->data, node->data) )
-							ascendent_node = ascendent_node->parent;
-						node = ascendent_node;
-					}
-					else
-						node = NULL;
-					return (const_cast<t_bstnode *>(node));
-				}
 			};
+
+			/*
+			** Esta función busca el MENOR de los nodos MAYORES que 'node'.
+			**
+			** Si el nodo a su derecha no es NULL, el MENOR de los nodos MAYORES
+			** que 'node' será el de más a la izquierda del de su derecha.
+			**
+			** Si el nodo a su derecha es NULL, el MENOR de los nodos MAYORES
+			** que 'node' será el primer nodo ascendiente mayor que él.
+			**
+			** Si en ninguno de los dos casos se encuentra un nodo mayor, o
+			** si 'node' carece tanto de hijo derecho como de padre, entonces ya
+			** es el mayor de los nodos.
+			**
+			** -- VALOR DE RETORNO --
+			** Se devuelve un puntero al menor de los nodos mayores que 'node'.
+			** Si 'node' ya es el mayor nodo, se devuelve NULL.
+			**
+			** This function searches for the LEAST of the nodes that are
+			** GREATER than 'node'... eh... I hope that makes sense. I think it
+			** makes more sense in Spanish, so I wrote it for myself in Spanish
+			** for future reference. xD
+			**
+			** If the node to the right of 'node' is not NULL, then the LEAST
+			** of the nodes GREATER than 'node' is the leftmost node from the
+			** node to its right.
+			**
+			** If the node to the right of 'node' is NULL, then the LEAST of
+			** the nodes GREATER than 'node' is the first ascendent node greater
+			** than 'node'.
+			**
+			** If there is no greater node in either case, or if 'node' has no
+			** right child and no parent, then 'node' is already the greatest
+			** node.
+			**
+			** -- RETURN VALUE --
+			** A pointer to the least of the nodes greater than 'node' is
+			** returned. If 'node' is already the greatest, NULL is returned.
+			*/
+			t_bstnode *	getNextNode(t_bstnode const * node) const {
+				if (node->right != NULL)
+				{
+					node = node->right;
+					while (node->left != NULL)
+						node = node->left;
+				}
+				else if (node->parent != NULL)
+				{
+					t_bstnode const *	ascendent_node = node->parent;
+					while (ascendent_node != NULL && _is_less(ascendent_node->data, node->data))
+						ascendent_node = ascendent_node->parent;
+					node = ascendent_node;
+				}
+				else
+					node = NULL;
+				return (const_cast<t_bstnode *>(node));
+			}
+
+			/*
+			** Esta función busca el MAYOR de los nodos MENORES que 'node'.
+			**
+			** Si el nodo a su izquierda no es NULL, el MAYOR de los nodos
+			** MENORES que 'node' será el de más a la derecha del de su
+			** izquierda.
+			**
+			** Si el nodo a su izquierda es NULL, el MAYOR de los nodos MENORES
+			** que 'node' será el primer ascendiente menor que o igual a él.
+			** Nótese que el 'igual a' no será relevante para ft::map, que
+			** envuelve esta clase, ya que no admite duplicados.
+			**
+			** Si en ninguno de los dos casos se encuentra un nodo menor, o si
+			** 'node' carece tanto de hijo izquierdo como de padre, entonces ya
+			** es el menor de los nodos.
+			**
+			** -- VALOR DE RETORNO --
+			** Se devuelve un puntero al mayor de los nodos menores que 'node'.
+			** Si 'node' ya es el menor nodo, se devuelve NULL.
+			**
+			** This function searches for the greatest of the nodes that are
+			** lesser than 'node'.
+			**
+			** If the node to the left of 'node' is not NULL, then the GREATEST
+			** of the nodes that are LESSER than 'node' is the rightmost node
+			** from the node to its left.
+			**
+			** If the node to the left of 'node' is NULL, then the GREATEST of
+			** the nodes that are LESSER than 'node' is the first ascendent node
+			** less than 'node'.
+			**
+			** If there is no lesser node in either case, or if 'node' has no
+			** left child and no parent, then 'node' is already the least node.
+			**
+			** -- RETURN VALUE --
+			** A pointer to the greatest of the nodes lesser than 'node' is
+			** returned. If 'node' is already the least node, NULL is returned.
+			*/
+			t_bstnode * getPrevNode(t_bstnode const * node) const {
+				if (node->left != NULL)
+				{
+					node = node->left;
+					while (node->right != NULL)
+						node = node->right;
+				}
+				else if (node->parent != NULL)
+				{
+					t_bstnode const *	ascendent_node = node;
+					while (ascendent_node != NULL && !_is_less(ascendent_node->data, node->data) )
+						ascendent_node = ascendent_node->parent;
+					node = ascendent_node;
+				}
+				else
+					node = NULL;
+				return (const_cast<t_bstnode *>(node));
+			}
 
 			/* BINTREE SEARCH */
 			/*
@@ -532,6 +532,15 @@ namespace ft
 					root = bintree_insert(NULL, root, data, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
 					bintree_balance(&root, new_node);
 					++_size;
+					t_bstnode *	next_node = getNextNode(new_node);
+					t_bstnode * prev_node = getPrevNode(new_node);
+					//THREADING
+					new_node->next = next_node;
+					new_node->prev = prev_node;
+					if (next_node != NULL)
+						next_node->prev = new_node;
+					if (prev_node != NULL)
+						prev_node->next = new_node;
 					if (_min == NULL || _is_less(new_key, _min->data)) //if (_min == NULL || new_key < _min->data)
 						_min = bintree_search(root, new_key);
 					if (_max == NULL || _is_less(_max->data, new_key)) //if (_max == NULL || new_key > _max->data)
@@ -550,6 +559,10 @@ namespace ft
 
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
+				if (node->next != NULL)
+					node->next->prev = node->prev;
+				if (node->prev != NULL)
+					node->prev->next = node->next;
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
 				_alloc.deallocate(node, sizeof(t_bstnode));

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/26 21:36:32 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/27 00:20:21 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,81 +27,7 @@ namespace ft
 	template<typename T, typename Compare = ft::less<T>, typename Alloc = std::allocator<typename ft::Abintree<T>::t_bstnode> >
 	class bintree : public ft::Abintree<T>, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree<T>::t_bstnode/*DEBUG*/ >
 	{
-		// /* NEEDFUL TYPEDEFS */
-		public:
-			/*
-			** Yet more C++ loveliness. These typedefs are defined in the base
-			** class Abintree, but need to be re-typedeffed like this. Why?
-			** Because the base class is templated, and you might create a
-			** template specialization of the base class where your typedef
-			** names are redefined as variables or functions. So, how is the
-			** compiler supposed to be sure they are actually typenames you
-			** naughty programmer expecting simple things to be simple?
-			**
-			** So you have to reassure it, "yes compiler, don't worry, it's a
-			** typename, now go look it up."
-			**
-			** OMG, KILL ME NOW!! WHY, BJARNE, WHY!?
-			*/
-			typedef typename bintree::data_type	data_type;
-			typedef typename bintree::t_bstnode	t_bstnode;
-			typedef typename bintree::size_type	size_type;
-
-			/* STL CONTAINER STYLE TYPEDEFS */
-			typedef Alloc								allocator_type;
-			typedef T									key_type;
-			typedef T									mapped_type;
-			typedef data_type							value_type;
-			typedef Compare								key_compare;
-
 		private:
-			allocator_type	_alloc;
-			key_compare		_is_less;
-
-			/*
-			** I died and went to C++ heaven after my problem with typedefs in
-			** a templated parent class. This is what I found here: referencing
-			** member variables from a templated parent class is also an ISSUE.
-			**
-			** Compile-time examination does not instantiate the template parent
-			** class of a template class, so the compiler interprets that any
-			** variables referenced in the derived class scope are independent,
-			** and duly complains that it can't find where they are defined,
-			** UNLESS you explicitly tell it that they are dependent on the
-			** parent class...
-			**
-			** One way to do that is with 'using Parent<T>::var', meaning, "Hey,
-			** compiler! When I say var, I mean the one Abintree<T> defines,
-			** mmkay?"
-			**
-			** Another way is to use this->var everywhere. Does that mean the
-			** 'this' pointer is of type Parent<T> * and it's using polymorphic
-			** shenanigans? :?
-			**
-			** Whatever the case, I am using the first solution, mainly so I
-			** have somewhere convenient to put this study note. :P
-			**
-			** I'll just make t_bstnode inherited from a parent class, he said.
-			** Then I can pass it to the allocator via the parent class, he
-			** said. IT'LL BE EASY, HE SAID! Two hours later...
-			**
-			** Anyway, all bintree functions that depend on Alloc or Comp for
-			** their functionality will be defined in the derived class. All
-			** other functions are defined in the parent class and used by the
-			** derived class.
-			*/
-			using Abintree<data_type>::_root;
-			using Abintree<data_type>::_min;
-			using Abintree<data_type>::_max;
-			using Abintree<data_type>::_size;
-			using Abintree<data_type>::bintree_depth;
-			using Abintree<data_type>::right_rotation;
-			using Abintree<data_type>::left_rotation;
-			using Abintree<data_type>::left_case;
-			using Abintree<data_type>::right_case;
-			using Abintree<data_type>::bintree_balance;
-			using Abintree<data_type>::fix_double_black;
-
 			/* BINTREE ITERATOR */
 			/* THEY POINT TO NODE */
 			template<typename iT, typename Category>
@@ -111,7 +37,7 @@ namespace ft
 				Iterator(void) : _m_ptr(NULL), _last_node(NULL) {}
 				explicit Iterator(typename Iterator::pointer ptr) : _m_ptr(ptr), _last_node(NULL) {}
 				Iterator(Iterator const & src) : _m_ptr(src._m_ptr), _last_node(src._last_node), _is_less(src._is_less) {}
-				Iterator(t_bstnode & node) : _m_ptr(&node), _last_node(NULL) {}
+				Iterator(typename ft::Abintree<T>::t_bstnode & node) : _m_ptr(&node), _last_node(NULL) {}
 				//Assignment Operator Overload
 				Iterator &	operator=(Iterator const & rhs) {
 					this->_m_ptr = rhs._m_ptr;
@@ -234,9 +160,119 @@ namespace ft
 				protected:
 					typename Iterator::pointer	_m_ptr;
 					typename Iterator::pointer	_last_node;
-					key_compare					_is_less;
+					Compare						_is_less;
+					friend bool ft::bintree<T>::is_valid_position(Iterator const & position, T const & key);
 			};
+		public:
+			/* ---- NEEDFUL TYPEDEFS ---- */
+			/*
+			** Yet more C++ loveliness. These typedefs are defined in the base
+			** class Abintree, but need to be re-typedeffed like this. Why?
+			** Because the base class is templated, and you might create a
+			** template specialization of the base class where your typedef
+			** names are redefined as variables or functions. So, how is the
+			** compiler supposed to be sure they are actually typenames you
+			** naughty programmer expecting simple things to be simple?
+			**
+			** So you have to reassure it, "yes compiler, don't worry, it's a
+			** typename, now go look it up."
+			**
+			** OMG, KILL ME NOW!! WHY, BJARNE, WHY!?
+			*/
+			typedef typename bintree::data_type	data_type;
+			typedef typename bintree::t_bstnode	t_bstnode;
+			typedef typename bintree::size_type	size_type;
+			/* STL-CONTAINER-STYLE TYPEDEFS */
+			typedef Alloc														allocator_type;
+			typedef T															key_type;
+			typedef T															mapped_type;
+			typedef data_type													value_type;
+			typedef Compare														key_compare;
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
+			typedef Iterator<const t_bstnode, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef ft::reverse_iterator<iterator>								reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
+		private:
+			/* ---- VARIABLES ---- */
+			allocator_type	_alloc;
+			key_compare		_is_less;
+			/*
+			** I died and went to C++ heaven after my problem with typedefs in
+			** a templated parent class. This is what I found here: referencing
+			** member variables from a templated parent class is also an ISSUE.
+			**
+			** Compile-time examination does not instantiate the template parent
+			** class of a template class, so the compiler interprets that any
+			** variables referenced in the derived class scope are independent,
+			** and duly complains that it can't find where they are defined,
+			** UNLESS you explicitly tell it that they are dependent on the
+			** parent class...
+			**
+			** One way to do that is with 'using Parent<T>::var', meaning, "Hey,
+			** compiler! When I say var, I mean the one Abintree<T> defines,
+			** mmkay?"
+			**
+			** Another way is to use this->var everywhere. Does that mean the
+			** 'this' pointer is of type Parent<T> * and it's using polymorphic
+			** shenanigans? :?
+			**
+			** Whatever the case, I am using the first solution, mainly so I
+			** have somewhere convenient to put this study note. :P
+			**
+			** I'll just make t_bstnode inherited from a parent class, he said.
+			** Then I can pass it to the allocator via the parent class, he
+			** said. IT'LL BE EASY, HE SAID! Two hours later...
+			**
+			** Anyway, all bintree functions that depend on Alloc or Comp for
+			** their functionality will be defined in the derived class. All
+			** other functions are defined in the parent class and used by the
+			** derived class.
+			*/
+			using Abintree<data_type>::_root;
+			using Abintree<data_type>::_min;
+			using Abintree<data_type>::_max;
+			using Abintree<data_type>::_size;
+			/* BASE CLASS PRIVATE FUNCTION REFERENCES */
+			using Abintree<data_type>::bintree_depth;
+			using Abintree<data_type>::right_rotation;
+			using Abintree<data_type>::left_rotation;
+			using Abintree<data_type>::left_case;
+			using Abintree<data_type>::right_case;
+			using Abintree<data_type>::bintree_balance;
+			using Abintree<data_type>::fix_double_black;
 
+			
+			/* ---- PRIVATE BINARY TREE CONTROL FUNCTIONS ---- */
+			/*
+			** These functions are a mix of modified old C functions I wrote to
+			** implement red-black binary trees in my libft (personal C library
+			** for school), and new functions I added for the containerization
+			** and C++ features. Some of them could probably stand a bit of
+			** polishing, but the black hole waits for no one...
+			*/
+
+			/* IS VALID POSITION */
+			/*
+			** This function checks whether the node pointed to by the iterator
+			** passed as 'position' is a valid insertion position for the key
+			** passed as 'key'. It is used by insert with hint to verify hints.
+			**
+			** This is a friend function to the first argument's iterator type,
+			** to facilitate direct access to its protected node pointer.
+			**
+			** -- RETURN VALUE --
+			** If the insertion position is valid, true is returned. Otherwise,
+			** false is returned.
+			*/
+			static bool is_valid_position(Iterator<t_bstnode, std::bidirectional_iterator_tag> const & position, key_type const & key) {
+				if (position._m_ptr == NULL ||
+				(position._m_ptr->prev != NULL && position._m_ptr->prev->data > key) ||
+				(position._m_ptr->next != NULL && position._m_ptr->next->data <= key)) 
+					return false;
+				return true;
+			}
+
+			/* GET NEXT NODE */
 			/*
 			** Esta función busca el MENOR de los nodos MAYORES que 'node'.
 			**
@@ -294,6 +330,7 @@ namespace ft
 				return (const_cast<t_bstnode *>(node));
 			}
 
+			/* GET PREV NODE */
 			/*
 			** Esta función busca el MAYOR de los nodos MENORES que 'node'.
 			**
@@ -379,12 +416,13 @@ namespace ft
 					return (bintree_search(root->right, key));
 			}
 
-			/* CREATE_NEW_NODE */
+			/* CREATE NEW NODE */
 			/*
 			** This function dynamically reserves memory in heap for a new node
 			** in a binary tree and sets the data segment of that node to the
-			** value of the argument. The left and right child pointers are
-			** nulled. Each node is RED by default.
+			** value of the argument. The left and right child pointers and the
+			** next and prev thread pointers are nulled. Each node is RED by
+			** default.
 			**
 			** -- RETURN VALUE / EXCEPTIONS --
 			** A pointer to the new binary tree node is returned to the caller.
@@ -418,7 +456,7 @@ namespace ft
 				return (node);
 			}
 
-			/* BINTREE_INSERT */
+			/* BINTREE INSERT */
 			/*
 			** This function inserts a node into a binary tree. If passed a NULL
 			** pointer, a root node will be created.
@@ -495,7 +533,7 @@ namespace ft
 				return (root);
 			}
 
-			/* BINTREE_ADD */
+			/* BINTREE ADD */
 			/*
 			** This function is an adaptation of my original red-black binary
 			** tree insert node gateway function in C. The new public method in
@@ -508,15 +546,14 @@ namespace ft
 			** safely caught and handled here before any part of the
 			** pre-existing tree is modified.
 			**
-			** If allocation succeeds the function, balances the tree as needed,
-			** updates the tree _size variable, and updates the _min and _max
-			** pointers if needed. The new_node pointer is invalidated by
-			** bintree_balance so its associated key must be searched for again
-			** to get the final address.
+			** If allocation succeeds the function balances the tree as needed,
+			** updates the tree's _size variable, and updates the _min and _max
+			** pointers if needed. The tree is threaded, so pointers to next and
+			** previous nodes are updated as needed.
 			**
 			** -- RETURN VALUE --
 			** A pointer to the new node in the tree is returned. If insertion
-			** failed because the node already exists a pointer to the existing
+			** failed because the node already exists, a pointer to the existing
 			** node is returned. If insertion fails due to an allocation error,
 			** a NULL pointer is returned.
 			*/
@@ -542,9 +579,9 @@ namespace ft
 					if (prev_node != NULL)
 						prev_node->next = new_node;
 					if (_min == NULL || _is_less(new_key, _min->data)) //if (_min == NULL || new_key < _min->data)
-						_min = bintree_search(root, new_key);
+						_min = new_node;
 					if (_max == NULL || _is_less(_max->data, new_key)) //if (_max == NULL || new_key > _max->data)
-						_max = bintree_search(root, new_key);
+						_max = new_node;
 				}
 				catch(std::bad_alloc const & e)
 				{
@@ -557,6 +594,19 @@ namespace ft
 				return (root);
 			}
 
+			/* NODE DELETE */
+			/*
+			** This function destroys a node and deallocates its associated
+			** memory using the provided allocator, decrementing the container
+			** _size. Rebalancing via node substitution must be performed before
+			** this is done.
+			**
+			** This tree is threaded, so thread pointers are updated here as
+			** needed. The associated memory is zeroed before being freed.
+			**
+			** -- RETURN VALUE --
+			** The function always returns a NULL node pointer.
+			*/
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
 				if (node->next != NULL)
@@ -735,10 +785,7 @@ namespace ft
 					return (1 + recursive_count(node->right, key) + recursive_count(node->left, key));
 			}
 		public:
-			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
-			typedef Iterator<const t_bstnode, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
-			typedef ft::reverse_iterator<iterator>								reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
+
 
 
 			/* CONSTRUCTORS AND DESTRUCTOR */
@@ -885,22 +932,15 @@ namespace ft
 			** logarithmic time, plus the time it took to check for validity.
 			*/
 			//DEBUG
-			static bool is_valid_position(t_bstnode const * position, key_type const & key) {
-				t_bstnode * prev_node = position->prev;
-				t_bstnode * next_node = position->next;
 
-				if ((prev_node != NULL && prev_node->data > key) || (next_node != NULL && next_node->data <= key)) 
-					return false;
-				return true;
-			}
 			iterator	insert(iterator hint, value_type const & data) {
-				t_bstnode * hint_node_ptr = &(*(--hint));
-				if (is_valid_position(hint_node_ptr, data))
+				if (is_valid_position(--hint, data))
 				{
+					t_bstnode * node = &(*hint);
 					//DEBUG
 					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					//DEBUG	
-					return (iterator(bintree_add(hint_node_ptr, data))); //constant time insertion
+					return (iterator(bintree_add(node, data))); //constant time insertion
 				}
 				//DEBUG
 				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/26 21:27:54 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/27 00:20:03 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,7 @@ namespace ft
 
 			/* ---- PROTECTED METHODS ---- */
 			
+			/* GET NEXT NODE */
 			/*
 			** Esta función busca el MENOR de los nodos MAYORES que 'node'.
 			**
@@ -299,6 +300,7 @@ namespace ft
 				return (const_cast<t_bstnode *>(node));
 			}
 
+			/* GET PREV NODE */
 			/*
 			** Esta función busca el MAYOR de los nodos MENORES que 'node'.
 			**
@@ -388,6 +390,7 @@ namespace ft
 					return (bintree_search(root->right, key));
 			}
 
+			/* BINTREE SEARCH WITH HOP COUNTER */
 			/*
 			** This overloaded version of bintree_search will keep track of how
 			** many node hops were needed to find the matching key, or leaf
@@ -403,12 +406,13 @@ namespace ft
 					return (bintree_search(root->right, key, ++hops));
 			}
 			
-			/* CREATE_NEW_NODE */
+			/* CREATE NEW NODE */
 			/*
 			** This function dynamically reserves memory in heap for a new node
 			** in a binary tree and sets the data segment of that node to the
-			** value of the argument. The left and right child pointers are
-			** nulled. Each node is RED by default.
+			** value of the argument. The left and right child pointers and the
+			** next and prev thread pointers are nulled. Each node is RED by
+			** default.
 			**
 			** -- RETURN VALUE / EXCEPTIONS --
 			** A pointer to the new binary tree node is returned to the caller.
@@ -442,7 +446,7 @@ namespace ft
 				return (node);
 			}
 
-			/* BINTREE_INSERT */
+			/* BINTREE INSERT */
 			/*
 			** This function inserts a node into a binary tree. If passed a NULL
 			** pointer, a root node will be created.
@@ -518,42 +522,8 @@ namespace ft
 					root->right = bintree_insert(root, root->right, new_pair, new_node);
 				return (root);
 			}
-			// void	bintree_insert(t_bstnode *& root, \
-			// data_type const & new_pair, t_bstnode *& new_node) throw (std::bad_alloc, std::exception)
-			// {
-			// 	t_bstnode **	eligible_child = NULL;
-				
-			// 	if (root == NULL)
-			// 		eligible_child = &root;
-			// 	else if (root->right == NULL && root->data.first < new_pair.first)
-			// 		eligible_child = &root->right;
-			// 	else if (root->left == NULL && root->data.first > new_pair.first)
-			// 		eligible_child = &root->left;
-			// 	else
-			// 		eligible_child = NULL;
-			// 	if (eligible_child != NULL)
-			// 	{
-			// 		try
-			// 		{
-			// 			*eligible_child = create_new_node(root, new_pair);
-			// 			new_node = *eligible_child;
-			// 		}
-			// 		catch (std::bad_alloc const & e)
-			// 		{
-			// 			throw ;
-			// 		}
-			// 		catch (std::exception const & e)
-			// 		{
-			// 			throw ;
-			// 		}
-			// 	}
-			// 	else if (_is_less(new_pair.first, root->data.first) || !_is_less(root->data.first, new_pair.first)) //if (new_pair.key <= root-data.key)
-			// 		bintree_insert(root->left, new_pair, new_node);
-			// 	else
-			// 		bintree_insert(root->right, new_pair, new_node);
-			// }
 
-			/* BINTREE_ADD */
+			/* BINTREE ADD */
 			/*
 			** This function is an adaptation of my original red-black binary
 			** tree insert node gateway function in C. The new public method in
@@ -566,15 +536,14 @@ namespace ft
 			** safely caught and handled here before any part of the
 			** pre-existing tree is modified.
 			**
-			** If allocation succeeds the function, balances the tree as needed,
-			** updates the tree _size variable, and updates the _min and _max
-			** pointers if needed. The new_node pointer is invalidated by
-			** bintree_balance so its associated key must be searched for again
-			** to get the final address.
+			** If allocation succeeds the function balances the tree as needed,
+			** updates the tree's _size variable, and updates the _min and _max
+			** pointers if needed. The tree is threaded, so pointers to next and
+			** previous nodes are updated as needed.
 			**
 			** -- RETURN VALUE --
 			** A pointer to the new node in the tree is returned. If insertion
-			** failed because the node already exists a pointer to the existing
+			** failed because the node already exists, a pointer to the existing
 			** node is returned. If insertion fails due to an allocation error,
 			** a NULL pointer is returned.
 			*/
@@ -600,9 +569,9 @@ namespace ft
 					if (prev_node != NULL)
 						prev_node->next = new_node;
 					if (_min == NULL || _is_less(new_key, _min->data.first)) //if (_min == NULL || new_pair.key < _min->data.key)
-						_min = bintree_search(root, new_key);
+						_min = new_node;
 					if (_max == NULL || _is_less(_max->data.first, new_key)) //if (_max == NULL || new_pair.key > _max->data.key)
-						_max = bintree_search(root, new_key);
+						_max = new_node;
 				}
 				catch(std::bad_alloc const & e)
 				{
@@ -615,6 +584,19 @@ namespace ft
 				return (new_node);
 			}
 
+			/* NODE DELETE */
+			/*
+			** This function destroys a node and deallocates its associated
+			** memory using the provided allocator, decrementing the container
+			** _size. Rebalancing via node substitution must be performed before
+			** this is done.
+			**
+			** This tree is threaded, so thread pointers are updated here as
+			** needed. The associated memory is zeroed before being freed.
+			**
+			** -- RETURN VALUE --
+			** The function always returns a NULL node pointer.
+			*/
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
 				if (node->next != NULL)
@@ -628,7 +610,7 @@ namespace ft
 				return (NULL);
 			}
 
-			/* BINTREE_DELETE */
+			/* BINTREE DELETE */
 			/*
 			** Deletes a node from a binary tree. You have NO idea the HORROR,
 			** the PAIN that this implies. It's much worse than mere insertion.

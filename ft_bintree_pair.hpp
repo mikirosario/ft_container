@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/26 19:36:25 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/26 21:27:54 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -588,7 +588,7 @@ namespace ft
 				try
 				{
 					root = bintree_insert(NULL, root, new_pair, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
-					bintree_balance(&root, new_node);
+					bintree_balance(&_root, new_node);
 					++_size;
 					t_bstnode *	next_node = getNextNode(new_node);
 					t_bstnode * prev_node = getPrevNode(new_node);
@@ -950,33 +950,33 @@ namespace ft
 				return (ft::make_pair(iterator(new_node), return_status));
 			}
 
-
-			/*
-			** The idea of this function is to find the lowest bound and
-			** check if it's a child or parent of the position passed as
-			** pos. If it's a child, we return true, if not, we return
-			** false. This should indicate if a given position is part of
-			** a valid insertion path! I hope!!!!
-			*/
-			// if (pos->key < raiz->key && insert_key < raiz key) //bad, i'm on the left
-			// bool	special_bound(t_bstnode	const * pos, key_type const & key) {
-			// 	if (pos == NULL)
-
-			// }
 			//DEBUG
-			/* INSERT SINGLE ELEMENT WITH HINT */ //CURRENTLY DOES NOTHING
+			/* INSERT SINGLE ELEMENT WITH HINT */ //MAY NOW BE WORKING; NEEDS TESTING
 			/*
 			** The 'position' iterator serves as a hint, if you more or less
-			** know where in the tree your data will be inserted. Time is
-			** optimized if 'position' is the node that will precede the new
-			** element. Note that this is NOT necessarily the last key value
-			** in sequential order.
+			** know where in the tree your data will be inserted.
+			**
+			** If the previous node in sequence from the hinted position is not
+			** NULL and its key is greater than new key, or the next node in
+			** sequence is not NULL and its key is less than the new key, the
+			** hint is considered invalid and insertion is called on the tree
+			** root instead. Otherwise insertion is called on the node pointed
+			** to by the hint. If the hint is perfect, the new node will be
+			** inserted in constant time. If it is rejected, it will be done in
+			** logarithmic time, plus the time it took to check for validity.
 			*/
-			//DEBUG I GOT IT! check if position is right child and greater than key or left child and less than key! :D
-			iterator	insert(iterator position, value_type const & data) {
-				
-				iterator * tonti = &position;
-				++tonti;
+			//DEBUG
+			static bool is_valid_position(iterator & position, key_type const & key) {
+				t_bstnode * prev_node = *position._m_ptr->prev;
+				t_bstnode * next_node = *position._m_ptr->next;
+
+				if ((prev_node != NULL && prev_node->data.first > key) || (next_node != NULL && next_node->data.first <= key)) 
+					return false;
+				return true;
+			}
+			iterator	insert(iterator hint, value_type const & data) {
+				if (is_valid_position(hint, data.first))
+					return (iterator(bintree_add(&(*hint), data))); //constant time insertion
 				return (insert(data).first);
 			}
 			

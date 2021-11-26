@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/25 20:31:04 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/26 21:36:41 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1065,7 +1065,9 @@ int main(void)
 	PRINT << TXT_NL << "Count 32s: " << ex1.count(32) << TXT_NL << std::endl;
 
 	PRINT << TXT_NL << "El gilipollas insert: " << TXT_NL;
-	ex1.insert((ex1.end() + 1), 3);
+	ex1.insert(ex1.end(), 3);
+	PRINT << TXT_NL << "El de guays insert: " << TXT_NL;
+	ex1.insert(ex1.end(), 90); 
 	ex1.print();
 
 	PRINT << std::boolalpha << "Bintree ex1 is empty: " << ex1.empty() << END;

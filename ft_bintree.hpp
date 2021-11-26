@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/26 19:42:20 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/26 21:36:32 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -530,7 +530,7 @@ namespace ft
 				try
 				{
 					root = bintree_insert(NULL, root, data, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
-					bintree_balance(&root, new_node);
+					bintree_balance(&_root, new_node);
 					++_size;
 					t_bstnode *	next_node = getNextNode(new_node);
 					t_bstnode * prev_node = getPrevNode(new_node);
@@ -870,18 +870,41 @@ namespace ft
 			}
 			
 			//DEBUG
-			/* INSERT SINGLE ELEMENT WITH HINT */
+			/* INSERT SINGLE ELEMENT WITH HINT */ //MAY NOW BE WORKING; NEEDS TESTING
 			/*
 			** The 'position' iterator serves as a hint, if you more or less
-			** know where in the tree your data will be inserted. Time is
-			** optimized if 'position' is the node that will precede the new
-			** element. Note that this is NOT necessarily the last key value
-			** in sequential order.
+			** know where in the tree your data will be inserted.
+			**
+			** If the previous node in sequence from the hinted position is not
+			** NULL and its key is greater than new key, or the next node in
+			** sequence is not NULL and its key is less than the new key, the
+			** hint is considered invalid and insertion is called on the tree
+			** root instead. Otherwise insertion is called on the node pointed
+			** to by the hint. If the hint is perfect, the new node will be
+			** inserted in constant time. If it is rejected, it will be done in
+			** logarithmic time, plus the time it took to check for validity.
 			*/
 			//DEBUG
-			iterator	insert(iterator position, value_type const & data) {
-				iterator * tonti = &position;
-				++tonti;
+			static bool is_valid_position(t_bstnode const * position, key_type const & key) {
+				t_bstnode * prev_node = position->prev;
+				t_bstnode * next_node = position->next;
+
+				if ((prev_node != NULL && prev_node->data > key) || (next_node != NULL && next_node->data <= key)) 
+					return false;
+				return true;
+			}
+			iterator	insert(iterator hint, value_type const & data) {
+				t_bstnode * hint_node_ptr = &(*(--hint));
+				if (is_valid_position(hint_node_ptr, data))
+				{
+					//DEBUG
+					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
+					//DEBUG	
+					return (iterator(bintree_add(hint_node_ptr, data))); //constant time insertion
+				}
+				//DEBUG
+				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;
+				//DEBUG
 				return (insert(data).first);
 			}
 			

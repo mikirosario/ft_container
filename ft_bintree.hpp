@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 20:37:42 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/26 18:23:41 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -393,7 +393,7 @@ namespace ft
 			*/
 			t_bstnode *	create_new_node(t_bstnode * parent, data_type const & data) throw (std::bad_alloc, std::exception)
 			{
-				t_bstnode	*node = NULL;
+				t_bstnode *	node = NULL;
 
 				try
 				{
@@ -403,6 +403,8 @@ namespace ft
 					node->parent = parent;
 					node->left = NULL;
 					node->right = NULL;
+					node->next = NULL;
+					node->prev = NULL;
 					node->color = t_bstnode::RED;
 				}
 				catch (std::bad_alloc const & e)
@@ -822,7 +824,7 @@ namespace ft
 				return (_alloc.max_size());
 			}
 			
-			/* ELEMENT ACCESS */
+			/* ---- ELEMENT ACCESS ---- */
 
 			/* OPERATOR[] */
 			/*

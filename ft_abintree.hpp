@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/25 19:36:12 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/26 18:14:08 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ namespace ft
 				struct s_bstnode				*parent;
 				struct s_bstnode				*left;
 				struct s_bstnode				*right;
+				struct s_bstnode				*next;
+				struct s_bstnode				*prev;
 				data_type						data;
 				t_bstcolor						color;
 				

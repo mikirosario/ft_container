@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/27 01:12:53 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/27 01:27:42 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 namespace ft
 {
 	template< typename T1, typename T2, typename Compare = ft::less<T1>,
-	typename Alloc = std::allocator< typename ft::Abintree< ft::pair<T1, T2> >::t_bstnode > >
-	class bintree_pair : public ft::Abintree< ft::pair<T1, T2> >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2> >::t_bstnode, int/*DEBUG*/ >
+	typename Alloc = std::allocator< typename ft::Abintree< ft::pair<T1, T2>, Compare >::t_bstnode > >
+	class bintree_pair : public ft::Abintree< ft::pair<T1, T2>, Compare >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2>, Compare >::t_bstnode, int/*DEBUG*/ >
 	{
 		private:
 			/* BINTREE_PAIR ITERATOR */
@@ -41,6 +41,7 @@ namespace ft
 				Iterator(void) : _m_ptr(NULL), _last_node(NULL) {}
 				explicit Iterator(typename Iterator::pointer ptr) : _m_ptr(ptr), _last_node(NULL) {}
 				Iterator(Iterator const & src) : _m_ptr(src._m_ptr), _last_node(src._last_node), _is_less(src._is_less) {}
+				Iterator(typename ft::Abintree<ft::pair<T1, T2>, Compare>::t_bstnode & node) : _m_ptr(&node), _last_node(NULL) {}
 				//Assignment Operator Overload
 				Iterator &	operator=(Iterator const & rhs) {
 					this->_m_ptr = rhs._m_ptr;
@@ -164,9 +165,7 @@ namespace ft
 					typename Iterator::pointer	_m_ptr;
 					typename Iterator::pointer	_last_node;
 					Compare						_is_less;
-					friend bool ft::bintree<T1, T2, Compare>::is_valid_position(iterator const & position, T2 const & key);
-																		//		^
-																		//DEBUG LOWER CASE!!!!!!??????!??!?!?!?!?!?!!?!?=!?!?!?!?!?!=·"PO?)=!·)(?)
+					friend bool ft::bintree_pair<T1, T2, Compare>::is_valid_position(Iterator const & position, T2 const & key);
 			};
 
 		/* NEEDFUL TYPEDEFS */
@@ -238,18 +237,18 @@ namespace ft
 			** derived class.
 			*/
 			/* PRIVATE BASE CLASS VARIABLE REFERENCES */
-			using Abintree<data_type>::_root;
-			using Abintree<data_type>::_min;
-			using Abintree<data_type>::_max;
-			using Abintree<data_type>::_size;
+			using Abintree<data_type, key_compare>::_root;
+			using Abintree<data_type, key_compare>::_min;
+			using Abintree<data_type, key_compare>::_max;
+			using Abintree<data_type, key_compare>::_size;
 			/* PRIVATE BASE CLASS FUNCTION REFERENCES */
-			using Abintree<data_type>::bintree_depth;
-			using Abintree<data_type>::right_rotation;
-			using Abintree<data_type>::left_rotation;
-			using Abintree<data_type>::left_case;
-			using Abintree<data_type>::right_case;
-			using Abintree<data_type>::bintree_balance;
-			using Abintree<data_type>::fix_double_black;
+			using Abintree<data_type, key_compare>::bintree_depth;
+			using Abintree<data_type, key_compare>::right_rotation;
+			using Abintree<data_type, key_compare>::left_rotation;
+			using Abintree<data_type, key_compare>::left_case;
+			using Abintree<data_type, key_compare>::right_case;
+			using Abintree<data_type, key_compare>::bintree_balance;
+			using Abintree<data_type, key_compare>::fix_double_black;
 
 
 
@@ -820,7 +819,7 @@ namespace ft
 
 		public:
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			bintree_pair(void) : Abintree<data_type>() {};
+			bintree_pair(void) : Abintree<data_type, Compare>() {};
 			~bintree_pair(void) {
 				//debug
 				//std::cout << "freeeeedom" << std::endl;

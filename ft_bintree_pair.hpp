@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/27 01:27:42 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/27 04:55:53 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 namespace ft
 {
 	template< typename T1, typename T2, typename Compare = ft::less<T1>,
-	typename Alloc = std::allocator< typename ft::Abintree< ft::pair<T1, T2>, Compare >::t_bstnode > >
-	class bintree_pair : public ft::Abintree< ft::pair<T1, T2>, Compare >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2>, Compare >::t_bstnode, int/*DEBUG*/ >
+	typename Alloc = std::allocator< typename ft::Abintree< ft::pair<T1, T2>, T2, Compare >::t_bstnode > >
+	class bintree_pair : public ft::Abintree< ft::pair<T1, T2>, T2, Compare >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2>, T2, Compare >::t_bstnode, int/*DEBUG*/ >
 	{
 		private:
 			/* BINTREE_PAIR ITERATOR */
@@ -40,15 +40,15 @@ namespace ft
 				//Constructible
 				Iterator(void) : _m_ptr(NULL), _last_node(NULL) {}
 				explicit Iterator(typename Iterator::pointer ptr) : _m_ptr(ptr), _last_node(NULL) {}
-				Iterator(Iterator const & src) : _m_ptr(src._m_ptr), _last_node(src._last_node), _is_less(src._is_less) {}
-				Iterator(typename ft::Abintree<ft::pair<T1, T2>, Compare>::t_bstnode & node) : _m_ptr(&node), _last_node(NULL) {}
+				Iterator(Iterator const & src) : _m_ptr(src._m_ptr), _last_node(src._last_node) {}
+				Iterator(typename ft::Abintree<ft::pair<T1, T2>, T2, Compare>::t_bstnode & node) : _m_ptr(&node), _last_node(NULL) {}
 				//Assignment Operator Overload
 				Iterator &	operator=(Iterator const & rhs) {
 					this->_m_ptr = rhs._m_ptr;
 					this->_last_node = rhs._last_node;
-					this->_is_less = rhs._is_less;
 					return (*this);
 				}
+				typedef typename bintree_pair::C_key 		C_key;
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
 					return (this->_m_ptr == rhs._m_ptr); //si las direcciones son iguales las keys son iguales cauenlaleche
@@ -57,7 +57,8 @@ namespace ft
 					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
 				bool	operator<(Iterator const & rhs) const {
-					return (_is_less(this->_m_ptr->data.first, rhs._m_ptr->data.first));
+					//return (_is_less(this->_m_ptr->data.first, rhs._m_ptr->data.first));
+					return (C_key(this->_m_ptr->data.first) < C_key(rhs._m_ptr->data.first));
 				}
 				bool	operator>(Iterator const & rhs) const {
 					return (rhs < *this); //a>b == b<a
@@ -164,7 +165,6 @@ namespace ft
 				protected:
 					typename Iterator::pointer	_m_ptr;
 					typename Iterator::pointer	_last_node;
-					Compare						_is_less;
 					friend bool ft::bintree_pair<T1, T2, Compare>::is_valid_position(Iterator const & position, T2 const & key);
 			};
 
@@ -187,6 +187,7 @@ namespace ft
 			typedef typename bintree_pair::data_type	data_type;
 			typedef typename bintree_pair::t_bstnode	t_bstnode;
 			typedef typename bintree_pair::size_type	size_type;
+			typedef typename bintree_pair::C_key 		C_key;
 
 			/* STL CONTAINER STYLE TYPEDEFS */
 			typedef Alloc														allocator_type;
@@ -202,7 +203,6 @@ namespace ft
 		private:
 			/* ---- VARIABLES ---- */
 			allocator_type	_alloc;
-			key_compare		_is_less;
 
 			/*
 			** I died and went to C++ heaven after my problem with typedefs in
@@ -237,18 +237,18 @@ namespace ft
 			** derived class.
 			*/
 			/* PRIVATE BASE CLASS VARIABLE REFERENCES */
-			using Abintree<data_type, key_compare>::_root;
-			using Abintree<data_type, key_compare>::_min;
-			using Abintree<data_type, key_compare>::_max;
-			using Abintree<data_type, key_compare>::_size;
+			using Abintree<data_type, key_type, key_compare>::_root;
+			using Abintree<data_type, key_type, key_compare>::_min;
+			using Abintree<data_type, key_type, key_compare>::_max;
+			using Abintree<data_type, key_type, key_compare>::_size;
 			/* PRIVATE BASE CLASS FUNCTION REFERENCES */
-			using Abintree<data_type, key_compare>::bintree_depth;
-			using Abintree<data_type, key_compare>::right_rotation;
-			using Abintree<data_type, key_compare>::left_rotation;
-			using Abintree<data_type, key_compare>::left_case;
-			using Abintree<data_type, key_compare>::right_case;
-			using Abintree<data_type, key_compare>::bintree_balance;
-			using Abintree<data_type, key_compare>::fix_double_black;
+			using Abintree<data_type, key_type, key_compare>::bintree_depth;
+			using Abintree<data_type, key_type, key_compare>::right_rotation;
+			using Abintree<data_type, key_type, key_compare>::left_rotation;
+			using Abintree<data_type, key_type, key_compare>::left_case;
+			using Abintree<data_type, key_type, key_compare>::right_case;
+			using Abintree<data_type, key_type, key_compare>::bintree_balance;
+			using Abintree<data_type, key_type, key_compare>::fix_double_black;
 
 
 
@@ -276,8 +276,8 @@ namespace ft
 			*/
 			static bool is_valid_position(iterator const & position, key_type const & key) {
 				if (position._m_ptr == NULL ||
-				(position._m_ptr->prev != NULL && position._m_ptr->prev->data.first > key) ||
-				(position._m_ptr->next != NULL && position._m_ptr->next->data.first <= key)) 
+				(position._m_ptr->prev != NULL && C_key(position._m_ptr->prev->data.first) > C_key(key)) ||
+				(position._m_ptr->next != NULL && C_key(position._m_ptr->next->data.first) <= C_key(key))) 
 					return false;
 				return true;
 			}
@@ -331,7 +331,7 @@ namespace ft
 				else if (node->parent != NULL)
 				{
 					t_bstnode const *	ascendent_node = node->parent;
-					while (ascendent_node != NULL && _is_less(ascendent_node->data.first, node->data.first))
+					while (ascendent_node != NULL && C_key(ascendent_node->data.first) < C_key(node->data.first))
 						ascendent_node = ascendent_node->parent;
 					node = ascendent_node;
 				}
@@ -389,7 +389,7 @@ namespace ft
 				else if (node->parent != NULL)
 				{
 					t_bstnode const *	ascendent_node = node->parent;
-					while (ascendent_node != NULL && !_is_less(ascendent_node->data.first, node->data.first) )
+					while (ascendent_node != NULL && C_key(ascendent_node->data.first) >= C_key(node->data.first))
 						ascendent_node = ascendent_node->parent;
 					node = ascendent_node;
 				}
@@ -416,15 +416,11 @@ namespace ft
 			** a pointer to the node containing the key is returned. If it is
 			** not present in the tree, a NULL pointer is returned.	
 			*/
-			t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
+			t_bstnode	*bintree_search(t_bstnode * root, key_type const key) const
 			{
-										//_is_less(root->data.first, key) is false & _is_less(key, root->data.first) is false
-										//is just a way of saying if (root->data.first < key is false and key < root->data.first is also false)
-										//which is just a way of saying "if they are equal"
-										//this hideousness is required by the assignment, i'm so sorry. :P
-				if (root == NULL || !_is_less(root->data.first, key) & !_is_less(key, root->data.first)) //if (root == NULL || root->data.first == key) :P
+				if (root == NULL || C_key(root->data.first) == C_key(key))
 					return (root);
-				else if (_is_less(key, root->data.first) || !_is_less(root->data.first, key)) // if (key <= root->data.first) :P truly sorry about this :P
+				else if (C_key(key) <= C_key(root->data.first))
 					return (bintree_search(root->left, key));
 				else
 					return (bintree_search(root->right, key));
@@ -438,9 +434,9 @@ namespace ft
 			*/
 			t_bstnode *	bintree_search(t_bstnode *root, key_type const & key, typename iterator::difference_type & hops) const
 			{
-				if (root == NULL || !_is_less(root->data.first, key) & !_is_less(key, root->data.first))
+				if (root == NULL || C_key(root->data.first) == C_key(key))
 					return (root);
-				else if (_is_less(key, root->data.first) || !_is_less(root->data.first, key))
+				else if (C_key(key) <= C_key(root->data.first))
 					return (bintree_search(root->left, key, ++hops));
 				else
 					return (bintree_search(root->right, key, ++hops));
@@ -556,7 +552,7 @@ namespace ft
 						throw ;
 					}
 				}
-				else if (_is_less(new_pair.first, root->data.first) || !_is_less(root->data.first, new_pair.first)) //if (new_pair.key <= root-data.key)
+				else if (C_key(new_pair.first) <= C_key(root->data.first))
 					root->left = bintree_insert(root, root->left, new_pair, new_node);
 				else
 					root->right = bintree_insert(root, root->right, new_pair, new_node);
@@ -608,9 +604,9 @@ namespace ft
 						next_node->prev = new_node;
 					if (prev_node != NULL)
 						prev_node->next = new_node;
-					if (_min == NULL || _is_less(new_key, _min->data.first)) //if (_min == NULL || new_pair.key < _min->data.key)
+					if (_min == NULL || C_key(new_key) < C_key(_min->data.first))
 						_min = new_node;
-					if (_max == NULL || _is_less(_max->data.first, new_key)) //if (_max == NULL || new_pair.key > _max->data.key)
+					if (_max == NULL || C_key(new_key) > C_key(_max->data.first)) 
 						_max = new_node;
 				}
 				catch(std::bad_alloc const & e)
@@ -660,9 +656,9 @@ namespace ft
 				if (node == NULL)
 					return (NULL);
 				if (node == _min)
-					_min = &(*(iterator(_min) + 1));
+					_min = _min->next;
 				if (node == _max)
-					_max = &(*(iterator(_max) - 1));
+					_max = _max->prev;
 				if (node->right == NULL && node->left == NULL) //it's a leaf/both children are NULL
 				{
 					if (node->parent != NULL)
@@ -790,9 +786,9 @@ namespace ft
 			t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
 				if (node == NULL)
 					return (const_cast<t_bstnode *>(parent));
-				else if (!_is_less(node->data.first, key) && !_is_less(key, node->data.first)) //node->data.first == key
+				else if (C_key(node->data.first) == C_key(key))
 					return (const_cast<t_bstnode *>(node));
-				else if (_is_less(node->data.first, key)) //node->data < key
+				else if (C_key(node->data.first) < C_key(key))
 					return (getNearestNode(node->right, node, key));
 				else
 					return (getNearestNode(node->left, node, key));
@@ -819,7 +815,7 @@ namespace ft
 
 		public:
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			bintree_pair(void) : Abintree<data_type, Compare>() {};
+			bintree_pair(void) : Abintree<data_type, key_type, key_compare>() {};
 			~bintree_pair(void) {
 				//debug
 				//std::cout << "freeeeedom" << std::endl;
@@ -1055,7 +1051,7 @@ namespace ft
 				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
 				iterator		ret(nearest_node);
 
-				if (_is_less(nearest_node->data.first, key))
+				if (C_key(nearest_node->data.first) < C_key(key))
 					++ret;
 				return (ret);
 			}
@@ -1064,7 +1060,7 @@ namespace ft
 				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
 				const_iterator	ret(nearest_node);
 
-				if (_is_less(nearest_node->data.first, key))
+				if (C_key(nearest_node->data.first) < C_key(key))
 					++ret;
 				return (ret);
 			}
@@ -1087,7 +1083,7 @@ namespace ft
 				t_bstnode * nearest_node = getNearestNode(_root, NULL, key);
 				iterator	ret(nearest_node);
 
-				if (_is_less(nearest_node->data.first, key) || !_is_less(key, nearest_node->data.first)) //if (nearest_node != NULL && (data.first <= key))
+				if (C_key(nearest_node->data.first) <= C_key(key))
 					++ret;
 				return(ret);
 			}
@@ -1096,7 +1092,7 @@ namespace ft
 				t_bstnode * 	nearest_node = getNearestNode(_root, NULL, key);
 				const_iterator	ret(nearest_node);
 
-				if (_is_less(nearest_node->data.first, key) || !_is_less(key, nearest_node->data.first))
+				if (C_key(nearest_node->data.first) <= C_key(key))
 					++ret;
 				return(ret);
 			}

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/27 01:16:39 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/27 04:12:31 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,11 @@
 
 namespace ft
 {
-	template<typename T, typename Compare>
+	template<typename T, typename Key, typename Compare>
 	class Abintree
 	{
 		public:
 			typedef T		data_type;
-
 			/*
 			** For the double-value implementation of ft::bintree the data type
 			** will be ft::pair<X,Y>.
@@ -48,9 +47,45 @@ namespace ft
 					struct s_bstnode &	operator=(struct s_bstnode const & src) { *this = src; } //nodes can't be assigned
 			}				t_bstnode;
 			typedef std::size_t	size_type;
-			
-			/* COMMON METHODS */
+			typedef Key			key_type;
+			typedef Compare		key_compare;
+			class	C_key
+			{
+				private:
+					key_type	_key;
+					key_compare	_is_less;
+				public:
+					C_key(void) : _key(key_type()) {
+					}
+					C_key(key_type const & key) : _key(key) {
+					}
+					~C_key(void) {
+					}
+				
+					C_key operator=(C_key const & src) {
+						this->_key = src._key;
+					}
 
+					bool	operator<(C_key const & src) const {
+						//std::cerr << "WUZ HERE!!!!" << std::endl;
+						return (_is_less(this->_key, src._key));
+					}
+					bool	operator>(C_key const & src) const {
+						return (src < *this); //a>b == b<a
+					}
+					bool	operator<=(C_key const & src) const {
+						return (!(src < *this)); //a<=b == !(b<a)
+					}
+					bool	operator>=(C_key const & src) const {
+						return (!(*this < src)); //a>=b == !(a<b)
+					}
+					bool	operator!=(C_key const & src) const {
+						return (*this < src || *this > src);
+					}
+					bool	operator==(C_key const & src) const {
+						return (!(*this != src));
+					}
+			};
 
 		protected:
 			/* VARIABLES */
@@ -58,7 +93,10 @@ namespace ft
 			t_bstnode *		_min;
 			t_bstnode *		_max;
 			size_type		_size;
-			
+			key_compare		_is_less;
+
+			/* COMMON METHODS */
+
 			/* CONSTRUCTORS AND DESTRUCTOR */
 			Abintree(void) : _root(NULL), _min(NULL), _max(NULL), _size(0) {}
 

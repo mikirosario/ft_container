@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/27 00:20:03 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/27 01:12:53 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,81 +31,7 @@ namespace ft
 	typename Alloc = std::allocator< typename ft::Abintree< ft::pair<T1, T2> >::t_bstnode > >
 	class bintree_pair : public ft::Abintree< ft::pair<T1, T2> >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2> >::t_bstnode, int/*DEBUG*/ >
 	{
-		/* NEEDFUL TYPEDEFS */
-		public:
-			/*
-			** Yet more C++ loveliness. These typedefs are defined in the base
-			** class Abintree, but need to be re-typedeffed like this. Why?
-			** Because the base class is templated, and you might create a
-			** template specialization of the base class where your typedef
-			** names are redefined as variables or functions. So, how is the
-			** compiler supposed to be sure they are actually typenames you
-			** naughty programmer expecting simple things to be simple?
-			**
-			** So you have to reassure it, "yes compiler, don't worry, it's a
-			** typename, now go look it up."
-			**
-			** OMG, KILL ME NOW!! WHY, BJARNE, WHY!?
-			*/
-			typedef typename bintree_pair::data_type	data_type;
-			typedef typename bintree_pair::t_bstnode	t_bstnode;
-			typedef typename bintree_pair::size_type	size_type;
-
-			/* STL CONTAINER STYLE TYPEDEFS */
-			typedef Alloc								allocator_type;
-			typedef T1									key_type;
-			typedef T2									mapped_type;
-			typedef data_type							value_type;
-			typedef Compare								key_compare;
-
 		private:
-			allocator_type	_alloc;
-			key_compare		_is_less;
-
-			/*
-			** I died and went to C++ heaven after my problem with typedefs in
-			** a templated parent class. This is what I found here: referencing
-			** member variables from a templated parent class is also an ISSUE.
-			**
-			** Compile-time examination does not instantiate the template parent
-			** class of a template class, so the compiler interprets that any
-			** variables referenced in the derived class scope are independent,
-			** and duly complains that it can't find where they are defined,
-			** UNLESS you explicitly tell it that they are dependent on the
-			** parent class...
-			**
-			** One way to do that is with 'using Parent<T>::var', meaning, "Hey,
-			** compiler! When I say var, I mean the one Abintree<T> defines,
-			** mmkay?"
-			**
-			** Another way is to use this->var everywhere. Does that mean the
-			** 'this' pointer is of type Parent<T> * and it's using polymorphic
-			** shenanigans? :?
-			**
-			** Whatever the case, I am using the first solution, mainly so I
-			** have somewhere convenient to put this study note. :P
-			**
-			** I'll just make t_bstnode inherited from a parent class, he said.
-			** Then I can pass it to the allocator via the parent class, he
-			** said. IT'LL BE EASY, HE SAID! Two hours later...
-			**
-			** Anyway, all bintree functions that depend on Alloc or Comp for
-			** their functionality will be defined in the derived class. All
-			** other functions are defined in the parent class and used by the
-			** derived class.
-			*/
-			using Abintree<data_type>::_root;
-			using Abintree<data_type>::_min;
-			using Abintree<data_type>::_max;
-			using Abintree<data_type>::_size;
-			using Abintree<data_type>::bintree_depth;
-			using Abintree<data_type>::right_rotation;
-			using Abintree<data_type>::left_rotation;
-			using Abintree<data_type>::left_case;
-			using Abintree<data_type>::right_case;
-			using Abintree<data_type>::bintree_balance;
-			using Abintree<data_type>::fix_double_black;
-
 			/* BINTREE_PAIR ITERATOR */
 			/* THEY POINT TO NODE */
 			template<typename iT, typename Category>
@@ -237,10 +163,125 @@ namespace ft
 				protected:
 					typename Iterator::pointer	_m_ptr;
 					typename Iterator::pointer	_last_node;
-					key_compare					_is_less;
+					Compare						_is_less;
+					friend bool ft::bintree<T1, T2, Compare>::is_valid_position(iterator const & position, T2 const & key);
+																		//		^
+																		//DEBUG LOWER CASE!!!!!!??????!??!?!?!?!?!?!!?!?=!?!?!?!?!?!=·"PO?)=!·)(?)
 			};
 
-			/* ---- PROTECTED METHODS ---- */
+		/* NEEDFUL TYPEDEFS */
+		public:
+			/*
+			** Yet more C++ loveliness. These typedefs are defined in the base
+			** class Abintree, but need to be re-typedeffed like this. Why?
+			** Because the base class is templated, and you might create a
+			** template specialization of the base class where your typedef
+			** names are redefined as variables or functions. So, how is the
+			** compiler supposed to be sure they are actually typenames you
+			** naughty programmer expecting simple things to be simple?
+			**
+			** So you have to reassure it, "yes compiler, don't worry, it's a
+			** typename, now go look it up."
+			**
+			** OMG, KILL ME NOW!! WHY, BJARNE, WHY!?
+			*/
+			typedef typename bintree_pair::data_type	data_type;
+			typedef typename bintree_pair::t_bstnode	t_bstnode;
+			typedef typename bintree_pair::size_type	size_type;
+
+			/* STL CONTAINER STYLE TYPEDEFS */
+			typedef Alloc														allocator_type;
+			typedef T1															key_type;
+			typedef T2															mapped_type;
+			typedef data_type													value_type;
+			typedef Compare														key_compare;
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
+			typedef Iterator<const t_bstnode, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef ft::reverse_iterator<iterator>								reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
+
+		private:
+			/* ---- VARIABLES ---- */
+			allocator_type	_alloc;
+			key_compare		_is_less;
+
+			/*
+			** I died and went to C++ heaven after my problem with typedefs in
+			** a templated parent class. This is what I found here: referencing
+			** member variables from a templated parent class is also an ISSUE.
+			**
+			** Compile-time examination does not instantiate the template parent
+			** class of a template class, so the compiler interprets that any
+			** variables referenced in the derived class scope are independent,
+			** and duly complains that it can't find where they are defined,
+			** UNLESS you explicitly tell it that they are dependent on the
+			** parent class...
+			**
+			** One way to do that is with 'using Parent<T>::var', meaning, "Hey,
+			** compiler! When I say var, I mean the one Abintree<T> defines,
+			** mmkay?"
+			**
+			** Another way is to use this->var everywhere. Does that mean the
+			** 'this' pointer is of type Parent<T> * and it's using polymorphic
+			** shenanigans? :?
+			**
+			** Whatever the case, I am using the first solution, mainly so I
+			** have somewhere convenient to put this study note. :P
+			**
+			** I'll just make t_bstnode inherited from a parent class, he said.
+			** Then I can pass it to the allocator via the parent class, he
+			** said. IT'LL BE EASY, HE SAID! Two hours later...
+			**
+			** Anyway, all bintree functions that depend on Alloc or Comp for
+			** their functionality will be defined in the derived class. All
+			** other functions are defined in the parent class and used by the
+			** derived class.
+			*/
+			/* PRIVATE BASE CLASS VARIABLE REFERENCES */
+			using Abintree<data_type>::_root;
+			using Abintree<data_type>::_min;
+			using Abintree<data_type>::_max;
+			using Abintree<data_type>::_size;
+			/* PRIVATE BASE CLASS FUNCTION REFERENCES */
+			using Abintree<data_type>::bintree_depth;
+			using Abintree<data_type>::right_rotation;
+			using Abintree<data_type>::left_rotation;
+			using Abintree<data_type>::left_case;
+			using Abintree<data_type>::right_case;
+			using Abintree<data_type>::bintree_balance;
+			using Abintree<data_type>::fix_double_black;
+
+
+
+			/* ---- PRIVATE BINARY TREE CONTROL FUNCTIONS ---- */
+			/*
+			** These functions are a mix of modified old C functions I wrote to
+			** implement red-black binary trees in my libft (personal C library
+			** for school), and new functions I added for the containerization
+			** and C++ features. Some of them could probably stand a bit of
+			** polishing, but the black hole waits for no one...
+			*/
+
+			/* IS VALID POSITION */
+			/*
+			** This function checks whether the node pointed to by the iterator
+			** passed as 'position' is a valid insertion position for the key
+			** passed as 'key'. It is used by insert with hint to verify hints.
+			**
+			** This is a friend function to the first argument's iterator type,
+			** to facilitate direct access to its protected node pointer.
+			**
+			** -- RETURN VALUE --
+			** If the insertion position is valid, true is returned. Otherwise,
+			** false is returned.
+			*/
+			static bool is_valid_position(iterator const & position, key_type const & key) {
+				if (position._m_ptr == NULL ||
+				(position._m_ptr->prev != NULL && position._m_ptr->prev->data.first > key) ||
+				(position._m_ptr->next != NULL && position._m_ptr->next->data.first <= key)) 
+					return false;
+				return true;
+			}
 			
 			/* GET NEXT NODE */
 			/*
@@ -396,7 +437,7 @@ namespace ft
 			** many node hops were needed to find the matching key, or leaf
 			** child of the closest node, and save the result in 'hops'.
 			*/
-			t_bstnode *	bintree_search(t_bstnode *root, key_type const & key, typename Iterator<t_bstnode, std::bidirectional_iterator_tag>::difference_type & hops) const
+			t_bstnode *	bintree_search(t_bstnode *root, key_type const & key, typename iterator::difference_type & hops) const
 			{
 				if (root == NULL || !_is_less(root->data.first, key) & !_is_less(key, root->data.first))
 					return (root);
@@ -681,6 +722,7 @@ namespace ft
 				return (NULL);
 			}
 
+			/* BINTREE FREE */
 			/*
 			** This is an iterative function for freeing memory used by binary
 			** trees. Memory is zeroed before freeing. This is CPU-intensive,
@@ -739,6 +781,24 @@ namespace ft
 				return (root_canal(root));
 			}
 
+			/* GET NEAREST NODE */
+			/*
+			** This function traverses the tree to the first key equal to 'key'
+			** and returns it. If there is no exactly equal key, it traverses to
+			** the closest LEAF (NULL node) to the key passed as 'key' and
+			** returns its PARENT.
+			*/
+			t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
+				if (node == NULL)
+					return (const_cast<t_bstnode *>(parent));
+				else if (!_is_less(node->data.first, key) && !_is_less(key, node->data.first)) //node->data.first == key
+					return (const_cast<t_bstnode *>(node));
+				else if (_is_less(node->data.first, key)) //node->data < key
+					return (getNearestNode(node->right, node, key));
+				else
+					return (getNearestNode(node->left, node, key));
+			}
+
 			/* RECURSIVE COUNT */
 			/*
 			** Should I be a lambda? Could I be a lambda? Recursive lambdas?
@@ -758,29 +818,8 @@ namespace ft
 					return (1 + recursive_count(node->right, key) + recursive_count(node->left, key));
 			}
 
-			/*
-			** This function traverses the tree to the first key equal to 'key'
-			** and returns it. If there is no exactly equal key, it traverses to
-			** the closest LEAF (NULL node) to the key passed as 'key' and
-			** returns its PARENT.
-			*/
-			t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
-				if (node == NULL)
-					return (const_cast<t_bstnode *>(parent));
-				else if (!_is_less(node->data.first, key) && !_is_less(key, node->data.first)) //node->data.first == key
-					return (const_cast<t_bstnode *>(node));
-				else if (_is_less(node->data.first, key)) //node->data < key
-					return (getNearestNode(node->right, node, key));
-				else
-					return (getNearestNode(node->left, node, key));
-			}
-
 		public:
-			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
-			typedef Iterator<const t_bstnode, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
-			typedef ft::reverse_iterator<iterator>								reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
-
+			/* CONSTRUCTORS AND DESTRUCTOR */
 			bintree_pair(void) : Abintree<data_type>() {};
 			~bintree_pair(void) {
 				//debug
@@ -791,7 +830,7 @@ namespace ft
 
 			/* ---- ITERATORS ---- */
 
-			/* BEGIN AND END METHODS */
+			/* BEGIN AND END */
 			/*
 			** These functions respectively return iterators to the first
 			** element of the container and the memory address after the last
@@ -816,10 +855,7 @@ namespace ft
 			** has more than enough overhead as it is. ;)
 			**
 			** Note: While technically these are bidirectional iterators, full
-			** functionality is implemented. Nevertheless, the inefficiency of
-			** actually iterating on a binary tree is OFF THE CHARTS. Seriously.
-			** Just don't do it. If you need to iterate, use another structure.
-			** The tree is really meant for performing searches.
+			** functionality is implemented.
 			*/
 			iterator begin(void) {
 				return (iterator(_min));
@@ -888,9 +924,15 @@ namespace ft
 			** my_bintree["new_key"];						Insert new pair with "new_key" and default instantiated value.
 			** my_bintree["new_key"] = "new_value";			Insert new pair with "new_key" and "new_value".
 			**
-			** The syntax is an alias for find and insert, so time complexity is
-			** O(log n) for each operation. Clever little invention, wish I'd
-			** thought of it instead of learnt it from the STL. ;)
+			** When used to update values associated with existing keys, it is
+			** an alias for find.
+			**
+			** When used to insert new keys, it is an alias for insert.
+			**
+			** So time complexity is O(log n) for each operation.
+			**
+			** Clever little invention, wish I'd thought of it instead of learnt
+			** it from the STL. ;)
 			*/
 			mapped_type &	operator[](key_type const & key) {
 
@@ -899,16 +941,14 @@ namespace ft
 
 			/* ---- MODIFIERS ---- */
 
-			/* INSERT BY KEY - VALUE PAIR */
+			/* INSERT BY KEY - VALUE */
 			/*
 			** This overload is my own. It does the same as INSERT SINGLE
 			** ELEMENT, except it will generate the key-value pair for you.
+			** You're welcome! xD
 			*/
 			ft::pair<iterator, bool>	insert(key_type const & key, mapped_type const & value) {
-				size_type	old_size = size();
-				t_bstnode *	new_node = bintree_add(_root, ft::make_pair(key, value));
-				bool		return_status = size() > old_size ? true : false;
-				return (ft::make_pair(iterator(new_node), return_status));
+				return (insert(ft::make_pair(key, value)));
 			}
 
 			/* INSERT SINGLE ELEMENT */
@@ -948,23 +988,27 @@ namespace ft
 			** logarithmic time, plus the time it took to check for validity.
 			*/
 			//DEBUG
-			static bool is_valid_position(iterator & position, key_type const & key) {
-				t_bstnode * prev_node = *position._m_ptr->prev;
-				t_bstnode * next_node = *position._m_ptr->next;
-
-				if ((prev_node != NULL && prev_node->data.first > key) || (next_node != NULL && next_node->data.first <= key)) 
-					return false;
-				return true;
-			}
 			iterator	insert(iterator hint, value_type const & data) {
-				if (is_valid_position(hint, data.first))
-					return (iterator(bintree_add(&(*hint), data))); //constant time insertion
+				if (is_valid_position(--hint, data.first))
+				{
+					t_bstnode * node = &(*hint);
+					//DEBUG
+					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
+					//DEBUG	
+					return (iterator(bintree_add(node, data))); //constant time insertion
+				}
+				//DEBUG
+				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;
+				//DEBUG
 				return (insert(data).first);
 			}
-			
+
 			/* INSERT RANGE OF ELEMENTS */
 			/*
-			** 
+			** This insert method inserts the range between first and last into
+			** the tree.
+			**
+			** If invalid iterators are passed the computer explodes.
 			*/
 			template<typename InputIt>
 			void		insert(InputIt first, InputIt last, typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL)
@@ -979,6 +1023,8 @@ namespace ft
 			void		clear(void) {
 				this->_root = bintree_free(this->_root);
 			}
+
+			/* THIS IS A DEBUG FUNCTION; REMOVE */
 			//DEBUG
 			void		print(void) {
 				this->ft_bintree_print(_root, 0);
@@ -1001,6 +1047,7 @@ namespace ft
 			** highest key. If the nearest_node key is greater than or equal to
 			** 'key', then it is returned directly.
 			**
+			** -- RETURN VALUE --
 			** The returned iterator points to the node considered to come AFTER
 			** a node containing 'key', or to the first node EQUAL to 'key' if
 			** one exists.
@@ -1033,6 +1080,7 @@ namespace ft
 			** the next highest key. If the nearest_node key is greater than
 			** 'key', then it is returned directly.
 			**
+			** -- RETURN VALUE --
 			** The returned iterator points to the node considered to come AFTER
 			** a node containing 'key'.
 			*/
@@ -1097,6 +1145,10 @@ namespace ft
 			**
 			** This is all explained terribly in the reference manuals, because
 			** C++ is all about making simple things simple. :p
+			**
+			** -- RETURN VALUE --
+			** A pair of iterators, respectively the lower_bound and upper_bound
+			** of the 'key' argument.
 			*/
 			ft::pair<iterator, iterator>				equal_range(key_type const & key) {
 				return (ft::pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
@@ -1112,6 +1164,9 @@ namespace ft
 			** For this tree this will always be either 0 or 1 as duplicates are
 			** not allowed, but a private recursive counting function is called
 			** that will also work with multimap trees. If I ever make one. ;p
+			**
+			** -- RETURN VALUE --
+			** The number of elements containing the 'key' passed as argument.
 			*/
 			size_type	count(key_type const & key) const {
 				return (recursive_count(_root, key));

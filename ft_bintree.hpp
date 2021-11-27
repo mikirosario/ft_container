@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/27 00:20:21 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/27 01:06:13 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ namespace ft
 					typename Iterator::pointer	_m_ptr;
 					typename Iterator::pointer	_last_node;
 					Compare						_is_less;
-					friend bool ft::bintree<T>::is_valid_position(Iterator const & position, T const & key);
+					friend bool ft::bintree<T, Compare>::is_valid_position(Iterator const & position, T const & key);
 			};
 		public:
 			/* ---- NEEDFUL TYPEDEFS ---- */
@@ -192,10 +192,12 @@ namespace ft
 			typedef Iterator<const t_bstnode, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
+
 		private:
 			/* ---- VARIABLES ---- */
 			allocator_type	_alloc;
 			key_compare		_is_less;
+
 			/*
 			** I died and went to C++ heaven after my problem with typedefs in
 			** a templated parent class. This is what I found here: referencing
@@ -228,11 +230,12 @@ namespace ft
 			** other functions are defined in the parent class and used by the
 			** derived class.
 			*/
+			/* PRIVATE BASE CLASS VARIABLE REFERENCES */
 			using Abintree<data_type>::_root;
 			using Abintree<data_type>::_min;
 			using Abintree<data_type>::_max;
 			using Abintree<data_type>::_size;
-			/* BASE CLASS PRIVATE FUNCTION REFERENCES */
+			/* PRIVATE BASE CLASS FUNCTION REFERENCES */
 			using Abintree<data_type>::bintree_depth;
 			using Abintree<data_type>::right_rotation;
 			using Abintree<data_type>::left_rotation;
@@ -264,7 +267,7 @@ namespace ft
 			** If the insertion position is valid, true is returned. Otherwise,
 			** false is returned.
 			*/
-			static bool is_valid_position(Iterator<t_bstnode, std::bidirectional_iterator_tag> const & position, key_type const & key) {
+			static bool is_valid_position(iterator const & position, key_type const & key) {
 				if (position._m_ptr == NULL ||
 				(position._m_ptr->prev != NULL && position._m_ptr->prev->data > key) ||
 				(position._m_ptr->next != NULL && position._m_ptr->next->data <= key)) 
@@ -691,6 +694,7 @@ namespace ft
 				return (NULL);
 			}
 
+			/* BINTREE FREE */
 			/*
 			** This is an iterative function for freeing memory used by binary
 			** trees. Memory is zeroed before freeing. This is CPU-intensive,
@@ -749,6 +753,7 @@ namespace ft
 				return (root_canal(root));
 			}
 
+			/* GET NEAREST NODE */
 			/*
 			** This function traverses the tree to the first key equal to 'key'
 			** and returns it. If there is no exactly equal key, it traverses to
@@ -784,10 +789,8 @@ namespace ft
 				else
 					return (1 + recursive_count(node->right, key) + recursive_count(node->left, key));
 			}
+
 		public:
-
-
-
 			/* CONSTRUCTORS AND DESTRUCTOR */
 			bintree(void) : Abintree<T>() {};
 			~bintree(void) {
@@ -799,7 +802,7 @@ namespace ft
 
 			/* ---- ITERATORS ---- */
 
-			/* BEGIN AND END METHODS */
+			/* BEGIN AND END */
 			/*
 			** These functions respectively return iterators to the first
 			** element of the container and the memory address after the last
@@ -824,10 +827,7 @@ namespace ft
 			** has more than enough overhead as it is. ;)
 			**
 			** Note: While technically these are bidirectional iterators, full
-			** functionality is implemented. Nevertheless, the inefficiency of
-			** actually iterating on a binary tree is OFF THE CHARTS. Seriously.
-			** Just don't do it. If you need to iterate, use another structure.
-			** The tree is really meant for performing searches.
+			** functionality is implemented.
 			*/
 			iterator begin(void) {
 				return (iterator(_min));
@@ -891,16 +891,20 @@ namespace ft
 			** This function will enable the following syntactic sugar:
 			**
 			** SYNTAX										RESOLUTION
-			** my_bintree["existing_key"];					Reference to "existing_key".
-			** my_bintree["new_key"];						Insert "new_key".
+			** my_bintree["existing_key"];					Reference to value pair of "existing_key".
+			** my_bintree["existing_key"] = "new_value";	Replace value pair of "existing_key" with "new_value".
+			** my_bintree["new_key"];						Insert new pair with "new_key" and default instantiated value.
+			** my_bintree["new_key"] = "new_value";			Insert new pair with "new_key" and "new_value".
 			**
-			** The syntax is an alias for find and insert, so time complexity is
-			** O(log n) for each operation. Clever little invention, wish I'd
-			** thought of it instead of learnt it from the STL. ;)
+			** When used to update values associated with existing keys, it is
+			** an alias for find.
 			**
-			** Note: This is a single-value tree, so keys are the same as
-			** values! Keys cannot be directly overwritten without tree
-			** rebalancing, so this version does NOT support value-editing.
+			** When used to insert new keys, it is an alias for insert.
+			**
+			** So time complexity is O(log n) for each operation.
+			**
+			** Clever little invention, wish I'd thought of it instead of learnt
+			** it from the STL. ;)
 			*/
 			mapped_type const &	operator[](key_type const & key) {
 
@@ -932,7 +936,6 @@ namespace ft
 			** logarithmic time, plus the time it took to check for validity.
 			*/
 			//DEBUG
-
 			iterator	insert(iterator hint, value_type const & data) {
 				if (is_valid_position(--hint, data))
 				{
@@ -950,7 +953,10 @@ namespace ft
 			
 			/* INSERT RANGE OF ELEMENTS */
 			/*
-			** 
+			** This insert method inserts the range between first and last into
+			** the tree.
+			**
+			** If invalid iterators are passed the computer explodes.
 			*/
 			template<typename InputIt>
 			void		insert(InputIt first, InputIt last, typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL)
@@ -965,6 +971,7 @@ namespace ft
 			void		clear(void) {
 				_root = bintree_free(this->_root);
 			}
+			/* THIS IS A DEBUG FUNCTION; REMOVE */
 			//DEBUG
 			void	print(void) {
 				this->ft_bintree_print(_root, 0);
@@ -986,6 +993,11 @@ namespace ft
 			** than 'key', the iterator is incremented by one for the next
 			** highest key. If the nearest_node key is greater than or equal to
 			** 'key', then it is returned directly.
+			**
+			** -- RETURN VALUE --
+			** The returned iterator points to the node considered to come AFTER
+			** a node containing 'key', or to the first node EQUAL to 'key' if
+			** one exists.
 			*/
 			iterator	lower_bound(key_type const & key) {
 				t_bstnode *	nearest_node = getNearestNode(_root, NULL, key);
@@ -1008,12 +1020,16 @@ namespace ft
 			/* UPPER BOUND */
 			/*
 			** This function first obtains the node containing an exact match to
-			** 'key' (if one exists), or else the node that would be closest to a
-			** node containing 'key', from the getNearestNode function, and
+			** 'key' (if one exists), or else the node that would be closest to
+			** a node containing 'key', from the getNearestNode function, and
 			** creates an iterator out of it. If the nearest_node key is less
 			** than or equal to 'key', the iterator is incremented by one for
 			** the next highest key. If the nearest_node key is greater than
 			** 'key', then it is returned directly.
+			**
+			** -- RETURN VALUE --
+			** The returned iterator points to the node considered to come AFTER
+			** a node containing 'key'.
 			*/
 			iterator	upper_bound(key_type const & key) {
 				t_bstnode * nearest_node = getNearestNode(_root, NULL, key);
@@ -1023,7 +1039,7 @@ namespace ft
 					++ret;
 				return(ret);
 			}
-
+			
 			const_iterator	upper_bound(key_type const & key) const {
 				t_bstnode * 	nearest_node = getNearestNode(_root, NULL, key);
 				const_iterator	ret(nearest_node);
@@ -1076,6 +1092,10 @@ namespace ft
 			**
 			** This is all explained terribly in the reference manuals, because
 			** C++ is all about making simple things simple. :p
+			**
+			** -- RETURN VALUE --
+			** A pair of iterators, respectively the lower_bound and upper_bound
+			** of the 'key' argument.
 			*/
 			ft::pair<iterator, iterator>				equal_range(key_type const & key) {
 				return (ft::pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
@@ -1091,6 +1111,9 @@ namespace ft
 			** For this tree this will always be either 0 or 1 as duplicates are
 			** not allowed, but a private recursive counting function is called
 			** that will also work with multimap trees. If I ever make one. ;p
+			**
+			** -- RETURN VALUE --
+			** The number of elements containing the 'key' passed as argument.
 			*/
 			size_type	count(key_type const & key) const {
 				return (recursive_count(_root, key));
@@ -1107,8 +1130,6 @@ namespace ft
 				t_bstnode *	node = bintree_search(_root, key);
 				return (node == NULL ? end() : iterator(node));
 			}
-			//DEBUG
-
 	};
 };
 

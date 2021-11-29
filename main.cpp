@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/29 13:18:58 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/29 14:51:27 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1254,10 +1254,26 @@ int main(void)
 	PRINT << "Equal is key ?: " << (eqtest1.begin() == eqtest2.begin()) << END;
 	PRINT << "Equal is address ?: " << (eqtest1.begin() == eqtest1.begin()) << END;
 	PRINT << "Ends are NULL ?: " << (eqtest1.end() == eqtest2.end()) << END;
+	PRINT << "End == Begin - 1 ?: " << ((--eqtest1.begin()) == eqtest2.end()) << END;
+
+	PRINT << "MAP TIENE DOS COMPORTAMIENTOS DISTINTOS PARA END Y --BEGIN O_O" << END;
 
 	size_t i = 0;
 	for(std::map<std::string, std::string>::iterator it = eqtest1.begin(); i < 8; ++it, ++i)
 		{PRINT << "Iteration test STL: " << &(*it) << END;}
+
+	PRINT << "QUÉ LÍO" << END;
+	i = 0;
+	for(std::map<std::string, std::string>::iterator it = (--eqtest1.end()); i < 8; --it, ++i)
+		{PRINT << "Iteration test STL: " << &(*it) << END;}
+	PRINT << "QUÉ LÍO" << END;
+	i = 0;
+	for(std::map<std::string, std::string>::reverse_iterator rit = eqtest1.rbegin(); i < 8; ++rit, ++i)
+		{PRINT << "Iteration test STL: " << &(*rit) << END;}
+	PRINT << "QUÉ LÍO" << END;
+	i = 0;
+	for(std::map<std::string, std::string>::reverse_iterator rit = (++eqtest1.rend()); i < 8; --rit, ++i)
+		{PRINT << "Iteration test STL: " << &(*rit) << END;}
 
 	// if (iterator_tests())
 	// 	PRINT << TXT_BGRN "OK" << END;

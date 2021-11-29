@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/29 14:51:27 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/29 16:28:41 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1266,14 +1266,14 @@ int main(void)
 	i = 0;
 	for(std::map<std::string, std::string>::iterator it = (--eqtest1.end()); i < 8; --it, ++i)
 		{PRINT << "Iteration test STL: " << &(*it) << END;}
-	PRINT << "QUÉ LÍO" << END;
+	PRINT << "QUÉ LÍO NO BAJA DE REND/BEGIN!? !? WHYYYYYY" << END;
 	i = 0;
 	for(std::map<std::string, std::string>::reverse_iterator rit = eqtest1.rbegin(); i < 8; ++rit, ++i)
-		{PRINT << "Iteration test STL: " << &(*rit) << END;}
-	PRINT << "QUÉ LÍO" << END;
-	i = 0;
-	for(std::map<std::string, std::string>::reverse_iterator rit = (++eqtest1.rend()); i < 8; --rit, ++i)
-		{PRINT << "Iteration test STL: " << &(*rit) << END;}
+		{PRINT << (i == 2 ? "REND" : "Iteration test STL: ") << &(*rit) << END;}
+	// PRINT << "QUÉ LÍO" << END;
+	// i = 0;
+	// for(std::map<std::string, std::string>::reverse_iterator rit = (++eqtest1.rend()); i < 8; --rit, ++i)
+	// 	{PRINT << "Iteration test STL: " << &(*rit) << END;}
 
 	// if (iterator_tests())
 	// 	PRINT << TXT_BGRN "OK" << END;

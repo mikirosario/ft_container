@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/29 14:38:38 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/29 16:19:22 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ namespace ft
 		struct BintreeNode				*right;
 		struct BintreeNode				*next;
 		struct BintreeNode				*prev;
+		struct BintreeNode*	const		_end;
 		//C_key							key; //store in C_key?? could it be consted then??
 		t_bstcolor						color;
 		Data							data;
@@ -61,6 +62,7 @@ namespace ft
 		Value							*value;
 		typedef BintreeNode	t_bstnode;
 		BintreeNode(void) {}
+		BintreeNode(BintreeNode * const set_end) : _end(set_end) {}
 		private:
 			struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
 	};
@@ -134,6 +136,7 @@ namespace ft
 			t_bstnode *		_root;
 			t_bstnode *		_min;
 			t_bstnode *		_max;
+			t_bstnode		_end;
 			size_type		_size;
 			key_compare		_is_less;
 
@@ -175,7 +178,7 @@ namespace ft
 				}
 				//Arithmetic Operator Overloads
 				Iterator &							operator++(void) {
-					if (this->_m_ptr != NULL)
+					if (this->_m_ptr != this->_m_ptr->_end)
 					{
 						this->_last_node = this->_m_ptr;
 						this->_m_ptr = this->_m_ptr->next;
@@ -183,13 +186,13 @@ namespace ft
 					else
 					{
 						this->_m_ptr = this->_last_node;
-						this->_last_node = NULL;
+						this->_last_node = this->_m_ptr->_end;
 					}
 					return (*this);
 				}
 				Iterator							operator++(int) {
 					Iterator	ret(this->_m_ptr);
-					if (this->_m_ptr != NULL)
+					if (this->_m_ptr != this->_m_ptr->_end)
 					{
 						this->_last_node = this->_m_ptr;
 						this->_m_ptr = this->_m_ptr->next;
@@ -197,26 +200,26 @@ namespace ft
 					else
 					{
 						this->_m_ptr = this->_last_node;
-						this->_last_node = NULL;
+						this->_last_node = this->_m_ptr->_end;
 					}
 					return (ret);
 				}
 				Iterator & 							operator--(void) {
-					if (this->_m_ptr != NULL)
+					if (this->_m_ptr != this->_m_ptr->_end)
 					{
 						this->_last_node = this->_m_ptr;
 						this->_m_ptr = this->_m_ptr->prev;
 					}
 					else
-					{
+					{	
 						this->_m_ptr = this->_last_node;
-						this->_last_node = NULL;
+						this->_last_node = this->_m_ptr->_end;
 					}
 					return (*this);
 				}
 				Iterator							operator--(int) {
 					Iterator	ret(this->_m_ptr);
-					if (this->_m_ptr != NULL)
+					if (this->_m_ptr != this->_m_ptr->_end)
 					{
 						this->_last_node = this->_m_ptr;
 						this->_m_ptr = this->_m_ptr->prev;
@@ -224,7 +227,7 @@ namespace ft
 					else
 					{
 						this->_m_ptr = this->_last_node;
-						this->_last_node = NULL;
+						this->_last_node = this->_m_ptr->_end;
 					}
 					return (ret);
 				}
@@ -271,7 +274,7 @@ namespace ft
 					typedef Iterator iterator;
 					typename Iterator::pointer	_m_ptr;
 					typename Iterator::pointer	_last_node;
-					friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key);
+					friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key) const;
 			};
 
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
@@ -280,7 +283,7 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			Abintree(void) : _root(NULL), _min(NULL), _max(NULL), _size(0) {}
+			Abintree(void) : _root(NULL), _min(&_end), _max(&_end), _end(&_end), _size(0) {}
 			virtual ~Abintree(void) {}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
@@ -305,10 +308,13 @@ namespace ft
 			** If the insertion position is valid, true is returned. Otherwise,
 			** false is returned.
 			*/
-			static bool is_valid_position(iterator const & position, key_type const & key) {
-				if (position._m_ptr == NULL ||
-				(position._m_ptr->prev != NULL && C_key(*position._m_ptr->prev->key) > C_key(key)) ||
-				(position._m_ptr->next != NULL && C_key(*position._m_ptr->next->key) <= C_key(key))) 
+			bool is_valid_position(iterator const & position, key_type const & key) const {
+				std::cerr << "M_PTR: " << position._m_ptr << " M_PTR_END " << &_end << std::endl;
+				if (position._m_ptr == NULL)
+					return false;
+				if (position._m_ptr == NULL || position._m_ptr == &_end ||
+				(position._m_ptr->prev != &_end && C_key(*position._m_ptr->prev->key) > C_key(key)) ||
+				(position._m_ptr->next != &_end && C_key(*position._m_ptr->next->key) <= C_key(key))) 
 					return false;
 				return true;
 			}
@@ -494,14 +500,15 @@ namespace ft
 				try
 				{
 					node = _alloc.allocate(1);
-					_alloc.construct(node, t_bstnode());
+					_alloc.construct(node, t_bstnode(&_end));
 					node->data = data;
 					this->assign_key_value_pointers(node);
 					node->parent = parent;
 					node->left = NULL;
 					node->right = NULL;
-					node->next = NULL;
-					node->prev = NULL;
+					node->next = &_end;
+					node->prev = &_end;
+					//node->_end = &_end;
 					node->color = t_bstnode::RED;
 				}
 				catch (std::bad_alloc const & e)
@@ -630,15 +637,19 @@ namespace ft
 					t_bstnode *	next_node = getNextNode(new_node);
 					t_bstnode * prev_node = getPrevNode(new_node);
 					//THREADING
-					new_node->next = next_node;
-					new_node->prev = prev_node;
 					if (next_node != NULL)
+					{
+						new_node->next = next_node;
 						next_node->prev = new_node;
+					}
 					if (prev_node != NULL)
+					{
+						new_node->prev = prev_node;
 						prev_node->next = new_node;
-					if (_min == NULL || C_key(new_key) < C_key(*_min->key))
+					}
+					if (_min == &_end || C_key(new_key) < C_key(*_min->key))
 						_min = new_node;
-					if (_max == NULL || C_key(new_key) > C_key(*_max->key)) 
+					if (_max == &_end || C_key(new_key) > C_key(*_max->key)) 
 						_max = new_node;
 				}
 				catch(std::bad_alloc const & e)
@@ -669,9 +680,9 @@ namespace ft
 			*/
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
-				if (node->next != NULL)
+				if (node->next != &_end)
 					node->next->prev = node->prev;
-				if (node->prev != NULL)
+				if (node->prev != &_end)
 					node->prev->next = node->next;
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);

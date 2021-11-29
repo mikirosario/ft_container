@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/26 23:01:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/29 13:18:58 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 #include <iomanip>
 #include <vector>
 #include <cstring>
+
+
+#include <map>
 
 #define PRINT std::cout
 #define ALN std::left << std::setw(30)
@@ -1240,6 +1243,21 @@ int main(void)
 	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
 		PRINT << it->data.second << END;
 
+	std::map<std::string, std::string>	eqtest1;
+	std::map<std::string, std::string>	eqtest2;
+
+	eqtest1.insert(std::make_pair("1", "1"));
+	eqtest1.insert(std::make_pair("2", "2"));
+	eqtest2.insert(std::make_pair("0", "1"));
+	eqtest2.insert(std::make_pair("1", "2"));
+
+	PRINT << "Equal is key ?: " << (eqtest1.begin() == eqtest2.begin()) << END;
+	PRINT << "Equal is address ?: " << (eqtest1.begin() == eqtest1.begin()) << END;
+	PRINT << "Ends are NULL ?: " << (eqtest1.end() == eqtest2.end()) << END;
+
+	size_t i = 0;
+	for(std::map<std::string, std::string>::iterator it = eqtest1.begin(); i < 8; ++it, ++i)
+		{PRINT << "Iteration test STL: " << &(*it) << END;}
 
 	// if (iterator_tests())
 	// 	PRINT << TXT_BGRN "OK" << END;

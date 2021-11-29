@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/28 04:06:30 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/29 14:38:38 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1371,11 +1371,18 @@ namespace ft
 			}
 
 			void		erase(t_bstnode & node) {
-				this->bintree_delete(&node);
+				bintree_delete(&node);
 			}
 
 			void		erase(iterator position) {
 				erase(&(*position));
+			}
+
+			size_type	erase(key_type const & key) {
+				size_type	nodes_erased = 0;
+				for(t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = del_node->next, ++nodes_erased)
+					erase(del_node);
+				return (nodes_erased);
 			}
 
 			void		clear(void) {

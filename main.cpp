@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/29 16:28:41 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/30 04:27:16 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1243,6 +1243,45 @@ int main(void)
 	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
 		PRINT << it->data.second << END;
 
+	// PRINT << TXT_NL "BAD RANGE DELETE (SHOULD BE IGNORED)" TXT_NL << END;
+	// test2.erase(new_dictionary.begin(), new_dictionary.end());
+	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+	// 	PRINT << it->data.second << END;
+
+	PRINT << TXT_NL "DELETE NORMINETTE'S ENTRY BY KEY " TXT_NL << END;
+	new_dictionary.erase("norminette");
+	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+	{
+		if (it->next == it->_end)
+			PRINT << "I point to end! " << *it->key << END;
+		else
+			PRINT << "I point to " << *it->next->key << "!" << END;
+		PRINT << it->data.second << END;
+	}
+	// size_t haalp = 0;
+	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(); haalp < 15; ++haalp, ++it)
+	// 	std::cerr << "sollozo: " << it->key << *it->key << std::endl;
+	// 	PRINT << TXT_NL "GOOD RANGE DELETE" TXT_NL << END;
+	// new_dictionary.erase(new_dictionary.begin(), new_dictionary.end());
+	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+	// 	PRINT << it->data.second << END;
+
+	PRINT << TXT_NL "SANTANA DELETE " TXT_NL << END;
+	new_dictionary.erase("santana");
+	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); &(*it) != it->_end; ++it)
+	{
+		(void)end;
+		if (it->next == it->_end)
+			PRINT << "I point to end! " << *it->key << END;
+		else
+			PRINT << "I point to " << *it->next->key << "!" << END;
+		PRINT << it->data.second << END;
+	}
+
+	std::cerr << "I am Max with end address?: " << new_dictionary.getMax() << " " << new_dictionary.getMax()->_end << " My key is: " << *new_dictionary.getMax()->key << " Max->next == end " << (new_dictionary.getMax()->next == new_dictionary.getMax()->_end) << std::endl;
+	ft::bintree_pair<std::string, std::string>::iterator	carmensandiego = (new_dictionary.end() - 1);
+	PRINT << "Where in the world is TIG? " << *carmensandiego->value << END;
+
 	std::map<std::string, std::string>	eqtest1;
 	std::map<std::string, std::string>	eqtest2;
 
@@ -1251,7 +1290,7 @@ int main(void)
 	eqtest2.insert(std::make_pair("0", "1"));
 	eqtest2.insert(std::make_pair("1", "2"));
 
-	PRINT << "Equal is key ?: " << (eqtest1.begin() == eqtest2.begin()) << END;
+	PRINT << "Equal is key ?: " << TXT_NL << (eqtest1.begin() == eqtest2.begin()) << END;
 	PRINT << "Equal is address ?: " << (eqtest1.begin() == eqtest1.begin()) << END;
 	PRINT << "Ends are NULL ?: " << (eqtest1.end() == eqtest2.end()) << END;
 	PRINT << "End == Begin - 1 ?: " << ((--eqtest1.begin()) == eqtest2.end()) << END;

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/29 16:19:22 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/30 04:35:40 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,11 @@ namespace ft
 		Key const						*key;
 		Value							*value;
 		typedef BintreeNode	t_bstnode;
-		BintreeNode(void) {}
+		
 		BintreeNode(BintreeNode * const set_end) : _end(set_end) {}
 		private:
-			struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
+			BintreeNode(void) {}
+			//struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
 	};
 
 	template<typename Data, typename Key, typename Value, typename Compare, typename Alloc>
@@ -146,8 +147,10 @@ namespace ft
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
 				//Constructible
-				Iterator(void) : _m_ptr(NULL), _last_node(NULL) {}
-				explicit Iterator(typename Iterator::pointer ptr) : _m_ptr(ptr), _last_node(NULL) {}
+				private: 
+					Iterator(void) {} //cannot be NULL-instantiated, as functioning depends on the definition of a non-NULL, tree-instantiation-specific end-address
+				public:
+				explicit Iterator(t_bstnode * ptr) : _m_ptr(ptr), _last_node(NULL) {}
 				Iterator(Iterator const & src) : _m_ptr(src._m_ptr), _last_node(src._last_node) {}
 				Iterator(t_bstnode const & node) : _m_ptr(&node), _last_node(NULL) {}
 				//Assignment Operator Overload
@@ -180,8 +183,12 @@ namespace ft
 				Iterator &							operator++(void) {
 					if (this->_m_ptr != this->_m_ptr->_end)
 					{
+						// std::cerr << "AAAAAAARRRRGH: " << this->_m_ptr->key << std::endl;
+						// std::cerr << "END: " << this->_m_ptr->_end << std::endl;
+						// std::cerr << "NEXT IS END: " << this->_m_ptr->next << std::endl;
 						this->_last_node = this->_m_ptr;
 						this->_m_ptr = this->_m_ptr->next;
+						// std::cerr << "I. AM. END.: " << this->_m_ptr << std::endl;
 					}
 					else
 					{
@@ -191,17 +198,8 @@ namespace ft
 					return (*this);
 				}
 				Iterator							operator++(int) {
-					Iterator	ret(this->_m_ptr);
-					if (this->_m_ptr != this->_m_ptr->_end)
-					{
-						this->_last_node = this->_m_ptr;
-						this->_m_ptr = this->_m_ptr->next;
-					}
-					else
-					{
-						this->_m_ptr = this->_last_node;
-						this->_last_node = this->_m_ptr->_end;
-					}
+					Iterator	ret(*this);
+					operator++();
 					return (ret);
 				}
 				Iterator & 							operator--(void) {
@@ -218,17 +216,8 @@ namespace ft
 					return (*this);
 				}
 				Iterator							operator--(int) {
-					Iterator	ret(this->_m_ptr);
-					if (this->_m_ptr != this->_m_ptr->_end)
-					{
-						this->_last_node = this->_m_ptr;
-						this->_m_ptr = this->_m_ptr->prev;
-					}
-					else
-					{
-						this->_m_ptr = this->_last_node;
-						this->_last_node = this->_m_ptr->_end;
-					}
+					Iterator	ret(*this);
+					operator--();
 					return (ret);
 				}
 				Iterator &							operator+=(int inc) {
@@ -309,10 +298,7 @@ namespace ft
 			** false is returned.
 			*/
 			bool is_valid_position(iterator const & position, key_type const & key) const {
-				std::cerr << "M_PTR: " << position._m_ptr << " M_PTR_END " << &_end << std::endl;
-				if (position._m_ptr == NULL)
-					return false;
-				if (position._m_ptr == NULL || position._m_ptr == &_end ||
+				if (/*position._m_ptr == NULL || */position._m_ptr == &_end ||
 				(position._m_ptr->prev != &_end && C_key(*position._m_ptr->prev->key) > C_key(key)) ||
 				(position._m_ptr->next != &_end && C_key(*position._m_ptr->next->key) <= C_key(key))) 
 					return false;
@@ -680,16 +666,30 @@ namespace ft
 			*/
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
-				if (node->next != &_end)
-					node->next->prev = node->prev;
-				if (node->prev != &_end)
-					node->prev->next = node->next;
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
 				_alloc.deallocate(node, sizeof(t_bstnode));
 				--_size;
 				return (NULL);
 			}
+
+			void	thread_swap(t_bstnode * node1, t_bstnode * node2) {				
+					t_bstnode *tmp_next = node1->next;
+					t_bstnode *tmp_prev = node1->prev;
+					node1->prev = node2->prev;
+					node1->next = node2->next;
+					if (node1->next != &_end)
+						node1->next->prev = node1;
+					if (node1->prev != &_end)
+						node1->prev->next = node1;
+					node2->prev = tmp_prev;
+					node2->next = tmp_next;
+					if (node2->next != &_end)
+						node2->next->prev = node2;
+					if (node2->prev != &_end)
+						node2->prev->next = node2;
+			}
+
 
 			/* BINTREE DELETE */
 			/*
@@ -700,12 +700,14 @@ namespace ft
 			t_bstnode * bintree_delete(t_bstnode * node) {
 				if (node == NULL)
 					return (NULL);
-				if (node == _min)
-					_min = _min->next;
-				if (node == _max)
-					_max = _max->prev;
+				
+				if (node->next != &_end) //rethread 
+					node->next->prev = node->prev;
+				if (node->prev != &_end)
+					node->prev->next = node->next;
+					
 				if (node->right == NULL && node->left == NULL) //it's a leaf/both children are NULL
-				{
+				{				
 					if (node->parent != NULL)
 					{
 						if (node->parent->right == node)
@@ -720,35 +722,40 @@ namespace ft
 					node_delete(node);
 				}
 				else if (node->left == NULL) //has only right child
-				{
+				{		
 					//node == v
 					//node->right == u
 					node->data = node->right->data; //copy child to node
+					//this->assign_key_value_pointers(node);
 					if (node->color == t_bstnode::RED || node->right->color == t_bstnode::RED) //if either original node or replacement node are RED...
 						node->color = t_bstnode::BLK; //replacement node is BLACK
 					else //if both original node and replacement node are BLACK...
 						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
+					thread_swap(node, node->right);
 					node->right = node_delete(node->right); //delete the original child
 				}
 				else if (node->right == NULL) //has only left child
 				{
 					node->data = node->left->data; // copy child to node
+					//this->assign_key_value_pointers(node);
 					if (node->color == t_bstnode::RED || node->left->color == t_bstnode::RED)  //if either original node or replacement node are RED...
 						node->color = t_bstnode::BLK; //replacement node is BLACK
 					else //if both original node and replacement node are BLACK...
 						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
+					thread_swap(node, node->left);
 					node->left = node_delete(node->left); //delete the original child
 				}
 				else //has two children
 				{
 					//get successor node, swap data with it, and delete the successor
 					t_bstnode * successor = node->right;
-					data_type	data;
+					data_type	data;;
 					while (successor->left != NULL)
 						successor = successor->left;
 					data = node->data;
 					node->data = successor->data;
-					successor->data = node->data;
+					thread_swap(node, successor);
+					successor->data = data;
 					bintree_delete(successor);
 				}
 				return (NULL);
@@ -1382,18 +1389,40 @@ namespace ft
 			}
 
 			void		erase(t_bstnode & node) {
-				bintree_delete(&node);
+				if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree
+				{
+					bintree_delete(&node);
+					_max = findMax();
+					_min = findMin();
+				}
 			}
 
 			void		erase(iterator position) {
-				erase(&(*position));
+				erase(*position);
 			}
 
 			size_type	erase(key_type const & key) {
 				size_type	nodes_erased = 0;
-				for(t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = del_node->next, ++nodes_erased)
-					erase(del_node);
+				// for (t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = bintree_search(_root, key))
+				// 	erase(*del_node);
+				t_bstnode *del_node = bintree_search(_root, key);
+				if (del_node != NULL && ++nodes_erased)
+					erase(*del_node);
 				return (nodes_erased);
+			}
+
+			void		erase(iterator first, iterator last) {
+				ft::vector<key_type>	key_list;
+				while (first != last)
+				{
+					key_list.push_back(*first->key);
+					++first;
+				}
+
+				for (typename ft::vector<key_type>::iterator it = key_list.begin(), end = key_list.end(); it != end; ++it)
+				{
+					erase(*it);
+				}
 			}
 
 			void		clear(void) {
@@ -1552,6 +1581,23 @@ namespace ft
 			iterator	find(key_type const & key) {
 				t_bstnode *	node = bintree_search(_root, key);
 				return (node == NULL ? end() : iterator(node));
+			}
+
+			t_bstnode * getMax(void) {
+				return(_max);
+			}
+
+			t_bstnode *	findMax(void) {
+				t_bstnode * node = _root;
+				while (node->right != NULL)
+					node = node->right;
+				return (node);
+			}
+			t_bstnode *	findMin(void) {
+				t_bstnode * node = _root;
+				while (node->left != NULL)
+					node = node->left;
+				return (node);
 			}
 	};
 }

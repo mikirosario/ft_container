@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/30 04:27:16 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/30 05:40:43 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1261,10 +1261,6 @@ int main(void)
 	// size_t haalp = 0;
 	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(); haalp < 15; ++haalp, ++it)
 	// 	std::cerr << "sollozo: " << it->key << *it->key << std::endl;
-	// 	PRINT << TXT_NL "GOOD RANGE DELETE" TXT_NL << END;
-	// new_dictionary.erase(new_dictionary.begin(), new_dictionary.end());
-	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
-	// 	PRINT << it->data.second << END;
 
 	PRINT << TXT_NL "SANTANA DELETE " TXT_NL << END;
 	new_dictionary.erase("santana");
@@ -1281,6 +1277,24 @@ int main(void)
 	std::cerr << "I am Max with end address?: " << new_dictionary.getMax() << " " << new_dictionary.getMax()->_end << " My key is: " << *new_dictionary.getMax()->key << " Max->next == end " << (new_dictionary.getMax()->next == new_dictionary.getMax()->_end) << std::endl;
 	ft::bintree_pair<std::string, std::string>::iterator	carmensandiego = (new_dictionary.end() - 1);
 	PRINT << "Where in the world is TIG? " << *carmensandiego->value << END;
+
+	PRINT << TXT_NL "GOOD RANGE DELETE" TXT_NL << END;
+	new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
+	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+		PRINT << it->data.second << END;
+	carmensandiego = (new_dictionary.end());
+	PRINT << TXT_NL << "Where in the world is TIG? 2 " << *carmensandiego->value << TXT_NL << END;
+	PRINT << "TIG HAS BEEN KIDNAPPED BY END! " << TXT_NL << END;
+	PRINT << "What is happening??? Is begin - 1 still end? " << (&(*(new_dictionary.begin() - 1)) == new_dictionary.begin()->_end) << END;
+	PRINT << "What about end... is END still end? " << (&(*(new_dictionary.end())) == new_dictionary.begin()->_end) << END;
+	PRINT << "What about end + 1... is that end now? " << (&(*(new_dictionary.end() + 1)) == new_dictionary.begin()->_end) << END;
+	PRINT << "FUCK MY LIFE!!!" << END;
+	PRINT << "What about _max, what do you think that is??? " << *new_dictionary.getMax()->key << std::endl;
+	PRINT << "HOW!? What is root-left then????" << new_dictionary.getRootNode()->left << std::endl;
+	PRINT << "HOW!? What is root-right then????" << new_dictionary.getRootNode()->right << std::endl;
+	PRINT << "HOW!? What is root then????" << *new_dictionary.getRootNode()->key << std::endl;
+	PRINT << "HOW DOES THIS HAPPEN!? :_(" << *new_dictionary.getRootNode()->key << std::endl;
+	
 
 	std::map<std::string, std::string>	eqtest1;
 	std::map<std::string, std::string>	eqtest2;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/30 05:37:11 by miki             ###   ########.fr       */
+/*   Updated: 2021/11/30 20:21:27 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -702,10 +702,10 @@ namespace ft
 				if (node == NULL)
 					return (NULL);
 				
-				// if (node->next != &_end) //rethread 
-				// 	node->next->prev = node->prev;
-				// if (node->prev != &_end)
-				// 	node->prev->next = node->next;
+				if (node->next != &_end) //rethread 
+					node->next->prev = node->prev;
+				if (node->prev != &_end)
+					node->prev->next = node->next;
 					
 				if (node->right == NULL && node->left == NULL) //it's a leaf/both children are NULL
 				{				
@@ -1389,48 +1389,44 @@ namespace ft
 				return (_alloc.max_size());
 			}
 
-			void		erase(t_bstnode & node) {
-				if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree
-				{
-					if (node.next != &_end) //rethread 
-						node.next->prev = node.prev;
-					if (node.prev != &_end)
-						node.prev->next = node.next;
-					bintree_delete(&node);
-					_max = findMax();
-					_min = findMin();
-				}
-			}
+			// void		erase(t_bstnode & node) {
+			// 	if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree
+			// 	{
+			// 		bintree_delete(&node);
+			// 		_max = findMax();
+			// 		_min = findMin();
+			// 	}
+			// }
 
-			void		erase(iterator position) {
-				erase(*position);
-			}
+			// void		erase(iterator position) {
+			// 	erase(*position);
+			// }
 
-			size_type	erase(key_type const & key) {
-				size_type	nodes_erased = 0;
-				// for (t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = bintree_search(_root, key))
-				// 	erase(*del_node);
-				t_bstnode *del_node = bintree_search(_root, key);
+			// size_type	erase(key_type const & key) {
+			// 	size_type	nodes_erased = 0;
+			// 	// for (t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = bintree_search(_root, key))
+			// 	// 	erase(*del_node);
+			// 	t_bstnode *del_node = bintree_search(_root, key);
 				
-				if (del_node != NULL && ++nodes_erased)
-					erase(*del_node);
-				return (nodes_erased);
-			}
+			// 	if (del_node != NULL && ++nodes_erased)
+			// 		erase(*del_node);
+			// 	return (nodes_erased);
+			// }
 
-			void		erase(iterator first, iterator last) {
-				ft::vector<key_type>	key_list;
-				while (first != last)
-				{
-					key_list.push_back(*first->key);
-					++first;
-				}
+			// void		erase(iterator first, iterator last) {
+			// 	ft::vector<key_type>	key_list;
+			// 	while (first != last)
+			// 	{
+			// 		key_list.push_back(*first->key);
+			// 		++first;
+			// 	}
 
-				for (typename ft::vector<key_type>::iterator it = key_list.begin(), end = key_list.end(); it != end; ++it)
-				{
-					//std::cerr << *it << std::endl;
-					erase(*it);
-				}
-			}
+			// 	for (typename ft::vector<key_type>::iterator it = key_list.begin(), end = key_list.end(); it != end; ++it)
+			// 	{
+			// 		//std::cerr << *it << std::endl;
+			// 		erase(*it);
+			// 	}
+			// }
 
 			void		clear(void) {
 				this->_root = bintree_free(this->_root);

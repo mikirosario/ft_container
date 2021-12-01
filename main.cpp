@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/01 00:49:57 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/01 12:19:33 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1284,12 +1284,20 @@ int main(void)
 	new_dictionary.erase("santana");
 	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
 	{
-		std::cerr << "AQuÏ" << std::endl;
 		if (it->next == it->_end)
 			PRINT << "I point to end! " << *it->key << END;
 		else
 			PRINT << "I point to " << *it->next->key << "!" << END;
 		PRINT << it->data.second << END;
+	}
+
+	for (ft::bintree_pair<std::string, std::string>::reverse_iterator rit = new_dictionary.rbegin(), rend = new_dictionary.rend(); rit != rend; ++rit)
+	{
+		if (rit->next == rit->_end)
+			PRINT << "I point to end! " << *rit->key << END;
+		else
+			PRINT << "I point to " << *rit->next->key << "!" << END;
+		PRINT << rit->data.second << END;
 	}
 
 	std::cerr << "I am Max with end address?: " << new_dictionary.getMax() << " " << new_dictionary.getMax()->_end << " My key is: " << *new_dictionary.getMax()->key << " Max->next == end " << (new_dictionary.getMax()->next == new_dictionary.getMax()->_end) << std::endl;

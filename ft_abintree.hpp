@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/01 02:14:18 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/01 13:31:20 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -695,16 +695,76 @@ namespace ft
 
 			/* NODE REPLACE */
 			/*
-			** This function causes the original node, which is meant to be
-			** deleted, to be replaced by the successor node so that the
-			** successor node can be deleted in its stead.
+			** This function causes the original node's key-value, which is
+			** meant to be deleted, to be replaced by the successor node's
+			** key-value so that the successor node can be deleted instead of
+			** the original node.
+			**
+			** You can imagine that nodes are like fixed addresses. If we want
+			** to delete a node that has two children, rather than orphan both
+			** children we find another node with 0 children or only 1 child to
+			** delete instead, and before we delete it we move its data into the
+			** original node's address and update all references both to the
+			** original and successor as necessary to point to the new address.
 			**
 			** First, the successor node's data must be copied to the original.
-			** The original's data is overwritten.
+			** The original's data is overwritten. This is simple.
 			**
 			** Next, since we have a threaded tree and must preserve the thread
 			** order, we need to fix all next and last pointers associated with
-			** both nodes.
+			** both nodes. This is more complicated.
+			**
+			** If original and successor nodes are neighbours this operation is
+			** simplified.
+			**
+			** If successor is subsequent to original (delete 1; 2 replaces 1):
+			**
+			**	 a -> original
+			**	 1
+			**	/ \
+			** 0   2 -> successor
+			** b   c
+			**
+			**		  0		1	  2
+			** end <- b <-> a <-> c -> end
+			**
+			**		  0		2
+			** end <- b <-> a -> end
+			**
+			** Since successor (2) is subsequent to original (1) and moves to
+			** original's address (a), original->prev(b)->next pointer remains
+			** valid (because after 1 is deleted, 0->next will be 2). It is only
+			** necessary to update original(a)->next pointer to point to
+			** successor(c)->next, and successor->next(end)->prev pointer to
+			** point to original(a) IF it is not equal to end (in the example
+			** above it IS equal to end and is not updated, since end node has
+			** no valid references).
+			**
+			** If successor is antecedent to original (delete 1; 0 replaces 1):
+			**
+			**				  a -> original
+			**				  1
+			**				 / \
+			** successor <-	0   3
+			** 				b   c
+			**
+			**		  0		1	  2
+			** end <- b <-> a <-> c -> end
+			**
+			**		  0		2
+			** end <- a <-> c -> end
+			**
+			** Similarly, since successor (0) is antecedent to original (1) and
+			** moves to original's address (a), original->next(c)->prev pointer
+			** remains valid (because after 1 is deleted, 3->prev will be 0). It
+			** is only necessary to update original(a)->prev pointer to point to
+			** successor(b)->prev, and successor->prev(end)->next pointer to
+			** point to original(a) IF it is not equal to end (in the example
+			** above it IS equal to end and is not updated, since end node has
+			** no valid references).
+			**
+			** If original and successor are NOT sequential neighbours, there
+			** are more steps to update everyone's thread references to them:
 			**
 			** First, since successor is being moved to original's address, if
 			** successor has a next neighbour, the next neighbour's prev must
@@ -713,9 +773,9 @@ namespace ft
 			** original also.
 			**
 			** Second, original is being deleted, so, if it has a prev, its
-			** prev's next must now be changed to point to its own next, and, if
-			** it has a next, its next's prev must be changed to point to its
-			** own prev. So the deleted node's prev and next nodes are
+			** prev's next must now be changed to point to original's next, and,
+			** if it has a next, its next's prev must be changed to point to
+			** original's prev. So the deleted node's prev and next nodes are
 			** 'stitched' together. ;)
 			**
 			** Once that is done, original's transformation into successor is
@@ -727,32 +787,72 @@ namespace ft
 			**
 			** Note that the key and value const pointers cannot and do not need
 			** to be updated as they point to data that is stack-allocated whose
-			** address will not change even if they are overwritten by another
-			** node's data. Subsequent balancing rotations will also not change
-			** any node's address, only its familial relations and color.
+			** address will not change even if their node's data is overwritten
+			** by another node's data. Subsequent balancing rotations will also
+			** not change any node's address, only its familial relations and
+			** color.
 			**
 			** There is no need to copy any data from original to successor, as
 			** after original is transformed into successor, successor will be
 			** deleted instead of original.
 			**
-			** Yeah, there's nothing simple about editing RB binary trees. xD
+			** Yeah, there's NOTHING simple about editing RB binary trees. xD
 			*/
-			void	node_replace(t_bstnode * original, t_bstnode * successor) {				
-					original->data = successor->data; //copy successor to original
+				void	node_replace(t_bstnode * original, t_bstnode * successor) {				
+				original->data = successor->data; //copy successor data to original data
+				if (original->next == successor)
+				{
+					if (successor->next != &_end)
+						successor->next->prev = original;
+					original->next = successor->next;
+				}
+				else if (original->prev == successor)
+				{
+					if (successor->prev != &_end)
+						successor->prev->next = original;
+					original->prev = successor->prev;
+				}
+				else
+				{
 					if (successor->next != &_end)
 						successor->next->prev = original;
 					if (successor->prev != &_end)
 						successor->prev->next = original;
 					stitch_neighbor_nodes(original);
-					original->next = successor->next;
 					original->prev = successor->prev;
+					original->next = successor->next;	
+				}
+					
 			}
+			// void	node_replace(t_bstnode * original, t_bstnode * successor) {				
+			// 		original->data = successor->data; //copy successor to original
+			// 		// t_bstnode * original_prev = original->prev;
+			// 		// t_bstnode * original_next = original->next;
+			// 		// t_bstnode * successor_prev = successor->prev;
+			// 		// t_bstnode * successor->next = successor->next;
+			// 		if (successor->next != &_end)
+			// 			successor->next->prev = original;
+			// 		if (successor->prev != &_end)
+			// 			successor->prev->next = original;
+			// 		if (successor->prev != original)
+			// 		{
+			// 			stitch_neighbor_nodes(original);
+			// 			original->prev = successor->prev;
+			// 		}
+			// 		original->next = successor->next;
+					
+			// }
 
 			/* BINTREE DELETE */
 			/*
 			** Deletes a node from a threaded red-black binary tree. You have NO
 			** idea the HORROR, the PAIN that this implies. It's much worse than
 			** mere insertion. SO much worse. You monster.
+			**
+			** Mercifully, familial relations remain valid and successor nodes
+			** cannot have children, so their familial relations don't need to
+			** be updated. Devastatingly, black depth may change, necessitating
+			** re-coloring and/or re-balancing rotations.
 			*/
 			t_bstnode * bintree_delete(t_bstnode * node) {
 				if (node == NULL)
@@ -1400,17 +1500,17 @@ namespace ft
 				return (const_iterator(_max) + 1);
 			}
 
-			iterator rbegin(void) {
-				return (iterator(_max) + 1);
+			reverse_iterator rbegin(void) {
+				return (reverse_iterator(end()));
 			}
-			const_iterator rbegin(void) const {
-				return (const_iterator(_max) + 1);
+			const_reverse_iterator rbegin(void) const {
+				return (const_reverse_iterator(end()));
 			}
-			iterator rend(void) {
-				return (iterator(_min));
+			reverse_iterator rend(void) {
+				return (reverse_iterator(begin()));
 			}
-			const_iterator rend(void) const {
-				return (const_iterator(_min));
+			const_reverse_iterator rend(void) const {
+				return (const_reverse_iterator(begin()));
 			}
 
 			/* ---- CAPACITY ---- */

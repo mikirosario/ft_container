@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/01 17:45:24 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/01 19:56:52 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,13 +133,14 @@ namespace ft
 
 		protected:
 			/* VARIABLES */
-			allocator_type	_alloc;
-			t_bstnode *		_root;
-			t_bstnode *		_min;
-			t_bstnode *		_max;
-			t_bstnode		_end;
-			size_type		_size;
-			key_compare		_is_less;
+			allocator_type			_alloc;
+			t_bstnode *				_root;
+			t_bstnode *				_min;
+			t_bstnode *				_max;
+			t_bstnode				_end;
+			ft::vector<t_bstnode *>	_thread;
+			size_type				_size;
+			key_compare				_is_less;
 
 			/* BINTREE_PAIR ITERATOR */
 			/* THEY POINT TO NODE */
@@ -272,7 +273,7 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			Abintree(void) : _root(NULL), _min(&_end), _max(&_end), _end(&_end), _size(0) {}
+			Abintree(void) : _root(NULL), _min(&_end), _max(&_end), _end(&_end), _thread(1, &_end), _size(0) {}
 			virtual ~Abintree(void) {}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
@@ -638,6 +639,8 @@ namespace ft
 						_min = new_node;
 					if (_max == &_end || C_key(new_key) > C_key(*_max->key)) 
 						_max = new_node;
+						//thread se debe inicializar con _end
+					//for (ft::vector<t_bstnode *>::iterator it = _thread.begin(), _thread.end(); )
 				}
 				catch(std::bad_alloc const & e)
 				{
@@ -1571,22 +1574,21 @@ namespace ft
 			//everything is problem
 			//:_/
 			void		erase(iterator first, iterator last) {
-				// // while (first != last)
-				// // 	erase(first++);
-				// for ( ; first != last; ++first)
-				// 	erase(first);
-				ft::vector<key_type>	key_list;
 				while (first != last)
-				{
-					key_list.push_back(*first->key);
-					++first;
-				}
+					erase(*first++);
 
-				for (typename ft::vector<key_type>::iterator it = key_list.begin(), end = key_list.end(); it != end; ++it)
-				{
-					//std::cerr << *it << std::endl;
-					erase(*it);
-				}
+				// ft::vector<key_type>	key_list;
+				// while (first != last)
+				// {
+				// 	key_list.push_back(*first->key);
+				// 	++first;
+				// }
+
+				// for (typename ft::vector<key_type>::iterator it = key_list.begin(), end = key_list.end(); it != end; ++it)
+				// {
+				// 	//std::cerr << *it << std::endl;
+				// 	erase(*it);
+				// }
 			}
 
 			void		clear(void) {

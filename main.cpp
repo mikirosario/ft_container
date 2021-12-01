@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/01 17:34:01 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/01 18:58:35 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1304,10 +1304,38 @@ int main(void)
 	ft::bintree_pair<std::string, std::string>::iterator	carmensandiego = (new_dictionary.end() - 1);
 	PRINT << "Where in the world is TIG? " << *carmensandiego->value << END;
 
+
+	//VALE. EL PLAN. SACAR EL HILO DE LOS NODOS!!!! UN VECTOR DE ENLACES EN LA CLASE!!!!
+	//MUAAAAAAAAAJAJAJAJAJAJAJAAJAJAJAAAAAA!!!!!!!
 	PRINT << TXT_NL "GOOD RANGE DELETE" TXT_NL << END;
-	new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
-	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
-		PRINT << it->data.second << END;
+	// new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
+	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+	// 	PRINT << it->data.second << END;
+	
+	std::map<std::string, std::string>	comp_dict;
+	comp_dict.insert(std::make_pair("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("piscina", "PISCINA: \t\t\t\tEscabechina de aspirantes a estudiantes."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("arbol binario de rojos y negros", "ÁRBOL BINARIO DE ROJOS Y NEGROS: \tEstructura de datos incestuosa que reduce el tiempo de búsqueda a costa de hacer de tu padre el hijo de ti y de tu abuelo."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("tig", "TIG: \t\t\t\t\tTrabajo de interés general."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("lista enlazada", "LISTA ENLAZADA: \t\t\tEstructura de datos en la que cada elemento enlaza el siguiente y el anterior. Lentas en comparaciones e iteraciones, pero rápidas en inserciones y borrados."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("array", "ARRAY: \t\t\t\t\tEstructura de datos contiguos en memoria RAM. Rápidos en comparaciones e iteraciones, pero lentos en inserciones y borrados."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("marvin", "MARVIN: \t\t\t\tRobot cascarrabias."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("norminette", "NORMINETTE: \t\t\t\tGuía de estilo que asegura que nadie podrá entender tu código."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("cafe", "CAFÉ: \t\t\t\t\tBien de primera necesidad para la supervivencia elaborada a partir de granos de café molidos y agua."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
+	comp_dict.insert(std::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\t\tÚnico profesor en activo de 42."));
+
+	std::map<std::string, std::string>::iterator compit = comp_dict.begin();
+	std::map<std::string, std::string>::iterator compend = comp_dict.end();
+	--compend;
+	--compend;
+	for ( ; compit != compend; ++compit)
+		comp_dict.erase(compit);
+	for (compit = comp_dict.begin(), compend = comp_dict.end(); compit != compend; ++compit)
+		std::cout << compit->second << std::endl;
+
+
 	// carmensandiego = (new_dictionary.end());
 	// PRINT << TXT_NL << "Where in the world is TIG? 2 " << *carmensandiego->value << TXT_NL << END;
 	// PRINT << "TIG HAS BEEN KIDNAPPED BY END! " << TXT_NL << END;

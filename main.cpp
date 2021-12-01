@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/30 20:22:44 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/01 00:49:57 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1280,17 +1280,17 @@ int main(void)
 	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(); haalp < 15; ++haalp, ++it)
 	// 	std::cerr << "sollozo: " << it->key << *it->key << std::endl;
 
-	// PRINT << TXT_NL "SANTANA DELETE " TXT_NL << END;
-	// new_dictionary.erase("santana");
-	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); &(*it) != it->_end; ++it)
-	// {
-	// 	(void)end;
-	// 	if (it->next == it->_end)
-	// 		PRINT << "I point to end! " << *it->key << END;
-	// 	else
-	// 		PRINT << "I point to " << *it->next->key << "!" << END;
-	// 	PRINT << it->data.second << END;
-	// }
+	PRINT << TXT_NL "SANTANA DELETE " TXT_NL << END;
+	new_dictionary.erase("santana");
+	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+	{
+		std::cerr << "AQuÏ" << std::endl;
+		if (it->next == it->_end)
+			PRINT << "I point to end! " << *it->key << END;
+		else
+			PRINT << "I point to " << *it->next->key << "!" << END;
+		PRINT << it->data.second << END;
+	}
 
 	std::cerr << "I am Max with end address?: " << new_dictionary.getMax() << " " << new_dictionary.getMax()->_end << " My key is: " << *new_dictionary.getMax()->key << " Max->next == end " << (new_dictionary.getMax()->next == new_dictionary.getMax()->_end) << std::endl;
 	ft::bintree_pair<std::string, std::string>::iterator	carmensandiego = (new_dictionary.end() - 1);

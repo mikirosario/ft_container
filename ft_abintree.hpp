@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/11/30 20:21:27 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/01 01:44:37 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -674,21 +674,79 @@ namespace ft
 				return (NULL);
 			}
 
-			void	thread_swap(t_bstnode * node1, t_bstnode * node2) {				
-					t_bstnode *tmp_next = node1->next;
-					t_bstnode *tmp_prev = node1->prev;
-					node1->prev = node2->prev;
-					node1->next = node2->next;
-					if (node1->next != &_end)
-						node1->next->prev = node1;
-					if (node1->prev != &_end)
-						node1->prev->next = node1;
-					node2->prev = tmp_prev;
-					node2->next = tmp_next;
-					if (node2->next != &_end)
-						node2->next->prev = node2;
-					if (node2->prev != &_end)
-						node2->prev->next = node2;
+			/* STITCH NEIGHBOR NODES */
+			/*
+			** This function will 'stitch' together the previous and next nodes
+			** of a node 'node' that will be deleted, making the previous node's
+			** next point to the deleted node's next and the next node's prev
+			** point to the deleted node's prev.
+			**
+			** When called on a node that will be replaced by another node so
+			** the other node can be deleted instead, it must, of course, be
+			** called BEFORE the successor node's next and prev pointers replace
+			** the original node's next and prev pointers.
+			*/
+			void	stitch_neighbor_nodes(t_bstnode * node) {
+					if (node->prev != &_end)
+						node->prev->next = node->next;
+					if (node->next != &_end)
+						node->next->prev = node->prev;
+			}
+
+			/* NODE REPLACE */
+			/*
+			** This function causes the original node, which is meant to be
+			** deleted, to be replaced by the successor node so that the
+			** successor node can be deleted in its stead.
+			**
+			** First, the successor node's data must be copied to the original.
+			** The original's data is overwritten.
+			**
+			** Next, since we have a threaded tree and must preserve the thread
+			** order, we need to fix all next and last pointers associated with
+			** both nodes.
+			**
+			** First, since successor is being moved to original's address, if
+			** successor has a next neighbour, the next neighbour's prev must
+			** now be changed to point to original, and if it has a prev
+			** neighbour, the prev neighbour's next must be changed to point to
+			** original also.
+			**
+			** Second, original is being deleted, so, if it has a prev, its
+			** prev's next must now be changed to point to its own next, and, if
+			** it has a next, its next's prev must be changed to point to its
+			** own prev. So the deleted node's prev and next nodes are
+			** 'stitched' together. ;)
+			**
+			** Once that is done, original's transformation into successor is
+			** completed by making the original->next and original->prev
+			** pointers point to the successor->next and successor->prev nodes.
+			**
+			** Now original has totally transformed into successor, and the
+			** deleted node's neighbour nodes have been stitched together.
+			**
+			** Note that the key and value const pointers cannot and do not need
+			** to be updated as they point to data that is stack-allocated whose
+			** address will not change even if they are overwritten by another
+			** node's data. Subsequent balancing rotations will also not change
+			** any node's address, only its familial relations and color.
+			**
+			** There is no need to copy any data from original to successor, as
+			** after original is transformed into successor, successor will be
+			** deleted instead of original.
+			**
+			** Yeah, there's nothing simple about editing RB binary trees. xD
+			*/
+
+			void	node_replace(t_bstnode * original, t_bstnode * successor) {				
+					original->data = successor->data; //copy successor to original
+					if (successor->next != &_end)
+						successor->next->prev = original;
+					if (successor->prev != &_end)
+						successor->prev->next = original;
+					stitch_neighbor_nodes(original);
+					original->next = successor->next;
+					original->prev = successor->prev;
 			}
 
 
@@ -701,14 +759,9 @@ namespace ft
 			t_bstnode * bintree_delete(t_bstnode * node) {
 				if (node == NULL)
 					return (NULL);
-				
-				if (node->next != &_end) //rethread 
-					node->next->prev = node->prev;
-				if (node->prev != &_end)
-					node->prev->next = node->next;
-					
 				if (node->right == NULL && node->left == NULL) //it's a leaf/both children are NULL
-				{				
+				{
+					stitch_neighbor_nodes(node);
 					if (node->parent != NULL)
 					{
 						if (node->parent->right == node)
@@ -720,44 +773,44 @@ namespace ft
 						node->color = t_bstnode::BLK; //replacement node is BLACK
 					else // if both original node and replacement node are BLACK
 						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
+				
 					node_delete(node);
 				}
 				else if (node->left == NULL) //has only right child
 				{		
 					//node == v
 					//node->right == u
-					node->data = node->right->data; //copy child to node
+					//node->data = node->right->data; //copy child to node
+					node_replace(node, node->right);
 					//this->assign_key_value_pointers(node);
 					if (node->color == t_bstnode::RED || node->right->color == t_bstnode::RED) //if either original node or replacement node are RED...
 						node->color = t_bstnode::BLK; //replacement node is BLACK
 					else //if both original node and replacement node are BLACK...
 						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
-					thread_swap(node, node->right);
+					
 					node->right = node_delete(node->right); //delete the original child
 				}
 				else if (node->right == NULL) //has only left child
 				{
-					node->data = node->left->data; // copy child to node
+					//node->data = node->left->data; // copy child to node
+					node_replace(node, node->left);
 					//this->assign_key_value_pointers(node);
 					if (node->color == t_bstnode::RED || node->left->color == t_bstnode::RED)  //if either original node or replacement node are RED...
 						node->color = t_bstnode::BLK; //replacement node is BLACK
 					else //if both original node and replacement node are BLACK...
 						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
-					thread_swap(node, node->left);
 					node->left = node_delete(node->left); //delete the original child
 				}
 				else //has two children
 				{
 					//get successor node, swap data with it, and delete the successor
 					t_bstnode * successor = node->right;
-					data_type	data;;
 					while (successor->left != NULL)
 						successor = successor->left;
-					data = node->data;
-					node->data = successor->data;
-					thread_swap(node, successor);
-					successor->data = data;
-					bintree_delete(successor);
+					node_replace(node, successor);
+					bintree_delete(successor);	//although recursive, this branch is a constant time operation as
+												//the successor will always have a NULL left child and so fit one
+												//of the first two preceding cases.
 				}
 				return (NULL);
 			}
@@ -1389,29 +1442,29 @@ namespace ft
 				return (_alloc.max_size());
 			}
 
-			// void		erase(t_bstnode & node) {
-			// 	if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree
-			// 	{
-			// 		bintree_delete(&node);
-			// 		_max = findMax();
-			// 		_min = findMin();
-			// 	}
-			// }
+			void		erase(t_bstnode & node) {
+				if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree
+				{
+					bintree_delete(&node);
+					_max = findMax();
+					_min = findMin();
+				}
+			}
 
 			// void		erase(iterator position) {
 			// 	erase(*position);
 			// }
 
-			// size_type	erase(key_type const & key) {
-			// 	size_type	nodes_erased = 0;
-			// 	// for (t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = bintree_search(_root, key))
-			// 	// 	erase(*del_node);
-			// 	t_bstnode *del_node = bintree_search(_root, key);
+			size_type	erase(key_type const & key) {
+				size_type	nodes_erased = 0;
+				// for (t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = bintree_search(_root, key))
+				// 	erase(*del_node);
+				t_bstnode *del_node = bintree_search(_root, key);
 				
-			// 	if (del_node != NULL && ++nodes_erased)
-			// 		erase(*del_node);
-			// 	return (nodes_erased);
-			// }
+				if (del_node != NULL && ++nodes_erased)
+					erase(*del_node);
+				return (nodes_erased);
+			}
 
 			// void		erase(iterator first, iterator last) {
 			// 	ft::vector<key_type>	key_list;

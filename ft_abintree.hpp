@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/01 01:44:37 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/01 02:14:18 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -737,7 +737,6 @@ namespace ft
 			**
 			** Yeah, there's nothing simple about editing RB binary trees. xD
 			*/
-
 			void	node_replace(t_bstnode * original, t_bstnode * successor) {				
 					original->data = successor->data; //copy successor to original
 					if (successor->next != &_end)
@@ -749,12 +748,11 @@ namespace ft
 					original->prev = successor->prev;
 			}
 
-
 			/* BINTREE DELETE */
 			/*
-			** Deletes a node from a binary tree. You have NO idea the HORROR,
-			** the PAIN that this implies. It's much worse than mere insertion.
-			** SO much worse. You monster.
+			** Deletes a node from a threaded red-black binary tree. You have NO
+			** idea the HORROR, the PAIN that this implies. It's much worse than
+			** mere insertion. SO much worse. You monster.
 			*/
 			t_bstnode * bintree_delete(t_bstnode * node) {
 				if (node == NULL)
@@ -948,20 +946,20 @@ namespace ft
 					LEFT_CHILD = 0, RIGHT_CHILD
 				};
 				enum help	my_sibling;
-				enum help	myself;
+				//enum help	myself;
 				t_bstnode *	sibling;
 				
 				if (node->parent->left == node) //if I am the left child
 				{
 					sibling = node->parent->right;
 					my_sibling = RIGHT_CHILD;
-					myself = LEFT_CHILD;
+					//myself = LEFT_CHILD;
 				}
 				else //if I am the right child
 				{
 					sibling = node->parent->left;
 					my_sibling = LEFT_CHILD;
-					myself = RIGHT_CHILD;
+					//myself = RIGHT_CHILD;
 				}
 				if (sibling == NULL) //if I am an only child, "push" the double black up to my parent!? o_O
 					fix_double_black(node->parent);
@@ -1325,8 +1323,9 @@ namespace ft
 			/*
 			** This function traverses the tree to the first key equal to 'key'
 			** and returns it. If there is no exactly equal key, it traverses to
-			** the closest LEAF (NULL node) to the key passed as 'key' and
-			** returns its PARENT.
+			** the closest NULL node to the key passed as 'key' and returns its
+			** PARENT. This can be used to help find an insertion solution, such
+			** as in lower_bound and upper_bound.
 			*/
 			t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
 				if (node == NULL)
@@ -1342,6 +1341,7 @@ namespace ft
 			/* RECURSIVE COUNT */
 			/*
 			** Should I be a lambda? Could I be a lambda? Recursive lambdas?
+			** Does that even make sense?
 			**
 			** Anyway, this is just a recursive counting function that
 			** counts all instances of a key in a binary tree and returns
@@ -1446,8 +1446,8 @@ namespace ft
 				if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree
 				{
 					bintree_delete(&node);
-					_max = findMax();
-					_min = findMin();
+					_max = findMax(); //We ALWAYS need to do this after a delete
+					_min = findMin(); //because node addresses may change.
 				}
 			}
 

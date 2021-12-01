@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/23 12:18:55 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/01 17:51:21 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -577,7 +577,7 @@ namespace ft
 				try
 				{
 					if (_size + 1 > _capacity)
-						reserve(_capacity * GROWTH_FACTOR);
+						reserve(_size + 1 * GROWTH_FACTOR);
 					_alloc.construct(_arr + _size++, val); //valid for vector only; change for lists, map and such; only place _size increments
 				}
 				catch (std::length_error & e)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/01 13:31:20 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/01 17:45:24 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1551,9 +1551,9 @@ namespace ft
 				}
 			}
 
-			// void		erase(iterator position) {
-			// 	erase(*position);
-			// }
+			void		erase(iterator position) {
+				erase(*position);
+			}
 
 			size_type	erase(key_type const & key) {
 				size_type	nodes_erased = 0;
@@ -1566,20 +1566,28 @@ namespace ft
 				return (nodes_erased);
 			}
 
-			// void		erase(iterator first, iterator last) {
-			// 	ft::vector<key_type>	key_list;
-			// 	while (first != last)
-			// 	{
-			// 		key_list.push_back(*first->key);
-			// 		++first;
-			// 	}
+			//my vector makes problem
+			//my bintree iterator makes problem
+			//everything is problem
+			//:_/
+			void		erase(iterator first, iterator last) {
+				// // while (first != last)
+				// // 	erase(first++);
+				// for ( ; first != last; ++first)
+				// 	erase(first);
+				ft::vector<key_type>	key_list;
+				while (first != last)
+				{
+					key_list.push_back(*first->key);
+					++first;
+				}
 
-			// 	for (typename ft::vector<key_type>::iterator it = key_list.begin(), end = key_list.end(); it != end; ++it)
-			// 	{
-			// 		//std::cerr << *it << std::endl;
-			// 		erase(*it);
-			// 	}
-			// }
+				for (typename ft::vector<key_type>::iterator it = key_list.begin(), end = key_list.end(); it != end; ++it)
+				{
+					//std::cerr << *it << std::endl;
+					erase(*it);
+				}
+			}
 
 			void		clear(void) {
 				this->_root = bintree_free(this->_root);

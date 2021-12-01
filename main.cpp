@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/01 12:19:33 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/01 17:34:01 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1304,10 +1304,10 @@ int main(void)
 	ft::bintree_pair<std::string, std::string>::iterator	carmensandiego = (new_dictionary.end() - 1);
 	PRINT << "Where in the world is TIG? " << *carmensandiego->value << END;
 
-	// PRINT << TXT_NL "GOOD RANGE DELETE" TXT_NL << END;
-	// new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
-	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
-	// 	PRINT << it->data.second << END;
+	PRINT << TXT_NL "GOOD RANGE DELETE" TXT_NL << END;
+	new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
+	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+		PRINT << it->data.second << END;
 	// carmensandiego = (new_dictionary.end());
 	// PRINT << TXT_NL << "Where in the world is TIG? 2 " << *carmensandiego->value << TXT_NL << END;
 	// PRINT << "TIG HAS BEEN KIDNAPPED BY END! " << TXT_NL << END;

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/01 19:56:52 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/01 20:10:15 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,11 @@ namespace ft
 			t_bstnode *				_min;
 			t_bstnode *				_max;
 			t_bstnode				_end;
+			//debug
+			public:
 			ft::vector<t_bstnode *>	_thread;
+			protected:
+			//debug
 			size_type				_size;
 			key_compare				_is_less;
 
@@ -273,7 +277,7 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			Abintree(void) : _root(NULL), _min(&_end), _max(&_end), _end(&_end), _thread(1, &_end), _size(0) {}
+			Abintree(void) : _root(NULL), _min(&_end), _max(&_end), _end(&_end), _size(0) {}
 			virtual ~Abintree(void) {}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
@@ -640,7 +644,16 @@ namespace ft
 					if (_max == &_end || C_key(new_key) > C_key(*_max->key)) 
 						_max = new_node;
 						//thread se debe inicializar con _end
-					//for (ft::vector<t_bstnode *>::iterator it = _thread.begin(), _thread.end(); )
+					{
+						//typedef this
+						typename ft::vector<t_bstnode *>::iterator it = _thread.begin();
+						typename ft::vector<t_bstnode *>::iterator end = _thread.end();
+											//puedo cambiar esto cuando adapte los nodos a usar thread.end() o NULL de nuevo, entonces buscar dire de new_node->next :p
+						while (it != end && C_key(*((*it)->key)) <= C_key(new_key))
+							++it;
+						_thread.insert(it, new_node);
+					}
+						
 				}
 				catch(std::bad_alloc const & e)
 				{

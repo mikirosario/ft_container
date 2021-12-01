@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/01 18:58:35 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/01 20:22:13 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1307,7 +1307,15 @@ int main(void)
 
 	//VALE. EL PLAN. SACAR EL HILO DE LOS NODOS!!!! UN VECTOR DE ENLACES EN LA CLASE!!!!
 	//MUAAAAAAAAAJAJAJAJAJAJAJAAJAJAJAAAAAA!!!!!!!
+	//MAYBE THREAD SHOULD BE STD::LIST????? HMMMMMMM
 	PRINT << TXT_NL "GOOD RANGE DELETE" TXT_NL << END;
+	PRINT << "<EL GRAN PLAN>" << END;
+	PRINT << "PASO UNO" << END;
+	for (size_t i = 0, end = new_dictionary.size(); i < end; ++i)
+		PRINT << *(new_dictionary._thread[i])->key << END;
+	PRINT << "</EL GRAN PLAN>" << TXT_NL << END;
+
+
 	// new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
 	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
 	// 	PRINT << it->data.second << END;

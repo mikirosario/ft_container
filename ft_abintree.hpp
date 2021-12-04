@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 15:27:54 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 19:07:51 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,18 +215,23 @@ namespace ft
 			**
 			** By the way, on my Ubuntu at home... std::map failed this test. xD
 			** But it does pass on the school Macs. Apple finally won one!
-			*/
+			*/			
 			template<typename iT, typename Category>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
+				friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
 				//Constructible
 				private: 
 					Iterator(void) {} //cannot be NULL-instantiated, as functioning depends on the definition of a non-NULL, tree-instantiation-specific end-address
 				public:
 				//explicit Iterator(t_bstnode * ptr) : _m_ptr(ptr), _last_node(NULL) {}
-				Iterator(Iterator const & src) : _lst_it(src._lst_it) {}
+				Iterator(Iterator const & src) : _lst_it(src._lst_it), _root_ptr_addr(src._root_ptr_addr) {}
 				//Iterator(t_bstnode const & node) : _m_ptr(&node), _last_node(NULL) {}
-				Iterator(typename t_thread::iterator const & lst_iterator) : _lst_it(lst_iterator) {}
+				//Iterator(typename t_thread::iterator const & lst_iterator) : _lst_it(lst_iterator) {}
+				Iterator(typename t_thread::iterator const & lst_iterator, t_bstnode ** root_ptr_addr) : _lst_it(lst_iterator), _root_ptr_addr(root_ptr_addr) {
+					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << root_ptr_addr << std::endl;
+					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << _root_ptr_addr << std::endl;
+				}
 
 				//Assignment Operator Overload
 				Iterator &	operator=(Iterator const & rhs) {
@@ -312,9 +317,12 @@ namespace ft
 				protected:
 					typedef Iterator iterator;
 					typename t_thread::iterator	_lst_it;
+					//DEBUG
+					t_bstnode **				_root_ptr_addr;
 					//typename Iterator::pointer	_m_ptr;
 					//typename Iterator::pointer	_last_node;
-					friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key) const;
+					//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key) const;
+					//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
@@ -1615,16 +1623,16 @@ namespace ft
 			** functionality is implemented.
 			*/
 			iterator begin(void) {
-				return (iterator(_thread.begin()));
+				return (iterator(_thread.begin(), &_root));
 			}
 			const_iterator begin(void) const {
-				return (const_iterator(_thread.begin()));
+				return (const_iterator(_thread.begin(), &_root));
 			}
 			iterator end(void) {
-				return (iterator(_thread.end()));
+				return (iterator(_thread.end(), &_root));
 			}
 			const_iterator end(void) const {
-				return (const_iterator(_thread.end()));
+				return (const_iterator(_thread.end(), &_root));
 			}
 
 			reverse_iterator rbegin(void) {
@@ -1671,29 +1679,30 @@ namespace ft
 
 			/* ---- MODIFIERS ---- */
 
-			/* ERASE BY NODE */
-			/*
-			** This function deletes the node passed as 'node'.
-			*/
-			void		erase(t_bstnode & node) {
-												//DEBUG PENDIENTE V
-				//if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree // need pointer to root or something
-				{
-					bintree_delete(&node);
-					//OBSOLETE
-					// _max = findMax(); //We ALWAYS need to do this after a delete
-					// _min = findMin(); //because node addresses may change.
-				}
-			}
 
 			/* ERASE BY POSITION */
 			/*
 			** This function deletes the binary tree node pointed to by the
 			** iterator passed as 'position' if the position exists within the
-			** tree.
+			** tree. Each binary tree iterator has the unique address of the
+			** root pointer of the tree instance to which it belongs.
 			*/
 			void		erase(iterator position) {
-				erase(*position);
+				if (position._root_ptr_addr == &_root)
+					bintree_delete(&(*position));
+			}
+
+			/* ERASE BY NODE */
+			/*
+			** This function deletes the node passed as 'node', if it belongs to
+			** the same tree as the instance.
+			*/
+			void		erase(t_bstnode & node) {
+				t_bstnode *root = &node;
+				while (root->parent != NULL)
+					root = root->parent;
+				if (root == _root) //I check to ensure the node belongs to my tree 
+					bintree_delete(&node);
 			}
 
 			/* ERASE BY KEY */
@@ -1701,11 +1710,15 @@ namespace ft
 			** This function deletes the all nodes containing the key passed as
 			** 'key' and returns the number of deleted nodes. Note: for trees
 			** that do not permit duplicates, this will always be 0 or 1.
+			**
+			** This function bypasses the tree ownership check as we can be sure
+			** that any node returned by bintree_search belongs to the instanced
+			** tree.
 			*/
 			size_type	erase(key_type const & key) {
 				size_type	nodes_erased = 0;
 				for (t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = bintree_search(_root, key), ++nodes_erased)
-					erase(*del_node);
+					bintree_delete(del_node);
 				return (nodes_erased);
 			}
 
@@ -1713,11 +1726,11 @@ namespace ft
 			/*
 			** This function deletes all nodes in the range between first and
 			** last, if the range is valid. Otherwise, only valid nodes will
-			+* be deleted.
+			+* be deleted. ERASE BY POSITION is called.
 			*/
 			void		erase(iterator first, iterator last) {
 				while (first != last)
-					erase(*first++);
+					erase(first++);
 			}
 
 			/* CLEAR */
@@ -1729,9 +1742,10 @@ namespace ft
 				this->_root = bintree_free(this->_root);
 			}
 
-			t_bstnode *	getRootNode(void) const {
-				return (_root);
+			t_bstnode &	getRootNode(void) const {
+				return (*_root);
 			}
+
 			t_bstnode &	getNode(key_type const & key) const {
 				return (*(bintree_search(_root, key)));
 			}
@@ -1765,7 +1779,7 @@ namespace ft
 			*/
 			iterator		lower_bound(key_type const & key) {
 				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
-				iterator		ret(this->thread_search(nearest_node));
+				iterator		ret(this->thread_search(nearest_node), &_root);
 
 				if (C_key(*nearest_node->key) < C_key(key))
 					++ret;
@@ -1774,7 +1788,7 @@ namespace ft
 
 			const_iterator	lower_bound(key_type const & key) const {
 				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
-				const_iterator	ret(this->thread_search(nearest_node));
+				const_iterator	ret(this->thread_search(nearest_node), &_root);
 
 				if (C_key(*nearest_node->key) < C_key(key))
 					++ret;
@@ -1797,7 +1811,7 @@ namespace ft
 			*/
 			iterator		upper_bound(key_type const & key) {
 				t_bstnode * nearest_node = getNearestNode(_root, NULL, key);
-				iterator	ret(this->thread_search(nearest_node));
+				iterator	ret(this->thread_search(nearest_node), &_root);
 
 				if (C_key(*nearest_node->key) <= C_key(key))
 					++ret;
@@ -1806,7 +1820,7 @@ namespace ft
 
 			const_iterator	upper_bound(key_type const & key) const {
 				t_bstnode * 	nearest_node = getNearestNode(_root, NULL, key);
-				const_iterator	ret(this->thread_search(nearest_node));
+				const_iterator	ret(this->thread_search(nearest_node), &_root);
 
 				if (C_key(*nearest_node->key) <= C_key(key))
 					++ret;

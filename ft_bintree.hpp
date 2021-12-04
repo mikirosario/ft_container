@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 05:43:37 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/04 16:49:52 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ namespace ft
 				size_type	old_size = this->size();
 				t_bstnode *	new_node = this->bintree_add(_root, data, data);
 				bool		return_status = this->size() > old_size ? true : false;
-				return (ft::make_pair(iterator(this->thread_search(new_node)), return_status));
+				return (ft::make_pair(iterator(this->thread_search(new_node), &_root), return_status));
 			}
 			
 			//DEBUG
@@ -160,7 +160,7 @@ namespace ft
 					//DEBUG
 					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					//DEBUG	
-					return (iterator(this->thread_search(this->bintree_add(node, data, data)))); //constant time insertion
+					return (iterator(this->thread_search(this->bintree_add(node, data, data)), &_root)); //constant time insertion
 				}
 				//DEBUG
 				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;

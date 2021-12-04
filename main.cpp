@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/04 14:52:53 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 18:21:22 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1358,10 +1358,10 @@ int main(void)
 	PRINT << "TIG HAS BEEN KIDNAPPED BY END! " << TXT_NL << END;
 	PRINT << "FUCK MY LIFE!!!" << END;
 	PRINT << "What about _max, what do you think that is??? " << *new_dictionary.getMax()->key << std::endl;
-	PRINT << "HOW!? What is root-left then????" << new_dictionary.getRootNode()->left << std::endl;
-	PRINT << "HOW!? What is root-right then????" << new_dictionary.getRootNode()->right << std::endl;
-	PRINT << "HOW!? What is root then????" << *new_dictionary.getRootNode()->key << std::endl;
-	PRINT << "HOW DOES THIS HAPPEN!? :_(" << *new_dictionary.getRootNode()->key << std::endl;
+	PRINT << "HOW!? What is root-left then????" << new_dictionary.getRootNode().left << std::endl;
+	PRINT << "HOW!? What is root-right then????" << new_dictionary.getRootNode().right << std::endl;
+	PRINT << "HOW!? What is root then????" << *new_dictionary.getRootNode().key << std::endl;
+	PRINT << "HOW DOES THIS HAPPEN!? :_(" << *new_dictionary.getRootNode().key << std::endl;
 	
 
 	std::map<std::string, std::string>	eqtest1;

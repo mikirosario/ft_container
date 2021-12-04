@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/04 04:21:10 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/04 05:42:36 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1301,7 +1301,6 @@ int main(void)
 		PRINT << rit->data.second << END;
 	}
 
-	std::cerr << "I am Max with end address?: " << new_dictionary.getMax() << " " << new_dictionary.getMax()->_end << " My key is: " << *new_dictionary.getMax()->key << " Max->next == end " << (new_dictionary.getMax()->next == new_dictionary.getMax()->_end) << std::endl;
 	ft::bintree_pair<std::string, std::string>::iterator	carmensandiego = (new_dictionary.end() - 1);
 	PRINT << "Where in the world is TIG? " << *carmensandiego->value << END;
 

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 04:14:21 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/04 05:42:00 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,17 +55,16 @@ namespace ft
 		struct BintreeNode				*right;
 		struct BintreeNode				*next;
 		struct BintreeNode				*prev;
-		struct BintreeNode*	const		_end;
+		//struct BintreeNode*	const		_end;
 		//C_key							key; //store in C_key?? could it be consted then??
 		t_bstcolor						color;
 		Data							data;
 		Key const						*key;
 		Value							*value;
-		typedef BintreeNode	t_bstnode;
-		
-		BintreeNode(BintreeNode * const set_end) : _end(set_end) {}
+		typedef BintreeNode				t_bstnode;
+		BintreeNode(void) {}
 		private:
-			BintreeNode(void) {}
+		
 			//struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
 	};
 
@@ -139,7 +138,7 @@ namespace ft
 			t_bstnode *				_root;
 			t_bstnode *				_min;
 			t_bstnode *				_max;
-			t_bstnode				_end;
+			//t_bstnode				_end;
 			//debug
 			public:
 			t_thread				_thread;
@@ -289,7 +288,7 @@ namespace ft
 
 			/* CONSTRUCTORS AND DESTRUCTOR */
 			//Abintree(void) : _root(NULL), _min(&_end), _max(&_end), _end(&_end), _size(0) {}
-			Abintree(void) : _root(NULL), _min(NULL), _max(NULL), _end(&_end), _size(0) {}
+			Abintree(void) : _root(NULL), _min(NULL), _max(NULL), _size(0) {}
 			virtual ~Abintree(void) {}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
@@ -564,7 +563,7 @@ namespace ft
 				try
 				{
 					node = _alloc.allocate(1);
-					_alloc.construct(node, t_bstnode(&_end));
+					_alloc.construct(node, t_bstnode());
 					node->data = data;
 					this->assign_key_value_pointers(node);
 					node->parent = parent;

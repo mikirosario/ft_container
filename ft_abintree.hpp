@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 05:42:00 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/04 07:04:08 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,8 +136,9 @@ namespace ft
 			/* VARIABLES */
 			allocator_type			_alloc;
 			t_bstnode *				_root;
-			t_bstnode *				_min;
-			t_bstnode *				_max;
+			//OBSOLETE
+			// t_bstnode *				_min;
+			// t_bstnode *				_max;
 			//t_bstnode				_end;
 			//debug
 			public:
@@ -147,8 +148,60 @@ namespace ft
 			size_type				_size;
 			key_compare				_is_less;
 
-			/* BINTREE_PAIR ITERATOR */
-			/* THEY POINT TO NODE */
+			/* BINTREE ITERATOR */
+			/* THEY CONTAIN A LIST ITERATOR THAT POINTS TO BINTREE NODE */
+			/* 
+			** Binary tree iterators have two levels of indirection. They
+			** contain an std::list iterator that points to a list member that
+			** points to a tree node.
+			**
+			** This is done because node addresses may change during deletion
+			** in a binary tree. This happens because nodes with children are
+			** not directly deleted, but rather their data is swapped with those
+			** of the nearest childless node, which is then deleted in their
+			** place.
+			**
+			** If a node address changes, the deletion function will update its
+			** address in the associated _thread list member using a list
+			** iterator. Since binary tree iterators contain a list iterator
+			** that accesses the node through the associated list member, they
+			** will then be automatically updated as well.
+			**
+			** You can visualize it like this:
+			**									  LIST STRUCTURE  TREE STRUCTURE
+			**											🠗				  🠗
+			**											🠗				  🠗
+			**	[BINTREE_ITERATOR.LIST_ITERATOR] -> [LIST_MEMBER] -> [NODE_A]
+			**												🠕
+			**										[LIST_ITERATOR]
+			**												▲
+			**									HEY! UPDATE YOUR POINTER!
+			**												▲
+			**	DELETE(NODE_B) ▶ SWAP(NODE_B, NODE_A) ▶ DELETE(NODE_A)
+			**			
+			** This indirection keeps iterators valid, even when node addresses
+			** change. It's easier to understand if you've done lists in C,
+			** because C++ std::list abstracts the "list member" away from you
+			** with the iterator, but of course a list iterator operates on a
+			** list member, which has its own separate address in memory from
+			** the iterator, and the node pointer is stored at THAT address.
+			**
+			** So, in C terms, this is just a mind-fuckingly complicated way of
+			** saying: This is actually a double pointer to a tree node. ;)
+			**
+			** This is chiefly to make the binary tree compliant with the
+			** std::map::erase documentation regarding Iterator Validity, which
+			** states:
+			**
+			** "Iterators, pointers and references referring to elements removed
+			** by the function are invalidated. All other iterators, pointers
+			** and references keep their validity."
+			**
+			** https://www.cplusplus.com/reference/map/map/erase/
+			**
+			** By the way, on my Ubuntu at home... std::map failed this test. xD
+			** But it does pass on the school Macs. Apple finally won one!
+			*/
 			template<typename iT, typename Category>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
@@ -176,8 +229,6 @@ namespace ft
 					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
 				bool	operator<(Iterator const & rhs) const {
-					//return (_is_less(this->_m_ptr->data.first, rhs._m_ptr->data.first));
-					//return (C_key(*this->_m_ptr->key) < C_key(*rhs._m_ptr->key));
 					return (C_key(*(*this->_lst_it->key)) < C_key(*(*rhs._lst_it->key)));
 				}
 				bool	operator>(Iterator const & rhs) const {
@@ -191,20 +242,6 @@ namespace ft
 				}
 				//Arithmetic Operator Overloads
 				Iterator &							operator++(void) {
-					// if (this->_m_ptr != this->_m_ptr->_end)
-					// {
-					// 	// std::cerr << "AAAAAAARRRRGH: " << this->_m_ptr->key << std::endl;
-					// 	// std::cerr << "END: " << this->_m_ptr->_end << std::endl;
-					// 	// std::cerr << "NEXT IS END: " << this->_m_ptr->next << std::endl;
-					// 	this->_last_node = this->_m_ptr;
-					// 	this->_m_ptr = this->_m_ptr->next;
-					// 	// std::cerr << "I. AM. END.: " << this->_m_ptr << std::endl;
-					// }
-					// else
-					// {
-					// 	this->_m_ptr = this->_last_node;
-					// 	this->_last_node = this->_m_ptr->_end;
-					// }
 					++this->_lst_it;
 					return (*this);
 				}
@@ -214,16 +251,6 @@ namespace ft
 					return (ret);
 				}
 				Iterator & 							operator--(void) {
-					// if (this->_m_ptr != this->_m_ptr->_end)
-					// {
-					// 	this->_last_node = this->_m_ptr;
-					// 	this->_m_ptr = this->_m_ptr->prev;
-					// }
-					// else
-					// {	
-					// 	this->_m_ptr = this->_last_node;
-					// 	this->_last_node = this->_m_ptr->_end;
-					// }
 					--this->_lst_it;
 					return (*this);
 				}
@@ -250,11 +277,6 @@ namespace ft
 					Iterator	dif(*this);
 					return (dif -= rhs);
 				}
-				// typename Iterator::difference_type	operator+(Iterator const & rhs) const {
-				// 	typename Iterator::difference_type	hops = 0;
-				// 	bintree_search(this->_m_ptr, rhs._m_ptr->data.first, hops);
-				// 	return (hops);
-				// }
 				
 				//Referencing Operators
 				//The const references/pointers will be consted by the vector
@@ -287,8 +309,7 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			//Abintree(void) : _root(NULL), _min(&_end), _max(&_end), _end(&_end), _size(0) {}
-			Abintree(void) : _root(NULL), _min(NULL), _max(NULL), _size(0) {}
+			Abintree(void) : _root(NULL), _size(0) {}
 			virtual ~Abintree(void) {}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
@@ -308,15 +329,19 @@ namespace ft
 			**
 			** This is a friend function to the first argument's iterator type,
 			** to provide direct access to its protected thread list iterator.
+			** Specifically, this is to check the embedded list iterator against
+			** list.end().
 			**
 			** -- RETURN VALUE --
 			** If the insertion position is valid, true is returned. Otherwise,
 			** false is returned.
 			*/
 			bool is_valid_position(iterator const & position, key_type const & key) const {
-				if (/*position._m_ptr == NULL || */position._lst_it == _thread.end() ||
-				((*position._lst_it)->prev != NULL && C_key(*(*position._lst_it)->prev->key) <= C_key(key)) ||
-				((*position._lst_it)->next != NULL && C_key(*(*position._lst_it)->next->key) <= C_key(key))) 
+				if (position._lst_it == _thread.end() ||
+				(position->prev != NULL && C_key(*position->prev->key) <= C_key(key)) ||
+				(position->next != NULL && C_key(*position->next->key) <= C_key(key)))
+				// ((*position._lst_it)->prev != NULL && C_key(*(*position._lst_it)->prev->key) <= C_key(key)) ||
+				// ((*position._lst_it)->next != NULL && C_key(*(*position._lst_it)->next->key) <= C_key(key))) 
 					return false;
 				return true;
 			}
@@ -441,9 +466,7 @@ namespace ft
 			/*
 			** This function will search the binary tree node list _thread for
 			** the node address passed as 'node' and return an iterator to the
-			** list member associated with the node (although C++ abstracts the
-			** notion of 'list member' away in favour of iterators, if you've
-			** done lists in C you know it's in there ;)).
+			** list member associated with the node.
 			**
 			** Deferencing the iterator will extract the address of a node from
 			** the associated list member. The node list is in sequential order
@@ -478,10 +501,10 @@ namespace ft
 			** your range will remain valid.
 			**
 			** I've noticed that while this does seem to work the same on
-			** std::map on MacOS, on my Linux compiler the thing just segfaults
-			** if I try this. Apple finally won one! ;)
+			** std::map on MacOS, on my Ubuntu compiler the thing just segfaults
+			** if I try this. Good show, Apple! ;)
 			*/
-			typename t_thread::iterator	thread_search(t_bstnode * node) {
+			typename t_thread::iterator			thread_search(t_bstnode * node) {
 				typename t_thread::iterator it = _thread.begin();
 				typename t_thread::iterator end = _thread.end();
 				while (it != end && *it != node)
@@ -517,7 +540,6 @@ namespace ft
 			*/
 			t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
 			{
-				//std::cerr << root->key << std::endl;
 				if (root == NULL || C_key(*root->key) == C_key(key))
 					return (root);
 				else if (C_key(key) <= C_key(*root->key))
@@ -543,6 +565,7 @@ namespace ft
 			}
 
 			virtual void	assign_key_value_pointers(t_bstnode * node) const = 0;
+
 			/* CREATE NEW NODE */
 			/*
 			** This function dynamically reserves memory in heap for a new node
@@ -569,11 +592,8 @@ namespace ft
 					node->parent = parent;
 					node->left = NULL;
 					node->right = NULL;
-					// node->next = &_end;
-					// node->prev = &_end;
 					node->next = NULL;
 					node->prev = NULL;
-					//node->_end = &_end;
 					node->color = t_bstnode::RED;
 				}
 				catch (std::bad_alloc const & e)
@@ -677,10 +697,9 @@ namespace ft
 			** safely caught and handled here before any part of the
 			** pre-existing tree is modified.
 			**
-			** If allocation succeeds the function balances the tree as needed,
-			** updates the tree's _size variable, and updates the _min and _max
-			** pointers if needed. The tree is threaded, so pointers to next and
-			** previous nodes are updated as needed.
+			** If allocation succeeds the function balances the tree as needed
+			** and updates the tree's _size variable. The tree is threaded, so
+			** pointers to next and previous nodes are updated as needed.
 			**
 			** -- RETURN VALUE --
 			** A pointer to the new node in the tree is returned. If insertion
@@ -712,17 +731,15 @@ namespace ft
 						new_node->prev = prev_node;
 						prev_node->next = new_node;
 					}
-					//if (_min == &_end || C_key(new_key) < C_key(*_min->key))
-					if (_min == NULL || C_key(new_key) < C_key(*_min->key))
-						_min = new_node;
-					//if (_max == &_end || C_key(new_key) > C_key(*_max->key)) 
-					if (_max == NULL || C_key(new_key) > C_key(*_max->key)) 
-						_max = new_node;
-						//thread se debe inicializar con _end
+					// _min and _max should also be obsoleted now by the node list
+					// if (_min == NULL || C_key(new_key) < C_key(*_min->key))
+					// 	_min = new_node;
+					// if (_max == NULL || C_key(new_key) > C_key(*_max->key)) 
+					// 	_max = new_node;
 					{
-						//typedef this
 						typename t_thread::iterator it = _thread.begin();
 						typename t_thread::iterator end = _thread.end();
+											//DEBUG PENDIENTE V
 											//puedo cambiar esto cuando adapte los nodos a usar thread.end() o NULL de nuevo, entonces buscar dire de new_node->next :p
 						while (it != end && C_key(*((*it)->key)) <= C_key(new_key))
 							++it;
@@ -779,10 +796,8 @@ namespace ft
 			** the original node's next and prev pointers.
 			*/
 			void	stitch_neighbor_nodes(t_bstnode * node) {
-					//if (node->prev != &_end)
 					if (node->prev != NULL)
 						node->prev->next = node->next;
-					//if (node->next != &_end)
 					if (node->next != NULL)
 						node->next->prev = node->prev;
 			}
@@ -896,24 +911,20 @@ namespace ft
 				original->data = successor->data; //copy successor data to original data
 				if (original->next == successor)
 				{
-					//if (successor->next != &_end)
 					if (successor->next != NULL)
 						successor->next->prev = original;
 					original->next = successor->next;
 				}
 				else if (original->prev == successor)
 				{
-					//if (successor->prev != &_end)
 					if (successor->prev != NULL)
 						successor->prev->next = original;
 					original->prev = successor->prev;
 				}
 				else
 				{
-					//if (successor->next != &_end)
 					if (successor->next != NULL)
 						successor->next->prev = original;
-					//if (successor->prev != &_end)
 					if (successor->prev != NULL)
 						successor->prev->next = original;
 					stitch_neighbor_nodes(original);
@@ -921,44 +932,28 @@ namespace ft
 					original->next = successor->next;	
 				}
 				
-				//SWAP ADDRESSES IN THREAD
-				typename std::list<t_bstnode *>::iterator thread_org = _thread.begin();
-				typename std::list<t_bstnode *>::iterator thread_suc = _thread.begin();
-				//find original node address in thread
-				while (*thread_org != original)
-					++thread_org;
-				//find successor node address in thread
-				while (*thread_suc != successor)
-					++thread_suc;
-				//thread member that pointed to successor node now points to
-				//original node, because successor replaces original in tree,
-				//but in the thread they maintain the same sequential order,
-				//so the inverse happens, original replaces successor and
-				//original is deleted. deletion happens in delete_node, which
-				//deletes any thread member pointing to 'tmp' (thread_suc's
-				//original address), which is the same as successor.
-				t_bstnode	*tmp = *thread_suc;
-				*thread_suc = *thread_org;
-				*thread_org = tmp;
+				{
+					//SWAP ADDRESSES IN THREAD
+					typename std::list<t_bstnode *>::iterator thread_org = _thread.begin();
+					typename std::list<t_bstnode *>::iterator thread_suc = _thread.begin();
+					//find original node address in thread
+					while (*thread_org != original)
+						++thread_org;
+					//find successor node address in thread
+					while (*thread_suc != successor)
+						++thread_suc;
+					//thread member that pointed to successor node now points to
+					//original node, because successor replaces original in tree,
+					//but in the thread they maintain the same sequential order,
+					//so the inverse happens, original replaces successor and
+					//original is deleted. deletion happens in delete_node, which
+					//deletes any thread member pointing to 'tmp' (thread_suc's
+					//original address), which is the same as successor.
+					t_bstnode	*tmp = *thread_suc;
+					*thread_suc = *thread_org;
+					*thread_org = tmp;
+				}
 			}
-			// void	node_replace(t_bstnode * original, t_bstnode * successor) {				
-			// 		original->data = successor->data; //copy successor to original
-			// 		// t_bstnode * original_prev = original->prev;
-			// 		// t_bstnode * original_next = original->next;
-			// 		// t_bstnode * successor_prev = successor->prev;
-			// 		// t_bstnode * successor->next = successor->next;
-			// 		if (successor->next != &_end)
-			// 			successor->next->prev = original;
-			// 		if (successor->prev != &_end)
-			// 			successor->prev->next = original;
-			// 		if (successor->prev != original)
-			// 		{
-			// 			stitch_neighbor_nodes(original);
-			// 			original->prev = successor->prev;
-			// 		}
-			// 		original->next = successor->next;
-					
-			// }
 
 			/* BINTREE DELETE */
 			/*
@@ -995,9 +990,7 @@ namespace ft
 				{		
 					//node == v
 					//node->right == u
-					//node->data = node->right->data; //copy child to node
 					node_replace(node, node->right);
-					//this->assign_key_value_pointers(node);
 					if (node->color == t_bstnode::RED || node->right->color == t_bstnode::RED) //if either original node or replacement node are RED...
 						node->color = t_bstnode::BLK; //replacement node is BLACK
 					else //if both original node and replacement node are BLACK...
@@ -1007,9 +1000,7 @@ namespace ft
 				}
 				else if (node->right == NULL) //has only left child
 				{
-					//node->data = node->left->data; // copy child to node
 					node_replace(node, node->left);
-					//this->assign_key_value_pointers(node);
 					if (node->color == t_bstnode::RED || node->left->color == t_bstnode::RED)  //if either original node or replacement node are RED...
 						node->color = t_bstnode::BLK; //replacement node is BLACK
 					else //if both original node and replacement node are BLACK...
@@ -1660,11 +1651,13 @@ namespace ft
 			}
 
 			void		erase(t_bstnode & node) {
+												//DEBUG PENDIENTE V
 				//if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree // need pointer to root or something
 				{
 					bintree_delete(&node);
-					_max = findMax(); //We ALWAYS need to do this after a delete
-					_min = findMin(); //because node addresses may change.
+					//OBSOLETE
+					// _max = findMax(); //We ALWAYS need to do this after a delete
+					// _min = findMin(); //because node addresses may change.
 				}
 			}
 
@@ -1864,21 +1857,26 @@ namespace ft
 			}
 
 			t_bstnode * getMax(void) {
-				return(_max);
+				return(&(*_thread.begin()));
 			}
 
-			t_bstnode *	findMax(void) {
-				t_bstnode * node = _root;
-				while (node->right != NULL)
-					node = node->right;
-				return (node);
+			t_bstnode * getMin(void) {
+				return(&(*(_thread.end() - 1)));
 			}
-			t_bstnode *	findMin(void) {
-				t_bstnode * node = _root;
-				while (node->left != NULL)
-					node = node->left;
-				return (node);
-			}
+
+			// OBSOLETE
+			// t_bstnode *	findMax(void) {
+			// 	t_bstnode * node = _root;
+			// 	while (node->right != NULL)
+			// 		node = node->right;
+			// 	return (node);
+			// }
+			// t_bstnode *	findMin(void) {
+			// 	t_bstnode * node = _root;
+			// 	while (node->left != NULL)
+			// 		node = node->left;
+			// 	return (node);
+			// }
 	};
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 07:04:08 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/04 15:09:18 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,20 @@ namespace ft
 					}
 					bool	operator==(C_key const & src) const {
 						return (!(*this != src));
+					}
+			};
+
+			class value_compare : std::binary_function<value_type, value_type, bool>
+			{
+				protected:
+					key_compare	_comp;
+					value_compare (key_compare src) : _comp(src) {}
+				public:
+					typedef bool		result_type;
+					typedef value_type	first_argument_type;
+					typedef value_type	second_argument_type;
+					bool operator()(value_type const & x, value_type const & y) const {
+						return _comp(x.first, y.first);
 					}
 			};
 
@@ -1709,6 +1723,18 @@ namespace ft
 				return (*(bintree_search(_root, key)));
 			}
 
+			/* OBSERVERS */
+			key_compare	key_comp(void) const {
+				return (_is_less);
+			}
+
+			value_compare	value_comp(void) const {
+				return (value_compare(_is_less));
+			}
+			
+
+			/* OPERATIONS */
+
 			/* LOWER BOUND */
 			/*
 			** This function first obtains the node containing an exact match to
@@ -1857,11 +1883,11 @@ namespace ft
 			}
 
 			t_bstnode * getMax(void) {
-				return(&(*_thread.begin()));
+				return(*_thread.begin());
 			}
 
 			t_bstnode * getMin(void) {
-				return(&(*(_thread.end() - 1)));
+				return(*(_thread.end() - 1));
 			}
 
 			// OBSOLETE

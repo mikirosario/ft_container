@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/11/29 22:15:07 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/04 03:54:14 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ namespace ft
 				size_type	old_size = this->size();
 				t_bstnode *	new_node = this->bintree_add(_root, data, data);
 				bool		return_status = this->size() > old_size ? true : false;
-				return (ft::make_pair(iterator(new_node), return_status));
+				return (ft::make_pair(iterator(this->thread_search(new_node)), return_status));
 			}
 			
 			//DEBUG
@@ -160,7 +160,7 @@ namespace ft
 					//DEBUG
 					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					//DEBUG	
-					return (iterator(this->bintree_add(node, data, data))); //constant time insertion
+					return (iterator(this->thread_search(this->bintree_add(node, data, data)))); //constant time insertion
 				}
 				//DEBUG
 				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;

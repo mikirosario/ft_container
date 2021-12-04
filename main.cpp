@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/04 02:40:11 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/04 04:21:10 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1284,7 +1284,8 @@ int main(void)
 	new_dictionary.erase("santana");
 	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
 	{
-		if (it->next == it->_end)
+		//PRINT << "AAAAAH" << END;
+		if (it->next == NULL)
 			PRINT << "I point to end! " << *it->key << END;
 		else
 			PRINT << "I point to " << *it->next->key << "!" << END;
@@ -1293,7 +1294,7 @@ int main(void)
 
 	for (ft::bintree_pair<std::string, std::string>::reverse_iterator rit = new_dictionary.rbegin(), rend = new_dictionary.rend(); rit != rend; ++rit)
 	{
-		if (rit->next == rit->_end)
+		if (rit->next == NULL)
 			PRINT << "I point to end! " << *rit->key << END;
 		else
 			PRINT << "I point to " << *rit->next->key << "!" << END;
@@ -1321,13 +1322,14 @@ int main(void)
 		// PRINT << "R U KIDDING?" << END;
 		PRINT << *(*it)->key << END;
 	}
-	PRINT << "</EL GRAN PLAN>" << TXT_NL << END;
-
-
-	// new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
-	// for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
-	// 	PRINT << it->data.second << END;
 	
+
+	PRINT << "DELETE FROM BEGIN TO END - 2" << TXT_NL << END;
+	new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
+	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+		PRINT << it->data.second << END;
+	PRINT << "New size: " << new_dictionary.size() << END;
+	PRINT << "</EL GRAN PLAN>" << TXT_NL << END;
 	// std::map<std::string, std::string>	comp_dict;
 	// comp_dict.insert(std::make_pair("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
 	// comp_dict.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));

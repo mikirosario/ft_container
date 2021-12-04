@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/01 20:10:15 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 02:54:07 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_ABINTREE_H
 
 #include <cstring>
+#include <list>
 
 namespace ft
 {
@@ -140,7 +141,7 @@ namespace ft
 			t_bstnode				_end;
 			//debug
 			public:
-			ft::vector<t_bstnode *>	_thread;
+			std::list<t_bstnode *>	_thread;
 			protected:
 			//debug
 			size_type				_size;
@@ -646,8 +647,8 @@ namespace ft
 						//thread se debe inicializar con _end
 					{
 						//typedef this
-						typename ft::vector<t_bstnode *>::iterator it = _thread.begin();
-						typename ft::vector<t_bstnode *>::iterator end = _thread.end();
+						typename std::list<t_bstnode *>::iterator it = _thread.begin();
+						typename std::list<t_bstnode *>::iterator end = _thread.end();
 											//puedo cambiar esto cuando adapte los nodos a usar thread.end() o NULL de nuevo, entonces buscar dire de new_node->next :p
 						while (it != end && C_key(*((*it)->key)) <= C_key(new_key))
 							++it;
@@ -683,6 +684,7 @@ namespace ft
 			*/
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
+				_thread.remove(node);
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
 				_alloc.deallocate(node, sizeof(t_bstnode));
@@ -838,7 +840,26 @@ namespace ft
 					original->prev = successor->prev;
 					original->next = successor->next;	
 				}
-					
+				
+				//SWAP ADDRESSES IN THREAD
+				typename std::list<t_bstnode *>::iterator thread_org = _thread.begin();
+				typename std::list<t_bstnode *>::iterator thread_suc = _thread.begin();
+				//find original node address in thread
+				while (*thread_org != original)
+					++thread_org;
+				//find successor node address in thread
+				while (*thread_suc != successor)
+					++thread_suc;
+				//thread member that pointed to successor node now points to
+				//original node, because successor replaces original in tree,
+				//but in the thread they maintain the same sequential order,
+				//so the inverse happens, original replaces successor and
+				//original is deleted. deletion happens in delete_node, which
+				//deletes any thread member pointing to 'tmp' (thread_suc's
+				//original address), which is the same as successor.
+				t_bstnode	*tmp = *thread_suc;
+				*thread_suc = *thread_org;
+				*thread_org = tmp;
 			}
 			// void	node_replace(t_bstnode * original, t_bstnode * successor) {				
 			// 		original->data = successor->data; //copy successor to original

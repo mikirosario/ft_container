@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/04 19:12:32 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 19:55:38 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1316,6 +1316,17 @@ int main(void)
 		PRINT << it->data.second << END;
 	PRINT << "New size: " << new_dictionary.size() << END;
 	PRINT << "</EL GRAN PLAN>" << TXT_NL << END;
+
+	PRINT << "SWAP TEST" << TXT_NL << END;
+	ft::swap(test2, new_dictionary);
+	PRINT << "TEST2" << END;
+	for (ft::bintree_pair<std::string, std::string>::iterator it = test2.begin(), end = test2.end(); it != end; ++it)
+		PRINT << it->data.second << END;
+	PRINT << TXT_NL << "NEW_DICTIONARY" << END;
+	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)
+		PRINT << it->data.second << END;
+	PRINT << END;
+
 	std::map<std::string, std::string>	comp_dict;
 	comp_dict.insert(std::make_pair("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
 	comp_dict.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));
@@ -1340,17 +1351,6 @@ int main(void)
 	PRINT << "R U KIDDING?" << END;
 	for (compit = comp_dict.begin(), compend = comp_dict.end(); compit != compend; ++compit)
 		std::cout << compit->second << std::endl;
-
-
-	carmensandiego = (new_dictionary.end() - 1);
-	PRINT << TXT_NL << "Where in the world is TIG? 2 " << *carmensandiego->value << TXT_NL << END;
-	PRINT << "TIG HAS BEEN KIDNAPPED BY END! " << TXT_NL << END;
-	PRINT << "FUCK MY LIFE!!!" << END;
-	PRINT << "What about _max, what do you think that is??? " << *new_dictionary.getMax()->key << std::endl;
-	PRINT << "HOW!? What is root-left then????" << new_dictionary.getRootNode().left << std::endl;
-	PRINT << "HOW!? What is root-right then????" << new_dictionary.getRootNode().right << std::endl;
-	PRINT << "HOW!? What is root then????" << *new_dictionary.getRootNode().key << std::endl;
-	PRINT << "HOW DOES THIS HAPPEN!? :_(" << *new_dictionary.getRootNode().key << std::endl;
 	
 
 	std::map<std::string, std::string>	eqtest1;

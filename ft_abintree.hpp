@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 19:20:38 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 20:27:31 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1575,6 +1575,7 @@ namespace ft
 				else
 					return (1 + recursive_count(node->right, key) + recursive_count(node->left, key));
 			}
+
 		public:
 			/* ---- ITERATORS ---- */
 
@@ -1725,25 +1726,37 @@ namespace ft
 				this->_root = bintree_free(this->_root);
 			}
 
-			t_bstnode &	getRootNode(void) const {
-				return (*_root);
+			/* SWAP */
+			/*
+			** This function does what it says on the tin.
+			*/
+			template<typename T>
+			void	swap(T & src) {
+				t_bstnode *				org_tree = this->_root;
+				size_type				org_size = this->_size;
+				allocator_type			org_alloc = this->_alloc;
+				std::list<t_bstnode *>	org_thread = this->_thread;
+
+				this->_alloc = src._alloc;
+				src._alloc = org_alloc;
+				this->_root = src._root;
+				src._root = org_tree;
+				this->_size = src._size;
+				src._size = org_size;
+				this->_thread = src._thread;
+				src._thread = org_thread;
 			}
 
-			t_bstnode &	getNode(key_type const & key) const {
-				return (*(bintree_search(_root, key)));
-			}
-
-			/* OBSERVERS */
+			/* ---- OBSERVERS ----- */
 			key_compare	key_comp(void) const {
 				return (_is_less);
 			}
 
 			value_compare	value_comp(void) const {
 				return (value_compare(_is_less));
-			}
-			
+			}		
 
-			/* OPERATIONS */
+			/* ---- OPERATIONS ---- */
 
 			/* LOWER BOUND */
 			/*
@@ -1892,28 +1905,41 @@ namespace ft
 				return (node == NULL ? end() : iterator(node));
 			}
 
-			t_bstnode * getMax(void) {
-				return(*_thread.begin());
+			/* ---- PUBLIC NODE GETTERS ----- */
+
+			t_bstnode &	getRootNode(void) const {
+				return (*_root);
 			}
 
-			t_bstnode * getMin(void) {
-				return(*(_thread.end() - 1));
+			t_bstnode &	getNode(key_type const & key) const {
+				return (*(bintree_search(_root, key)));
 			}
 
-			// OBSOLETE
-			// t_bstnode *	findMax(void) {
-			// 	t_bstnode * node = _root;
-			// 	while (node->right != NULL)
-			// 		node = node->right;
-			// 	return (node);
-			// }
-			// t_bstnode *	findMin(void) {
-			// 	t_bstnode * node = _root;
-			// 	while (node->left != NULL)
-			// 		node = node->left;
-			// 	return (node);
-			// }
+			t_bstnode & getMax(void) {
+				return(*(*_thread.begin()));
+			}
+
+			t_bstnode & getMin(void) {
+				return(*(*(_thread.end() - 1)));
+			}
 	};
+
+	/* SWAP TEMPLATE SPECIALIZATION */
+	/*
+	** This is an std::swap specialization for my ft::bintree. I have no idea how
+	** it finds this and knows what to do with it, it isn't even in the std
+	** namespace and it doesn't even refer to std::swap. Apparently it has to do
+	** with Argument-Dependent Lookup (ADL).
+	**
+	** If I've understood it correctly (which I may not have), in ADL mode it
+	** deduces the arguments of x and y and sees their type is in ft::, so it
+	** concludes, "oh, then the programmer probably wants that swap in ft:: that
+	** takes two parameters exactly like these".
+	*/
+	template<typename Data, typename Key, typename Value, typename Compare, typename Alloc>
+	void	swap(ft::Abintree<Data, Key, Value, Compare, Alloc> & x, ft::Abintree<Data, Key, Value, Compare, Alloc> & y) {
+		x.swap(y);
+	}
 }
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 20:27:31 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 20:30:50 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1921,6 +1921,10 @@ namespace ft
 
 			t_bstnode & getMin(void) {
 				return(*(*(_thread.end() - 1)));
+			}
+
+			allocator_type	get_allocator(void) const {
+				return(_alloc);
 			}
 	};
 

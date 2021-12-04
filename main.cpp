@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/04 18:21:22 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 19:12:32 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1310,17 +1310,6 @@ int main(void)
 	//MAYBE THREAD SHOULD BE STD::LIST????? HMMMMMMM
 	PRINT << TXT_NL "GOOD RANGE DELETE" TXT_NL << END;
 	PRINT << "<EL GRAN PLAN>" << END;
-	PRINT << "PASO UNO" << END;
-	for (std::list<ft::bintree_pair<std::string, std::string>::t_bstnode *>::iterator it = new_dictionary._thread.begin(), end = new_dictionary._thread.end(); it != end; ++it)
-	{
-		PRINT << "COMPARE it == end " << (it == end) << END;
-		// PRINT << "ADDR OF : " << *it << END;
-		// PRINT << "ADDR OF END :" << *new_dictionary._thread.end() << END;
-		// PRINT << "R U KIDDING?" << END;
-		PRINT << *(*it)->key << END;
-	}
-	
-
 	PRINT << "DELETE FROM BEGIN TO END - 2" << TXT_NL << END;
 	new_dictionary.erase(new_dictionary.begin(), new_dictionary.end() - 2);
 	for (ft::bintree_pair<std::string, std::string>::iterator it = new_dictionary.begin(), end = new_dictionary.end(); it != end; ++it)

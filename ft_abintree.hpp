@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 19:07:51 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 19:20:38 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,15 +150,7 @@ namespace ft
 			/* VARIABLES */
 			allocator_type			_alloc;
 			t_bstnode *				_root;
-			//OBSOLETE
-			// t_bstnode *				_min;
-			// t_bstnode *				_max;
-			//t_bstnode				_end;
-			//debug
-			public:
 			t_thread				_thread;
-			protected:
-			//debug
 			size_type				_size;
 			key_compare				_is_less;
 
@@ -317,12 +309,9 @@ namespace ft
 				protected:
 					typedef Iterator iterator;
 					typename t_thread::iterator	_lst_it;
-					//DEBUG
 					t_bstnode **				_root_ptr_addr;
-					//typename Iterator::pointer	_m_ptr;
-					//typename Iterator::pointer	_last_node;
-					//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key) const;
-					//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
+//this worked		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key) const;
+//this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
@@ -753,17 +742,11 @@ namespace ft
 						new_node->prev = prev_node;
 						prev_node->next = new_node;
 					}
-					// _min and _max should also be obsoleted now by the node list
-					// if (_min == NULL || C_key(new_key) < C_key(*_min->key))
-					// 	_min = new_node;
-					// if (_max == NULL || C_key(new_key) > C_key(*_max->key)) 
-					// 	_max = new_node;
 					{
 						typename t_thread::iterator it = _thread.begin();
 						typename t_thread::iterator end = _thread.end();
-											//DEBUG PENDIENTE V
-											//puedo cambiar esto cuando adapte los nodos a usar thread.end() o NULL de nuevo, entonces buscar dire de new_node->next :p
-						while (it != end && C_key(*((*it)->key)) <= C_key(new_key))
+						//while (it != end && C_key(*((*it)->key)) <= C_key(new_key))
+						while (it != end && *it != new_node->next)
 							++it;
 						_thread.insert(it, new_node);
 					}

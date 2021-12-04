@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 15:09:18 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 15:27:54 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1078,28 +1078,33 @@ namespace ft
 				t_bstnode	*parent;
 
 				parent = root;
-				while (parent != NULL)
+				if (root != NULL)
 				{
-					while (parent->left != NULL || parent->right != NULL)
+					while (parent != NULL)
 					{
-						if (parent->left != NULL)
+						while (parent->left != NULL || parent->right != NULL)
 						{
-							if (parent->left->left != NULL || parent->left->right != NULL)
-								parent = parent->left;
-							else
-								parent->left = node_delete(parent->left);
+							if (parent->left != NULL)
+							{
+								if (parent->left->left != NULL || parent->left->right != NULL)
+									parent = parent->left;
+								else
+									parent->left = node_delete(parent->left);
+							}
+							else if (parent->right != NULL)
+							{
+								if (parent->right->left != NULL || parent->right->right != NULL)
+									parent = parent->right;
+								else
+									parent->right = node_delete(parent->right);
+							}
 						}
-						else if (parent->right != NULL)
-						{
-							if (parent->right->left != NULL || parent->right->right != NULL)
-								parent = parent->right;
-							else
-								parent->right = node_delete(parent->right);
-						}
+						parent = parent->parent;
 					}
-					parent = parent->parent;
+					root = node_delete(root);
+					_size = 0;
 				}
-				return (root_canal(root));
+				return (root);
 			}
 
 			/* MOVE_DOWN */
@@ -1664,6 +1669,12 @@ namespace ft
 				return (_alloc.max_size());
 			}
 
+			/* ---- MODIFIERS ---- */
+
+			/* ERASE BY NODE */
+			/*
+			** This function deletes the node passed as 'node'.
+			*/
 			void		erase(t_bstnode & node) {
 												//DEBUG PENDIENTE V
 				//if (&node != &_end && node._end == &_end) //I check to ensure the node belongs to my tree // need pointer to root or something
@@ -1675,43 +1686,45 @@ namespace ft
 				}
 			}
 
+			/* ERASE BY POSITION */
+			/*
+			** This function deletes the binary tree node pointed to by the
+			** iterator passed as 'position' if the position exists within the
+			** tree.
+			*/
 			void		erase(iterator position) {
 				erase(*position);
 			}
 
+			/* ERASE BY KEY */
+			/*
+			** This function deletes the all nodes containing the key passed as
+			** 'key' and returns the number of deleted nodes. Note: for trees
+			** that do not permit duplicates, this will always be 0 or 1.
+			*/
 			size_type	erase(key_type const & key) {
 				size_type	nodes_erased = 0;
-				// for (t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = bintree_search(_root, key))
-				// 	erase(*del_node);
-				t_bstnode *del_node = bintree_search(_root, key);
-				
-				if (del_node != NULL && ++nodes_erased)
+				for (t_bstnode * del_node = bintree_search(_root, key); del_node != NULL; del_node = bintree_search(_root, key), ++nodes_erased)
 					erase(*del_node);
 				return (nodes_erased);
 			}
 
-			//my vector makes problem
-			//my bintree iterator makes problem
-			//everything is problem
-			//:_/
+			/* ERASE BY RANGE */
+			/*
+			** This function deletes all nodes in the range between first and
+			** last, if the range is valid. Otherwise, only valid nodes will
+			+* be deleted.
+			*/
 			void		erase(iterator first, iterator last) {
 				while (first != last)
 					erase(*first++);
-
-				// ft::vector<key_type>	key_list;
-				// while (first != last)
-				// {
-				// 	key_list.push_back(*first->key);
-				// 	++first;
-				// }
-
-				// for (typename ft::vector<key_type>::iterator it = key_list.begin(), end = key_list.end(); it != end; ++it)
-				// {
-				// 	//std::cerr << *it << std::endl;
-				// 	erase(*it);
-				// }
 			}
 
+			/* CLEAR */
+			/*
+			** This function deletes all nodes in the tree and resizes the tree
+			** to zero.
+			*/
 			void		clear(void) {
 				this->_root = bintree_free(this->_root);
 			}

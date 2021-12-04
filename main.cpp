@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/04 19:55:38 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 21:06:00 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "utility.hpp"
 #include "ft_bintree.hpp"
 #include "ft_bintree_pair.hpp"
+#include "ft_map.hpp"
 #include <iostream>
 #include <iomanip>
 #include <vector>

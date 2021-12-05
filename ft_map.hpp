@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 17:18:05 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/05 17:37:32 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,14 +133,19 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 			typedef ft::bintree_pair<Key, Value, Compare, Alloc>				t_tree;
 
+			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
+
+			/* DEFAULT CONSTRUCTOR */
 			explicit map(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : _tree(comp, alloc) {}
 			
+			/* RANGE CONSTRUCTOR */
 			template<class InputIt>
 			map(InputIt first, InputIt last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type(),
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first._tree_it, last._tree_it, comp, alloc) {} 
 			
-			map(map const & src) : _size(src._size), _alloc(src._alloc), _tree(src._tree) {}
+			/* COPY CONSTRUCTOR */
+			map(map const & src) : _tree(src._tree), _size(_tree.size()) {}
 			
 			
 			
@@ -148,7 +153,6 @@ namespace ft
 		protected:
 			//size_type		_capacity;
 			size_type		_size; //object count
-			allocator_type	_alloc;
 			t_tree			_tree;
 	};
 

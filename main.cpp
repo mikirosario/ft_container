@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/04 21:06:00 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 23:48:47 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1346,10 +1346,11 @@ int main(void)
 	std::map<std::string, std::string>::iterator compend = comp_dict.end();
 	--compend;
 	--compend;
-	PRINT << "R U KIDDING? LINUX DOESN'T FOLLOW STL DOCUMENTATION?????" << END;
-	for ( ; compit != compend; ++compit)
-		comp_dict.erase(compit);
-	PRINT << "R U KIDDING?" << END;
+	// HASTA ESTO FUNCIONA EN MAC, POR LOS GNOMOS MÁGICOS O_O
+	// for ( ; compit != compend; ++compit)
+	// 	comp_dict.erase(compit);
+	for ( ; compit != compend; )
+		comp_dict.erase(compit++);
 	for (compit = comp_dict.begin(), compend = comp_dict.end(); compit != compend; ++compit)
 		std::cout << compit->second << std::endl;
 	

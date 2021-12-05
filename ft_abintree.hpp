@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 20:30:50 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/04 23:53:26 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,8 +205,9 @@ namespace ft
 			**
 			** https://www.cplusplus.com/reference/map/map/erase/
 			**
-			** By the way, on my Ubuntu at home... std::map failed this test. xD
-			** But it does pass on the school Macs. Apple finally won one!
+			** By the way, on the school Macs, somehow even the iterator to the
+			** DELETED node remains valid enough to be iterated AFTER the
+			** deletion. Above and beyond the STL! Apple finally won one!
 			*/			
 			template<typename iT, typename Category>
 			struct Iterator : public ft::iterator_traits<iT, Category>
@@ -512,8 +513,9 @@ namespace ft
 			** your range will remain valid.
 			**
 			** I've noticed that while this does seem to work the same on
-			** std::map on MacOS, on my Ubuntu compiler the thing just segfaults
-			** if I try this. Good show, Apple! ;)
+			** std::map on my Ubuntu compiler, segfaulting only if you increment
+			** the iterator after deleting, on the school Mac it works even
+			** then! Good show, Apple! ;)
 			*/
 			typename t_thread::iterator			thread_search(t_bstnode * node) {
 				typename t_thread::iterator it = _thread.begin();

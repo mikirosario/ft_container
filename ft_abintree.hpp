@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 23:53:26 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/05 17:07:39 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,11 +148,12 @@ namespace ft
 
 		protected:
 			/* VARIABLES */
-			allocator_type			_alloc;
 			t_bstnode *				_root;
-			t_thread				_thread;
 			size_type				_size;
 			key_compare				_is_less;
+			allocator_type			_alloc;
+			t_thread				_thread;
+			
 
 			/* BINTREE ITERATOR */
 			/* THEY CONTAIN A LIST ITERATOR THAT POINTS TO BINTREE NODE */
@@ -321,7 +322,8 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			Abintree(void) : _root(NULL), _size(0) {}
+			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
+			
 			virtual ~Abintree(void) {}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */

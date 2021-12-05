@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 20:25:29 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/05 17:05:43 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ namespace ft
 
 		public:
 			/* CONSTRUCTORS AND DESTRUCTOR */
-			bintree(void) : Abintree<T, T, T, Compare, Alloc>() {};
+			explicit bintree(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : Abintree<T, T, T, Compare, Alloc>(comp, alloc) {};
 			~bintree(void) {
 				this->bintree_free(_root); //<- Look, ma! No 'this->' on my _root! ;)
 			}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_map.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/04 21:10:41 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/05 17:08:05 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,12 +143,7 @@ namespace ft
 			template<class InputIt>
 			map(InputIt first, InputIt last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type(),
-			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first._tree_it, last._tree_it) {
-				//DEBUG why are these even passed?
-				(void)comp;
-				(void)alloc;
-				//DEBUG
-			} 
+			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first._tree_it, last._tree_it) {} 
 			map(map const & src) : _size(src._size), _alloc(src._alloc), _tree(src._tree) {}
 			
 			

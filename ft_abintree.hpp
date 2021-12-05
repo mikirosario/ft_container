@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 17:20:34 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/05 17:32:09 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,10 +321,17 @@ namespace ft
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
-			/* CONSTRUCTORS AND DESTRUCTOR */
+			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
+			
+			/* DEFAULT CONSTRUCTOR */
 			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
+			/* RANGE CONSTRUCTOR */
 			Abintree(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {
 				insert(first, last);
+			}
+			/* (DEEP) COPY CONSTRUCTOR */
+			Abintree(Abintree const & src) : _root(NULL), _size(0), _is_less(src._is_less), _alloc(src._alloc) {
+				insert(src.begin(), src.end());
 			}
 			virtual ~Abintree(void) {}
 

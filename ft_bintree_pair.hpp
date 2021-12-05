@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 17:20:56 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/05 17:30:09 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,15 @@ namespace ft
 			using Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>::_root;
 
 		public:
-			/* CONSTRUCTORS AND DESTRUCTOR */
+			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
+			
+			/* DEFAULT CONSTRUCTOR */
 			bintree_pair(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {};
+			/* RANGE CONSTRUCTOR */
 			bintree_pair(iterator first, iterator last, const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(first, last, comp, alloc) {};
+			/* COPY CONSTRUCTOR */
+			bintree_pair(bintree_pair const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src) {}
+			/* DESTRUCTOR */
 			~bintree_pair(void) {
 				this->bintree_free(_root); //<- Look, ma! No 'this->' on my _root! ;)
 			}

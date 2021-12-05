@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 17:30:09 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/05 18:33:10 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,11 @@ namespace ft
 			~bintree_pair(void) {
 				this->bintree_free(_root); //<- Look, ma! No 'this->' on my _root! ;)
 			}
+
+			/* ASSIGNMENT OPERATOR OVERLOAD */
+			//DEBUG
+			//Use base class overload implicitly?
+			//bintree_pair const &	operator=(bintree_pair const & src) = default;
 
 			/* ---- ELEMENT ACCESS ---- */
 

@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 17:32:09 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/05 18:19:57 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,7 +333,28 @@ namespace ft
 			Abintree(Abintree const & src) : _root(NULL), _size(0), _is_less(src._is_less), _alloc(src._alloc) {
 				insert(src.begin(), src.end());
 			}
-			virtual ~Abintree(void) {}
+			virtual ~Abintree(void) {
+								
+			}
+			
+			/* ---- ASSIGNMENT OPERATOR OVERLOAD ---- */
+			Abintree &	operator=(Abintree const & src) {
+				//Attempt to build new tree
+				t_bstnode *	new_root = NULL;
+				size_type	new_size = 0;
+				for (t_bstnode * new_node = src.getMin(); new_node != NULL; new_node = new_node->next, ++new_size)
+					//attempt allocation using source allocator
+					if (src.bintree_add(&new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
+					{
+						src.bintree_free(new_root); //free anything that was reserved
+						return ; //return; exception has already been handled internally
+					}
+				this->clear(); //delete existing tree
+				_root = new_root;
+				_size = new_size;
+				_is_less = src._is_less;
+				_alloc = src._alloc;
+			}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
 			/*

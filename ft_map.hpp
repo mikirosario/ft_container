@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 17:37:32 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/05 18:30:21 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,14 +145,19 @@ namespace ft
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first._tree_it, last._tree_it, comp, alloc) {} 
 			
 			/* COPY CONSTRUCTOR */
-			map(map const & src) : _tree(src._tree), _size(_tree.size()) {}
+			map(map const & src) : _tree(src._tree) {}
 			
+			/* DESTRUCTOR */
+			~map(void) {}
 			
-			
+			/* ASSIGNMENT OPERATOR OVERLOAD */
+			map const &	operator=(map const & src) {
+					_tree = src._tree;
+			}
 
 		protected:
 			//size_type		_capacity;
-			size_type		_size; //object count
+			//size_type		_size; //object count
 			t_tree			_tree;
 	};
 

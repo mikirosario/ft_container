@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 17:07:39 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/05 17:20:34 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,7 +323,9 @@ namespace ft
 
 			/* CONSTRUCTORS AND DESTRUCTOR */
 			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
-			
+			Abintree(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {
+				insert(first, last);
+			}
 			virtual ~Abintree(void) {}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */

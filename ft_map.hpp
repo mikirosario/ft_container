@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/06 01:45:12 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/06 02:48:31 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@
 
 namespace ft
 {
-	template<typename Key, typename Value, typename Compare = ft::less<Key const>, typename Alloc = std::allocator<typename ft::bintree_pair<Key, Value>::t_bstnode> >
+	template<typename Key, typename Value, typename Compare = ft::less<Key>, typename Alloc = std::allocator<typename ft::bintree_pair<Key, Value>::t_bstnode> >
 	class map
 	{
 		private:

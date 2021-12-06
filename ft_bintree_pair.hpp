@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 18:33:10 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/06 02:34:25 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@
 
 namespace ft
 {
-	template< typename T1, typename T2, typename Compare = ft::less<T1>,
-	typename Alloc = std::allocator< typename ft::BintreeNode< ft::pair<T1, T2>, T1, T2 >::t_bstnode > >
-	class bintree_pair : public ft::Abintree< ft::pair<T1, T2>, T1, T2, Compare, Alloc >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2>, T1, T2, Compare, Alloc >::t_bstnode, int/*DEBUG*/ >
+	template< typename T1, typename T2, typename Compare = ft::less<T1 const>,
+	typename Alloc = std::allocator< typename ft::BintreeNode< ft::pair<T1 const, T2>, T1, T2 >::t_bstnode > >
+	class bintree_pair : public ft::Abintree< ft::pair<T1 const, T2>, T1, T2, Compare, Alloc >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2>, T1, T2, Compare, Alloc >::t_bstnode, int/*DEBUG*/ >
 	{
 		/* NEEDFUL TYPEDEFS */
 		public:
@@ -47,7 +47,7 @@ namespace ft
 			**
 			** OMG, KILL ME NOW!! WHY, BJARNE, WHY!?
 			*/
-			typedef typename bintree_pair::data_type				data_type;
+			typedef ft::pair<T1 const, T2>							data_type;
 			typedef typename bintree_pair::t_bstnode				t_bstnode;
 			typedef typename bintree_pair::size_type				size_type;
 			typedef typename bintree_pair::iterator					iterator;
@@ -102,9 +102,9 @@ namespace ft
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 			
 			/* DEFAULT CONSTRUCTOR */
-			bintree_pair(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {};
+			bintree_pair(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {};
 			/* RANGE CONSTRUCTOR */
-			bintree_pair(iterator first, iterator last, const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(first, last, comp, alloc) {};
+			bintree_pair(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(first, last, comp, alloc) {};
 			/* COPY CONSTRUCTOR */
 			bintree_pair(bintree_pair const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src) {}
 			/* DESTRUCTOR */
@@ -208,10 +208,26 @@ namespace ft
 				return (insert(data).first);
 			}
 
-			/* INSERT RANGE OF ELEMENTS */
+			/* INSERT RANGE WITH CONTAINER ITERATORS */
 			/*
 			** This insert method inserts the range between first and last into
 			** the tree.
+			**
+			** If invalid iterators are passed the computer explodes.
+			*/
+
+			void		insert(iterator first, iterator last)
+			{
+				for ( ; first != last; ++first)
+					insert(first->data);
+			}
+
+			/* INSERT ANY RANGE OF FT::PAIR<T1, T2> */
+			/*
+			** This insert method inserts the range between first and last into
+			** the tree. Any iterator from which value_type (ft::pair<T1, T2>)
+			** can be constructed may be passed. I'm interpreting that by "be
+			** constructed" they mean by dereferencing.
 			**
 			** If invalid iterators are passed the computer explodes.
 			*/
@@ -219,7 +235,7 @@ namespace ft
 			void		insert(InputIt first, InputIt last, typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL)
 			{
 				for ( ; first != last; ++first)
-					insert(first->data);
+					insert(*first);
 			}
 
 			/* THIS IS A DEBUG FUNCTION; REMOVE */

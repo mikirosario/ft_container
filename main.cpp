@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/05 20:37:29 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/06 00:17:45 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1053,6 +1053,37 @@ int main(void)
 
 
 	// std::vector<int> k (kevin, kevin + 5);
+
+	//DEFAULT CONSTRUCTOR
+	PRINT << "MAP INSERT BY PAIR" << END;
+	ft::map<std::string, std::string>	my_dictionary_default;
+	
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("piscina", "PISCINA: \t\t\t\tEscabechina de aspirantes a estudiantes."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("arbol binario de rojos y negros", "ÁRBOL BINARIO DE ROJOS Y NEGROS: \tEstructura de datos incestuosa que reduce el tiempo de búsqueda a costa de hacer de tu padre el hijo de ti y de tu abuelo."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("tig", "TIG: \t\t\t\t\tTrabajo de interés general."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("lista enlazada", "LISTA ENLAZADA: \t\t\tEstructura de datos en la que cada elemento enlaza el siguiente y el anterior. Lentas en comparaciones e iteraciones, pero rápidas en inserciones y borrados."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("array", "ARRAY: \t\t\t\t\tEstructura de datos contiguos en memoria RAM. Rápidos en comparaciones e iteraciones, pero lentos en inserciones y borrados."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("marvin", "MARVIN: \t\t\t\tRobot cascarrabias."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("norminette", "NORMINETTE: \t\t\t\tGuía de estilo que asegura que nadie podrá entender tu código."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("cafe", "CAFÉ: \t\t\t\t\tBien de primera necesidad para la supervivencia elaborada a partir de granos de café molidos y agua."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
+	my_dictionary_default.insert(ft::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\t\tÚnico profesor en activo de 42."));
+	
+	for (ft::map<std::string, std::string>::iterator it = my_dictionary_default.begin(), end = my_dictionary_default.end(); it != end; ++it)
+		PRINT << it->second << END;
+	
+	// test2.insert("cuarenta y dos", 42);
+	// test2.insert("uno", 1);
+	// test2.insert("noventa y nueve
+	
+	// ft::map<std::string, std::string>	my_default_constructed_dictionary;
+	// ft::map<std::string, std::string>	my_default_constructed_dictionary;
+	// ft::map<std::string, std::string>	my_default_constructed_dictionary;
+	
+
+	
 
 	typedef ft::bintree_pair<std::string, std::string>	Dictionary;
 	

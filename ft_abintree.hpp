@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 18:19:57 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/06 02:21:49 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ namespace ft
 		Value							*value;
 		typedef BintreeNode				t_bstnode;
 		BintreeNode(void) {}
+		BintreeNode(Data const & src_data) : data(src_data) {}
 		private:
 		
 			//struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
@@ -631,8 +632,8 @@ namespace ft
 				try
 				{
 					node = _alloc.allocate(1);
-					_alloc.construct(node, t_bstnode());
-					node->data = data;
+					_alloc.construct(node, t_bstnode(data));
+					//node->data = data;
 					this->assign_key_value_pointers(node);
 					node->parent = parent;
 					node->left = NULL;
@@ -947,7 +948,10 @@ namespace ft
 			** Yeah, there's NOTHING simple about editing RB binary trees. xD
 			*/
 				void	node_replace(t_bstnode * original, t_bstnode * successor) {				
-				original->data = successor->data; //copy successor data to original data
+				//original->data = successor->data; //copy successor data to original data
+				//got to play rough with the consted key in the pair :P
+				*const_cast<key_type *>(original->key) = *successor->key;
+				*original->value = *successor->value;
 				if (original->next == successor)
 				{
 					if (successor->next != NULL)
@@ -1934,9 +1938,14 @@ namespace ft
 			** passed as 'key'. If no such node exists, returns the end
 			** iterator.
 			*/
-			iterator	find(key_type const & key) {
+			iterator		find(key_type const & key) {
 				t_bstnode *	node = bintree_search(_root, key);
 				return (node == NULL ? end() : iterator(node));
+			}
+
+			const_iterator	find(key_type const & key) const {
+				t_bstnode *	node = bintree_search(_root, key);
+				return (node == NULL ? end() : const_iterator(node));
 			}
 
 			/* ---- PUBLIC NODE GETTERS ----- */

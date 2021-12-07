@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/05 17:05:43 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/07 14:29:30 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,17 @@ namespace ft
 		public:
 			/* CONSTRUCTORS AND DESTRUCTOR */
 			explicit bintree(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : Abintree<T, T, T, Compare, Alloc>(comp, alloc) {};
+			/* RANGE CONSTRUCTOR */
+			bintree(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
+				this->insert(first, last);
+			}
+			bintree(const_iterator first, const_iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
+				this->insert(first, last);
+			}
+			/* COPY CONSTRUCTOR */
+			bintree(bintree const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src._is_less, src._alloc) {
+				this->insert(src.begin(), src.end());
+			}
 			~bintree(void) {
 				this->bintree_free(_root); //<- Look, ma! No 'this->' on my _root! ;)
 			}
@@ -166,6 +177,26 @@ namespace ft
 				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;
 				//DEBUG
 				return (insert(data).first);
+			}
+
+			/* INSERT RANGE WITH CONTAINER ITERATORS */
+			/*
+			** This insert method inserts the range between first and last into
+			** the tree.
+			**
+			** If invalid iterators are passed the computer explodes.
+			*/
+
+			void		insert(iterator first, iterator last)
+			{
+				for ( ; first != last; ++first)
+					insert(first->data);
+			}
+
+			void		insert(const_iterator first, const_iterator last)
+			{
+				for ( ; first != last; ++first)
+					insert(first->data);
 			}
 			
 			/* INSERT RANGE OF ELEMENTS */

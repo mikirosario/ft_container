@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/06 02:21:49 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/07 13:28:55 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,11 @@ namespace ft
 					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << _root_ptr_addr << std::endl;
 				}
 
+				Iterator(typename t_thread::const_iterator const & lst_iterator, t_bstnode * const * root_ptr_addr) : _lst_it(lst_iterator), _root_ptr_addr(const_cast<t_bstnode **>(root_ptr_addr)) {
+					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << root_ptr_addr << std::endl;
+					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << _root_ptr_addr << std::endl;
+				}
+
 				//Assignment Operator Overload
 				Iterator &	operator=(Iterator const & rhs) {
 					// this->_m_ptr = rhs._m_ptr;
@@ -310,15 +315,18 @@ namespace ft
 					return (*this->_lst_it);
 				}
 				protected:
-					typedef Iterator iterator;
-					typename t_thread::iterator	_lst_it;
+					//typename t_thread::iterator	_lst_it;
+					typename std::list<iT *>::iterator	_lst_it;
+					//iT							_lst_it;
 					t_bstnode **				_root_ptr_addr;
 //this worked		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key) const;
 //this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
-			typedef Iterator<const t_bstnode, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef Iterator<t_bstnode const, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			// typedef Iterator<typename t_thread::iterator, std::bidirectional_iterator_tag>		iterator;
+			// typedef Iterator<typename t_thread::const_iterator, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
@@ -326,14 +334,10 @@ namespace ft
 			
 			/* DEFAULT CONSTRUCTOR */
 			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
-			/* RANGE CONSTRUCTOR */
-			Abintree(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {
-				insert(first, last);
-			}
-			/* (DEEP) COPY CONSTRUCTOR */
-			Abintree(Abintree const & src) : _root(NULL), _size(0), _is_less(src._is_less), _alloc(src._alloc) {
-				insert(src.begin(), src.end());
-			}
+			// /* RANGE CONSTRUCTOR */
+			// Abintree(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
+			// /* (DEEP) COPY CONSTRUCTOR */
+			// Abintree(Abintree const & src) : _root(NULL), _size(0), _is_less(src._is_less), _alloc(src._alloc) {}
 			virtual ~Abintree(void) {
 								
 			}

@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/06 02:50:29 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/07 14:31:47 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,9 +104,19 @@ namespace ft
 			/* DEFAULT CONSTRUCTOR */
 			bintree_pair(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {};
 			/* RANGE CONSTRUCTOR */
-			bintree_pair(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(first, last, comp, alloc) {};
+			bintree_pair(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
+				this->insert(first, last);
+			}
+			bintree_pair(const_iterator first, const_iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
+				this->insert(first, last);
+			}
 			/* COPY CONSTRUCTOR */
-			bintree_pair(bintree_pair const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src) {}
+			// bintree_pair(bintree_pair const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src._is_less, src._alloc) {
+			// 	this->insert(src.begin(), src.end());
+			// }
+			bintree_pair(bintree_pair & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src._is_less, src._alloc) {
+				this->insert(src.begin(), src.end());
+			}
 			/* DESTRUCTOR */
 			~bintree_pair(void) {
 				this->bintree_free(_root); //<- Look, ma! No 'this->' on my _root! ;)
@@ -217,6 +227,12 @@ namespace ft
 			*/
 
 			void		insert(iterator first, iterator last)
+			{
+				for ( ; first != last; ++first)
+					insert(first->data);
+			}
+
+			void		insert(const_iterator first, const_iterator last)
 			{
 				for ( ; first != last; ++first)
 					insert(first->data);

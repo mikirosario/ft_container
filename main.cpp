@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/06 00:17:45 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/07 12:46:34 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1073,7 +1073,13 @@ int main(void)
 	
 	for (ft::map<std::string, std::string>::iterator it = my_dictionary_default.begin(), end = my_dictionary_default.end(); it != end; ++it)
 		PRINT << it->second << END;
-	
+
+	//COPY CONSTRUCTOR
+	ft::map<std::string, std::string>	my_dictionary_range(my_dictionary_default);
+	for (ft::map<std::string, std::string>::iterator it = my_dictionary_range.begin(), end = my_dictionary_range.end(); it != end; ++it)
+		PRINT << it->second << END;
+
+
 	// test2.insert("cuarenta y dos", 42);
 	// test2.insert("uno", 1);
 	// test2.insert("noventa y nueve

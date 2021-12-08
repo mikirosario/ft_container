@@ -6,11 +6,9 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 10:14:04 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 11:47:43 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-//DEVECTOR :P
 
 #ifndef FT_MAP_H
 # define FT_MAP_H
@@ -34,24 +32,6 @@
 //#include <type_traits>
 //DEBUG CODE
 
-#define PRNTERR std::cerr
-#define END TXT_RST << std::endl
-
-#define GROWTH_FACTOR 2
-/* This catch block is used to catch reserve exceptions */
-#define CATCH_RESERVE_EXCEPTIONS	catch (std::length_error & e) \
-									{ \
-										PRNTERR << TXT_BRED << e.what() << END; \
-									} \
-									catch (std::bad_alloc & e) \
-									{ \
-										PRNTERR << TXT_BRED << e.what() << END; \
-									} \
-									catch (std::exception & e) \
-									{ \
-										PRNTERR << TXT_BRED << e.what() << END; \
-									} \
-
 namespace ft
 {
 	template<typename Key, typename Value, typename Compare = ft::less<Key>, typename Alloc = std::allocator<typename ft::bintree_pair<Key, Value>::t_bstnode> >
@@ -66,7 +46,6 @@ namespace ft
 				//Constructible
 				Iterator(void) : _tree_it(NULL) {}
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
-				//DEBUG POR QUÉ NO REF???
 				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
 				//Should now be consted by Abintree conversion operator
 				//Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
@@ -108,10 +87,6 @@ namespace ft
 					return (ret);
 				}
 				//Referencing Operators
-				//The const references/pointers will be consted by the vector
-				//instantiation for const_iterators, which uses a const T. 
-				//The function is always consted, as it itself doesn't modify
-				//any class member.
 				typename Iterator::reference	operator*(void) {
 					return(*this->_tree_it->value);
 				}

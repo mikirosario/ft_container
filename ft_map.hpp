@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 07:20:48 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 08:09:57 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,9 @@ namespace ft
 				Iterator(void) : _tree_it(NULL) {}
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
 				//DEBUG POR QUÉ NO REF???
-				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator tree_it) : _tree_it(tree_it) {}
-				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator tree_it) : _tree_it(tree_it) {}
+				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
+				//Should now be consted by Abintree conversion operator
+				//Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
 				//Destructible
 				~Iterator(void) {}
 				//Assignment Operator Overload

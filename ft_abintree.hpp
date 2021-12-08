@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 07:20:15 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 08:20:51 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,7 +330,7 @@ namespace ft
 			};
 
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::iterator >		iterator;
-			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::const_iterator >	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::const_iterator >	const_iterator; //Iterator formed with embedded const_iterator to list<tree_node *>, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			// typedef Iterator<typename t_thread::iterator, std::bidirectional_iterator_tag>		iterator;
 			// typedef Iterator<typename t_thread::const_iterator, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;

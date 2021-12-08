@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/07 17:27:33 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 12:39:44 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,14 @@ namespace ft
 			bintree_pair(const_iterator first, const_iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
 				this->insert(first, last);
 			}
+			
+			template<class InputIt>
+			bintree_pair(InputIt first, InputIt last, const key_compare & comp = key_compare(),
+			const allocator_type & alloc = allocator_type(),
+			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
+				this->insert(first, last);
+			} 
+
 			/* COPY CONSTRUCTOR */
 			// bintree_pair(bintree_pair const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src._is_less, src._alloc) {
 			// 	this->insert(src.begin(), src.end());
@@ -117,6 +125,7 @@ namespace ft
 			bintree_pair(bintree_pair const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src._is_less, src._alloc) {
 				this->insert(src.begin(), src.end());
 			}
+
 			/* DESTRUCTOR */
 			~bintree_pair(void) {
 				this->bintree_free(_root); //<- Look, ma! No 'this->' on my _root! ;)
@@ -251,7 +260,7 @@ namespace ft
 			void		insert(InputIt first, InputIt last, typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL)
 			{
 				for ( ; first != last; ++first)
-					insert(*first);
+					insert(first->first, first->second); //pass to key-value insertion method
 			}
 
 			/* THIS IS A DEBUG FUNCTION; REMOVE */

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 11:47:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 12:58:49 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,7 @@ namespace ft
 				Iterator(void) : _tree_it(NULL) {}
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
 				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
-				//Should now be consted by Abintree conversion operator
-				//Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
+				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
 				//Destructible
 				~Iterator(void) {}
 				//Assignment Operator Overload
@@ -126,10 +125,16 @@ namespace ft
 			explicit map(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : _tree(comp, alloc) {}
 			
 			/* RANGE CONSTRUCTOR */
+			map(const_iterator first, const_iterator last, const key_compare & comp = key_compare(),
+			const allocator_type & alloc = allocator_type()) : _tree(first._tree_it, last._tree_it, comp, alloc) {} 
+
+			map(iterator first, iterator last, const key_compare & comp = key_compare(),
+			const allocator_type & alloc = allocator_type()) : _tree(first._tree_it, last._tree_it, comp, alloc) {} 
+			
 			template<class InputIt>
 			map(InputIt first, InputIt last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type(),
-			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first._tree_it, last._tree_it, comp, alloc) {} 
+			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first, last, comp, alloc) {} 
 			
 			/* COPY CONSTRUCTOR */
 			//map(map const & src) : _tree(src._tree) {}

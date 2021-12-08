@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/07 19:34:18 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 07:20:48 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,10 @@ namespace ft
 					this->_tree_it = rhs._tree_it;
 					return (*this);
 				}
-				// operator	bool(void) const {
-				// 	return(true);
-				// }
-
+				//Conversion Operator - Iterator is always convertible to const_iterator
+				operator	Iterator<iT const, Category, typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator>() const {
+					return(Iterator<iT const, Category, typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator>(this->_tree_it));
+				}
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
 					return (this->_tree_it == rhs._tree_it);

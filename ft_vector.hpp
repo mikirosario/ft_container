@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/08 06:28:50 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 07:04:26 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ namespace ft
 					this->_m_ptr = rhs._m_ptr;
 					return (*this);
 				}
-				//Conversion Overload
+				//Conversion Overload - Iterators are always convertible to const_iterators
 				operator	Iterator<iT const, Category>() const {
 					return(Iterator<iT const, Category>(this->_m_ptr));
 				}

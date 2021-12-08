@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/07 18:44:51 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 07:20:15 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,6 +240,12 @@ namespace ft
 					this->_lst_it = rhs._lst_it;
 					return (*this);
 				}
+
+				//Conversion operator - Iterator is always convertible to const_iterator
+				operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::const_iterator >() const {
+					return (Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::const_iterator >(this->_lst_it, this->_root_ptr_addr));
+				}
+
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
 					return (*this->_lst_it == *rhs._lst_it); //lst_it contiene un puntero a t_bstnode; dereferenciamos para comparar un puntero con otro, es decir, las direcciones de los nodos subyacentes

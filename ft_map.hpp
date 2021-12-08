@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 08:09:57 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 08:46:12 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,7 @@ namespace ft
 			/* ASSIGNMENT OPERATOR OVERLOAD */
 			map const &	operator=(map const & src) {
 					_tree = src._tree;
+					return (*this);
 			}
 
 			/* ---- Iterators ---- */

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 08:20:51 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 09:35:28 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,18 +353,24 @@ namespace ft
 				//Attempt to build new tree
 				t_bstnode *	new_root = NULL;
 				size_type	new_size = 0;
-				for (t_bstnode * new_node = src.getMin(); new_node != NULL; new_node = new_node->next, ++new_size)
+				for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next, ++new_size)
+				{
+					Alloc	tmp = _alloc;
+					Alloc	_alloc = src.get_allocator(); //take source allocator
 					//attempt allocation using source allocator
-					if (src.bintree_add(&new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
+					if (this->bintree_add(new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
 					{
-						src.bintree_free(new_root); //free anything that was reserved
-						return ; //return; exception has already been handled internally
+						_alloc = tmp; //revert to original allocator
+						this->bintree_free(new_root); //free anything that was reserved
+						return (*this); //return; exception has already been handled internally
 					}
+				}
 				this->clear(); //delete existing tree
 				_root = new_root;
 				_size = new_size;
 				_is_less = src._is_less;
-				_alloc = src._alloc;
+				return (*this);
+				//_alloc = src._alloc;
 			}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
@@ -772,7 +778,8 @@ namespace ft
 				try
 				{
 					root = bintree_insert(NULL, root, data, new_key, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
-					bintree_balance(&_root, new_node);
+					//bintree_balance(&_root, new_node); //WHY DID I DO THIS!? THERE MUST HAVE BEEN A REASON AND NOW I CAN'T REMEMBER :_(
+					bintree_balance(&root, new_node);
 					++_size;
 					t_bstnode *	next_node = getNextNode(new_node);
 					t_bstnode * prev_node = getPrevNode(new_node);
@@ -1968,12 +1975,20 @@ namespace ft
 				return (*(bintree_search(_root, key)));
 			}
 
-			t_bstnode & getMax(void) {
+			t_bstnode & getMin(void) {
 				return(*(*_thread.begin()));
 			}
 
-			t_bstnode & getMin(void) {
-				return(*(*(_thread.end() - 1)));
+			t_bstnode & getMax(void) {
+				return(*(*(--_thread.end())));
+			}
+
+			t_bstnode const & getMin(void) const {
+				return(*(*_thread.begin()));
+			}
+
+			t_bstnode const & getMax(void) const {
+				return(*(*(--_thread.end())));
 			}
 
 			allocator_type	get_allocator(void) const {

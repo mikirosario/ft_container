@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/08 07:12:05 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 08:59:25 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1079,11 +1079,22 @@ int main(void)
 		PRINT << it->second << END;
 
 	//COPY CONSTRUCTOR
-	ft::map<std::string, std::string>	my_dictionary_range(my_dictionary_default);
-	for (ft::map<std::string, std::string>::const_iterator it = my_dictionary_range.begin(), end = my_dictionary_range.end(); it != end; ++it)
+	ft::map<std::string, std::string>	my_dictionary_copy(my_dictionary_default);
+	for (ft::map<std::string, std::string>::const_iterator it = my_dictionary_copy.begin(), end = my_dictionary_copy.end(); it != end; ++it)
 		PRINT << it->second << END;
 	std::map<std::string, std::string>	std_dictionary;
 	for (std::map<std::string, std::string>::const_iterator it = std_dictionary.begin(), end = std_dictionary.end(); it != end; ++it)
+		PRINT << it->second << END;
+
+	//RANGE CONSTRUCTOR
+	ft::map<std::string, std::string>	my_dictionary_range(my_dictionary_default.begin(), my_dictionary_default.end());
+	for (ft::map<std::string, std::string>::const_iterator it = my_dictionary_range.begin(), end = my_dictionary_range.end(); it != end; ++it)
+		PRINT << it->second << END;
+	
+	//ASSIGN CONSTRUCTOR
+	ft::map<std::string, std::string>	my_dictionary_assign;
+	my_dictionary_assign = my_dictionary_default;
+	for (ft::map<std::string, std::string>::const_iterator it = my_dictionary_assign.begin(), end = my_dictionary_assign.end(); it != end; ++it)
 		PRINT << it->second << END;
 
 	//CONST TEST

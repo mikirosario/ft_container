@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 09:35:28 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 09:39:01 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,13 +350,12 @@ namespace ft
 			
 			/* ---- ASSIGNMENT OPERATOR OVERLOAD ---- */
 			Abintree &	operator=(Abintree const & src) {
-				//Attempt to build new tree
 				t_bstnode *	new_root = NULL;
 				size_type	new_size = 0;
+				Alloc	tmp = _alloc; //save copy of original allocator
+				Alloc	_alloc = src.get_allocator(); //take source allocator
+				//Attempt to build new tree from source nodes
 				for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next, ++new_size)
-				{
-					Alloc	tmp = _alloc;
-					Alloc	_alloc = src.get_allocator(); //take source allocator
 					//attempt allocation using source allocator
 					if (this->bintree_add(new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
 					{
@@ -364,7 +363,6 @@ namespace ft
 						this->bintree_free(new_root); //free anything that was reserved
 						return (*this); //return; exception has already been handled internally
 					}
-				}
 				this->clear(); //delete existing tree
 				_root = new_root;
 				_size = new_size;

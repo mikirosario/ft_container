@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/08 13:01:48 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 17:17:46 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1052,25 +1052,52 @@ void	print_map(T const & map)
 		PRINT << it->second << END;
 }
 
+template<typename MyMap, typename StdMap>
+void	print_map_comp(MyMap const & my_map, StdMap const & std_map, char const *& color, bool & ret)
+{
+	typename MyMap::const_iterator mit;
+	typename MyMap::const_iterator mend;
+	typename StdMap::const_iterator sit;
+	typename StdMap::const_iterator send;
+
+	for (mit = my_map.begin(), mend = my_map.end(), sit = std_map.begin(), send = std_map.end(); sit != send; ++mit, ++sit)
+		{
+			check((mit->second == sit->second), color, ret);
+			PRINT << color << "MY  > " << mit->second << TXT_NL << "STL > " << sit->second << END;
+		}
+}
+
 template<typename Key, typename Value>
 bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 {
+	char const *	color;
+	bool	ret = true;
 	typedef ft::map<Key, Value>		ft_map;
 	typedef std::map<Key, Value>	std_map;
 	//DEFAULT CONSTRUCTOR
-	PRINT	<< "DEFAULT INSTANTIATION TEST" << END;
-	ft::map<Key, Value>		mi_map_default;
-	print_map<ft_map>(mi_map_default);
-	std::map<Key, Value>	su_map_default;
-	print_map<std_map>(su_map_default);
+	PRINT	<< TXT_BYEL << "DEFAULT INSTANTIATION TEST" << END;
+	ft_map		mi_map_default;
+	std_map		su_map_default;
+	print_map_comp(mi_map_default, su_map_default, color, ret);
+	PRINT	<< (ret == true ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
+	
 
-	PRINT	<< TXT_NL << "RANGE CONSTRUCTION TESTS" << END;
+	PRINT	<< TXT_NL << TXT_BYEL << "RANGE CONSTRUCTION TESTS" << END;
 	//RANGE CONSTRUCTOR
-	ft::map<Key, Value>		mi_map_range(seed_map.begin(), seed_map.end());
-	print_map<ft_map>(mi_map_range);
-	PRINT << END;
-	std::map<Key, Value>	su_map_range(seed_map.begin(), seed_map.end());
-	print_map<std_map>(su_map_range);
+	ft_map		mi_map_range(seed_map.begin(), seed_map.end());
+	std_map		su_map_range(seed_map.begin(), seed_map.end());
+	print_map_comp<ft_map, std_map >(mi_map_range, su_map_range, color, ret);
+
+	PRINT	<< TXT_NL << TXT_BYEL << "COPY CONSTRUCTION TESTS" << END;
+	ft_map		mi_map_copy(mi_map_range);
+	std_map		su_map_copy(su_map_range);
+	print_map_comp<ft_map, std_map >(mi_map_copy, su_map_copy, color, ret);
+
+	PRINT	<< TXT_NL << TXT_BYEL << "ASSIGNMENT OVERLOAD TESTS" << END;
+	mi_map_default = mi_map_copy;
+	su_map_default = su_map_copy;
+	print_map_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
+
 	return (true);
 }
 
@@ -1078,17 +1105,17 @@ int main(void)
 {	
 	std::map<std::string, std::string>	seed_map;
 	seed_map.insert(std::make_pair("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
-	seed_map.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));
+	seed_map.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));
 	seed_map.insert(std::make_pair<std::string, std::string>("piscina", "PISCINA: \t\t\t\tEscabechina de aspirantes a estudiantes."));
 	seed_map.insert(std::make_pair<std::string, std::string>("arbol binario de rojos y negros", "ÁRBOL BINARIO DE ROJOS Y NEGROS: \tEstructura de datos incestuosa que reduce el tiempo de búsqueda a costa de hacer de tu padre el hijo de ti y de tu abuelo."));
-	seed_map.insert(std::make_pair<std::string, std::string>("tig", "TIG: \t\t\t\t\tTrabajo de interés general."));
+	seed_map.insert(std::make_pair<std::string, std::string>("tig", "TIG: \t\t\t\tTrabajo de interés general."));
 	seed_map.insert(std::make_pair<std::string, std::string>("lista enlazada", "LISTA ENLAZADA: \t\t\tEstructura de datos en la que cada elemento enlaza el siguiente y el anterior. Lentas en comparaciones e iteraciones, pero rápidas en inserciones y borrados."));
-	seed_map.insert(std::make_pair<std::string, std::string>("array", "ARRAY: \t\t\t\t\tEstructura de datos contiguos en memoria RAM. Rápidos en comparaciones e iteraciones, pero lentos en inserciones y borrados."));
+	seed_map.insert(std::make_pair<std::string, std::string>("array", "ARRAY: \t\t\t\tEstructura de datos contiguos en memoria RAM. Rápidos en comparaciones e iteraciones, pero lentos en inserciones y borrados."));
 	seed_map.insert(std::make_pair<std::string, std::string>("marvin", "MARVIN: \t\t\t\tRobot cascarrabias."));
-	seed_map.insert(std::make_pair<std::string, std::string>("norminette", "NORMINETTE: \t\t\t\tGuía de estilo que asegura que nadie podrá entender tu código."));
-	seed_map.insert(std::make_pair<std::string, std::string>("cafe", "CAFÉ: \t\t\t\t\tBien de primera necesidad para la supervivencia elaborada a partir de granos de café molidos y agua."));
-	seed_map.insert(std::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
-	seed_map.insert(std::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\t\tÚnico profesor en activo de 42."));
+	seed_map.insert(std::make_pair<std::string, std::string>("norminette", "NORMINETTE: \t\t\tGuía de estilo que asegura que nadie podrá entender tu código."));
+	seed_map.insert(std::make_pair<std::string, std::string>("cafe", "CAFÉ: \t\t\t\tBien de primera necesidad para la supervivencia elaborada a partir de granos de café molidos y agua."));
+	seed_map.insert(std::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
+	seed_map.insert(std::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\tÚnico profesor en activo de 42."));
 
 	my_magnificent_map<std::string, std::string>(seed_map);
 	

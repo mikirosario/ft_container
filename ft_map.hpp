@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 12:58:49 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 16:57:52 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ namespace ft
 			{
 				friend class ft::map<Key, Value, Compare, Alloc>;
 				//Constructible
-				Iterator(void) : _tree_it(NULL) {}
+				Iterator(void) {}
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
 				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
 				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}

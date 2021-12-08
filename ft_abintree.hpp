@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 11:45:07 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 16:59:51 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,9 +215,11 @@ namespace ft
 			{
 				friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
 				//Constructible
-				private: 
-					Iterator(void) {} //cannot be NULL-instantiated, as functioning depends on the definition of a non-NULL, tree-instantiation-specific end-address
+				//private: 
+						//OBSOLETE, address of root pointer address is now used as signature, and is a double pointer to root.
+					 //cannot be NULL-instantiated, as functioning depends on the definition of a non-NULL, tree-instantiation-specific rootaddress
 				public:
+				Iterator(void) {}
 				//explicit Iterator(t_bstnode * ptr) : _m_ptr(ptr), _last_node(NULL) {}
 				Iterator(Iterator const & src) : _lst_it(src._lst_it), _root_ptr_addr(src._root_ptr_addr) {}
 				//Iterator(t_bstnode const & node) : _m_ptr(&node), _last_node(NULL) {}

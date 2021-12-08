@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/08 19:44:39 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 20:17:26 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1115,6 +1115,19 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 
 	PRINT	<< TXT_NL << TXT_BYEL << "REVERSE ITERATOR TEST" << END;
 	print_map_rev_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
+
+	PRINT	<< TXT_NL << TXT_BYEL << "CAPACITY TESTS" << TXT_NL
+			<< "Empty Test: " << TXT_NL
+			<< "MY  " << TXT_TAB << "STD " << END;
+	check(mi_map_default.empty() == su_map_default.empty(), color, ret);
+	PRINT	<< color << std::boolalpha << mi_map_default.empty() << TXT_TAB << su_map_default.empty() << END;
+	PRINT	<< TXT_BYEL << "Size Test: " << TXT_NL
+			<< "MY  " << TXT_TAB << "STD " << END;
+	check(mi_map_default.size() == su_map_default.size(), color, ret);
+	PRINT	<< color << mi_map_default.size() << TXT_TAB << su_map_default.size() << END;
+	PRINT	<< TXT_BYEL << "Max Size Test: " << TXT_NL
+			<< "MY  " << TXT_TAB << TXT_TAB TXT_TAB << "STD " << END;
+	PRINT	<< TXT_BWHT << mi_map_default.max_size() << TXT_TAB << su_map_default.max_size() << END;
 
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/08 17:17:46 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 19:44:39 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1067,6 +1067,21 @@ void	print_map_comp(MyMap const & my_map, StdMap const & std_map, char const *& 
 		}
 }
 
+template<typename MyMap, typename StdMap>
+void	print_map_rev_comp(MyMap const & my_map, StdMap const & std_map, char const *& color, bool & ret)
+{
+	typename MyMap::const_reverse_iterator mit;
+	typename MyMap::const_reverse_iterator mend;
+	typename StdMap::const_reverse_iterator sit;
+	typename StdMap::const_reverse_iterator send;
+
+	for (mit = my_map.rbegin(), mend = my_map.rend(), sit = std_map.rbegin(), send = std_map.rend(); sit != send; ++mit, ++sit)
+		{
+			check((mit->second == sit->second), color, ret);
+			PRINT << color << "MY  > " << mit->second << TXT_NL << "STL > " << sit->second << END;
+		}
+}
+
 template<typename Key, typename Value>
 bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 {
@@ -1097,6 +1112,9 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	mi_map_default = mi_map_copy;
 	su_map_default = su_map_copy;
 	print_map_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
+
+	PRINT	<< TXT_NL << TXT_BYEL << "REVERSE ITERATOR TEST" << END;
+	print_map_rev_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
 
 	return (true);
 }

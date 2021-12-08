@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/22 13:54:50 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 19:36:53 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ namespace ft
 	//could inherit from iterator_traits to define traits more locally??
 	struct reverse_iterator {
 		typedef typename Iter::iterator_category		iterator_category; //un poco cutre, pero... ;)
-		reverse_iterator(void) : current(Iter::_m_ptr) {}
+		//reverse_iterator(void) : current(Iter::_m_ptr) {}
+		reverse_iterator(void) : current(Iter()) {}
 		reverse_iterator(Iter const & normal_iterator) : current(normal_iterator) {}
 		reverse_iterator(reverse_iterator const & src) : current(src.current) {}
 		//Base Iterator Getter
@@ -107,10 +108,10 @@ namespace ft
 		}
 		//Referencing Operator Overloads
 		typename Iter::reference	operator*(void) const {
-			return (*(this->current - 1));
+			return (*(--Iter(this->current)));
 		}
 		typename Iter::pointer		operator->(void) const {
-			return (&(*(this->current - 1)));
+			return (&(*(--Iter(this->current))));
 		}
 		typename Iter::reference	operator[](typename Iter::difference_type const & n) const {
 			return (current[-n-1]);

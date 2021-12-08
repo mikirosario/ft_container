@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 16:57:52 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 19:41:34 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,10 @@ namespace ft
 				}
 				//Referencing Operators
 				typename Iterator::reference	operator*(void) {
-					return(*this->_tree_it->value);
+					return(this->_tree_it->data);
 				}
 				const iT &						operator*(void) const {
-					return(*this->_tree_it->value);
+					return(this->_tree_it->data);
 				}
 				//aaaaah!!!! -> . ... claro!!!! :D
 				typename Iterator::pointer		operator->(void) const {

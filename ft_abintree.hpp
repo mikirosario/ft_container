@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/07 13:28:55 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/07 18:44:51 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ namespace ft
 			** DELETED node remains valid enough to be iterated AFTER the
 			** deletion. Above and beyond the STL! Apple finally won one!
 			*/			
-			template<typename iT, typename Category>
+			template<typename iT, typename Category, typename liT>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
 				friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
@@ -316,15 +316,15 @@ namespace ft
 				}
 				protected:
 					//typename t_thread::iterator	_lst_it;
-					typename std::list<iT *>::iterator	_lst_it;
+					liT	_lst_it;
 					//iT							_lst_it;
 					t_bstnode **				_root_ptr_addr;
 //this worked		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key) const;
 //this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
-			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag>		iterator;
-			typedef Iterator<t_bstnode const, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::iterator >		iterator;
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::const_iterator >	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			// typedef Iterator<typename t_thread::iterator, std::bidirectional_iterator_tag>		iterator;
 			// typedef Iterator<typename t_thread::const_iterator, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;

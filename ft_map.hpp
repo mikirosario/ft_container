@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_map.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/07 14:31:20 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/07 19:34:18 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ namespace ft
 	{
 		private:
 
-			template<typename iT, typename Category>
+			template<typename iT, typename Category, typename tiT>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
 				friend class ft::map<Key, Value, Compare, Alloc>;
@@ -68,6 +68,7 @@ namespace ft
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
 				//DEBUG POR QUÉ NO REF???
 				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator tree_it) : _tree_it(tree_it) {}
+				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator tree_it) : _tree_it(tree_it) {}
 				//Destructible
 				~Iterator(void) {}
 				//Assignment Operator Overload
@@ -75,6 +76,10 @@ namespace ft
 					this->_tree_it = rhs._tree_it;
 					return (*this);
 				}
+				// operator	bool(void) const {
+				// 	return(true);
+				// }
+
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
 					return (this->_tree_it == rhs._tree_it);
@@ -106,7 +111,10 @@ namespace ft
 				//instantiation for const_iterators, which uses a const T. 
 				//The function is always consted, as it itself doesn't modify
 				//any class member.
-				typename Iterator::reference	operator*(void) const {
+				typename Iterator::reference	operator*(void) {
+					return(*this->_tree_it->value);
+				}
+				const iT &						operator*(void) const {
 					return(*this->_tree_it->value);
 				}
 				//aaaaah!!!! -> . ... claro!!!! :D
@@ -114,7 +122,7 @@ namespace ft
 					return (&this->_tree_it->data);
 				}
 				protected:
-					typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator	_tree_it;
+					tiT	_tree_it;
 			};
 
 		public:
@@ -130,8 +138,8 @@ namespace ft
 			typedef const value_type&													const_reference;
 			typedef value_type*															pointer;
 			typedef const value_type*													const_pointer;
-			typedef Iterator<value_type, std::bidirectional_iterator_tag>				iterator;
-			typedef Iterator<value_type const, std::bidirectional_iterator_tag>			const_iterator; //Iterator formed with const, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef Iterator<value_type, std::bidirectional_iterator_tag, typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator>				iterator;
+			typedef Iterator<value_type const, std::bidirectional_iterator_tag, typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator>			const_iterator; //Iterator formed with const, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			typedef ft::reverse_iterator<iterator>										reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 			typedef ft::bintree_pair<Key, Value, Compare, Alloc>						t_tree;

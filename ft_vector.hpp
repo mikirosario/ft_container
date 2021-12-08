@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/04 15:11:06 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/08 06:28:50 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,10 @@ namespace ft
 				Iterator &	operator=(Iterator const & rhs) {
 					this->_m_ptr = rhs._m_ptr;
 					return (*this);
+				}
+				//Conversion Overload
+				operator	Iterator<iT const, Category>() const {
+					return(Iterator<iT const, Category>(this->_m_ptr));
 				}
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {

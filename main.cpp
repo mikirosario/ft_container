@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/07 12:46:34 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/08 06:30:50 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1054,6 +1054,10 @@ int main(void)
 
 	// std::vector<int> k (kevin, kevin + 5);
 
+	// std::vector<int> std_quick_test;
+	ft::vector<int>	quick_test;
+	for(ft::vector<int>::const_iterator it = quick_test.begin(), end = quick_test.end(); it != end; ++it) {}
+	//for (std::vector<int>::const_iterator it = std_quick_test.begin(), end = std_quick_test.end(); it != end; ++it) {}
 	//DEFAULT CONSTRUCTOR
 	PRINT << "MAP INSERT BY PAIR" << END;
 	ft::map<std::string, std::string>	my_dictionary_default;
@@ -1075,9 +1079,22 @@ int main(void)
 		PRINT << it->second << END;
 
 	//COPY CONSTRUCTOR
-	ft::map<std::string, std::string>	my_dictionary_range(my_dictionary_default);
-	for (ft::map<std::string, std::string>::iterator it = my_dictionary_range.begin(), end = my_dictionary_range.end(); it != end; ++it)
+	// ft::map<std::string, std::string>	my_dictionary_range(my_dictionary_default);
+	// for (ft::map<std::string, std::string>::const_iterator it = my_dictionary_range.begin(), end = my_dictionary_range.end(); it != end; ++it)
+	// 	PRINT << it->second << END;
+	std::map<std::string, std::string>	std_dictionary;
+	for (std::map<std::string, std::string>::const_iterator it = std_dictionary.begin(), end = std_dictionary.end(); it != end; ++it)
 		PRINT << it->second << END;
+
+	//CONST TEST
+	// const ft::map<std::string, std::string>	my_dictionary_const(my_dictionary_default);
+	// for (ft::map<std::string, std::string>::const_iterator it = my_dictionary_const.begin(), end = my_dictionary_const.end(); it != end; ++it)
+	// 	PRINT << (it->second = "blah blah blah") << END;
+	ft::map<std::string, std::string>	my_dictionary_no_const(my_dictionary_default);
+	for (ft::map<std::string, std::string>::iterator it = my_dictionary_no_const.begin(), end = my_dictionary_no_const.end(); it != end; ++it)
+		PRINT << (it->second = "blah blah blah") << END;
+	
+
 
 
 	// test2.insert("cuarenta y dos", 42);

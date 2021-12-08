@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 08:46:12 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 10:14:04 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,23 +127,23 @@ namespace ft
 			};
 
 		public:
-			typedef Key																	key_type;
-			typedef Value																mapped_type;
-			typedef typename ft::pair<Key const, Value>									value_type;
-			typedef Compare																key_compare;
-			typedef typename ft::bintree_pair<Key const, Value, Compare>::value_compare	value_compare;
-			typedef Alloc																allocator_type;
-			typedef std::size_t															size_type;
-			typedef std::ptrdiff_t														difference_type;
-			typedef value_type&															reference;
-			typedef const value_type&													const_reference;
-			typedef value_type*															pointer;
-			typedef const value_type*													const_pointer;
-			typedef Iterator<value_type, std::bidirectional_iterator_tag, typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator>				iterator;
-			typedef Iterator<value_type const, std::bidirectional_iterator_tag, typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator>			const_iterator; //Iterator formed with const, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
-			typedef ft::reverse_iterator<iterator>										reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>								const_reverse_iterator;
-			typedef ft::bintree_pair<Key, Value, Compare, Alloc>						t_tree;
+			typedef ft::bintree_pair<Key, Value, Compare, Alloc>													t_tree;
+			typedef Key																								key_type;
+			typedef Value																							mapped_type;
+			typedef typename ft::pair<Key const, Value>																value_type;
+			typedef Compare																							key_compare;
+			typedef typename ft::bintree_pair<Key const, Value, Compare>::value_compare								value_compare;
+			typedef Alloc																							allocator_type;
+			typedef std::size_t																						size_type;
+			typedef std::ptrdiff_t																					difference_type;
+			typedef value_type&																						reference;
+			typedef const value_type&																				const_reference;
+			typedef value_type*																						pointer;
+			typedef const value_type*																				const_pointer;
+			typedef Iterator<value_type, std::bidirectional_iterator_tag, typename t_tree::iterator>				iterator;
+			typedef Iterator<value_type const, std::bidirectional_iterator_tag, typename t_tree::const_iterator>	const_iterator; //Iterator formed with const tree iterator, so tree iterator value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef ft::reverse_iterator<iterator>																	reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>															const_reverse_iterator;
 
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 
@@ -355,40 +355,6 @@ namespace ft
 	void	swap(ft::map<Key, Value, Compare, Alloc> & x, ft::map<Key, Value, Compare, Alloc> & y) {
 		x.swap(y);
 	}
-
-	// /* ---- RELATIONAL OPERATOR OVERLOADS ---- */
-
-	// template<typename T, typename Alloc>
-	// bool	operator==(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
-	// 	if (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()))
-	// 		return (true);
-	// 	return (false);
-	// }
-
-	// template<typename T, typename Alloc>
-	// bool	operator!=(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
-	// 	return(!operator==(lhs, rhs)); //a!=b == !a==b
-	// }
-
-	// template<typename T, typename Alloc>
-	// bool	operator<(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
-	// 	return(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
-	// }
-
-	// template<typename T, typename Alloc>
-	// bool	operator>(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
-	// 	return(operator<(rhs, lhs)); //a>b == b<a
-	// }
-
-	// template<typename T, typename Alloc>
-	// bool	operator<=(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
-	// 	return(!operator<(rhs, lhs)); //a<=b == !b<a
-	// }
-	
-	// template<typename T, typename Alloc>
-	// bool	operator>=(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
-	// 	return(!operator<(lhs, rhs)); //a>=b == !a<b
-	//}
 };
 
 #endif

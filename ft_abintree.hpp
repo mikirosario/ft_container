@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 09:42:46 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 10:17:43 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,8 +242,8 @@ namespace ft
 				}
 
 				//Conversion operator - Iterator is always convertible to const_iterator
-				operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::const_iterator >() const {
-					return (Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::const_iterator >(this->_lst_it, this->_root_ptr_addr));
+				operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >() const {
+					return (Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >(this->_lst_it, this->_root_ptr_addr));
 				}
 
 				//Relational Operator Overloads
@@ -329,12 +329,10 @@ namespace ft
 //this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
-			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::iterator >		iterator;
-			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename std::list<t_bstnode *>::const_iterator >	const_iterator; //Iterator formed with embedded const_iterator to list<tree_node *>, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
-			// typedef Iterator<typename t_thread::iterator, std::bidirectional_iterator_tag>		iterator;
-			// typedef Iterator<typename t_thread::const_iterator, std::bidirectional_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
-			typedef ft::reverse_iterator<iterator>								reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::iterator >			iterator;
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >	const_iterator; //Iterator formed with embedded const_iterator to list<tree_node *>, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef ft::reverse_iterator<iterator>																reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>														const_reverse_iterator;
 
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 			

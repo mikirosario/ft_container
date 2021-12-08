@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 10:17:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/08 10:46:31 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ namespace ft
 		BintreeNode(void) {}
 		BintreeNode(Data const & src_data) : data(src_data) {}
 		private:
-		
-			//struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
+			struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
 	};
 
 	template<typename Data, typename Key, typename Value, typename Compare, typename Alloc>

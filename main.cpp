@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/09 06:38:11 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/09 07:06:35 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1129,11 +1129,25 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 			<< "MY  " << TXT_TAB << TXT_TAB TXT_TAB << "STD " << END;
 	PRINT	<< TXT_BWHT << mi_map_default.max_size() << TXT_TAB << su_map_default.max_size() << END;
 
-	PRINT	<< TXT_NL << TXT_BYEL << "ACCESS ELEMENT BY KEY TEST" << END;
+	PRINT	<< TXT_NL << TXT_BYEL << "ACCESS ELEMENT BY KEY REFERENCE TEST" << TXT_NL
+			<< TXT_TAB << "Existent Element" << END;
 	check(mi_map_default["norminette"] == su_map_default["norminette"], color, ret);
 	PRINT	<< color << mi_map_default["norminette"] << TXT_NL
 			<< su_map_default["norminette"] << END;
-		
+	PRINT	<< TXT_BYEL << TXT_TAB << "Non-Existent Element" << TXT_NL;
+	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
+	PRINT	<< (ret == true ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
+	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
+			<< su_map_default["aguafiestas"] << END;
+
+	PRINT	<< TXT_NL << TXT_BYEL << "INSERT TESTS" << TXT_NL
+			<< TXT_TAB << "Insert Single Element and Access by Key Reference" << END;
+	mi_map_default.insert(ft::pair<std::string const, std::string>("santana", "SANTANA: \t\t\t\tCanario estepario."));
+	su_map_default.insert(std::pair<std::string const, std::string>("santana", "SANTANA: \t\t\t\tCanario estepario."));
+	check(mi_map_default["santana"] == su_map_default["santana"], color, ret);
+	PRINT	<< color << mi_map_default["santana"] << TXT_NL
+			<< su_map_default["santana"] << END;
+	
 	
 
 	return (true);

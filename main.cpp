@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/09 07:06:35 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/09 18:59:43 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1139,7 +1139,17 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< (ret == true ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
 			<< su_map_default["aguafiestas"] << END;
-
+	
+	PRINT	<< TXT_NL << TXT_BYEL << "OPERATIONS TESTS" << TXT_NL
+			<< TXT_TAB << "Find by Key" << END;
+	{
+	typename ft_map::iterator mit = mi_map_default.find(std::string("marvin"));
+	typename std_map::iterator sit = su_map_default.find("marvin");
+	check(mit->first == sit->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << mit->second << TXT_NL
+			<< sit->second << END;
+	}
+	
 	PRINT	<< TXT_NL << TXT_BYEL << "INSERT TESTS" << TXT_NL
 			<< TXT_TAB << "Insert Single Element and Access by Key Reference" << END;
 	mi_map_default.insert(ft::pair<std::string const, std::string>("santana", "SANTANA: \t\t\t\tCanario estepario."));

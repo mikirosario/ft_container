@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 16:59:51 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/09 19:22:47 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,22 +46,24 @@ namespace ft
 		/*
 		** This enum field will define a node color as red or black.
 		*/
+		typedef BintreeNode				t_bstnode;
 		typedef enum	e_bstcolor
 		{
 			BLK = 0, RED
 		}				t_bstcolor;
-		struct BintreeNode				*parent;
-		struct BintreeNode				*left;
-		struct BintreeNode				*right;
-		struct BintreeNode				*next;
-		struct BintreeNode				*prev;
-		//struct BintreeNode*	const		_end;
-		//C_key							key; //store in C_key?? could it be consted then??
-		t_bstcolor						color;
-		Data							data;
-		Key const						*key;
-		Value							*value;
-		typedef BintreeNode				t_bstnode;
+		struct BintreeNode							*parent;
+		struct BintreeNode							*left;
+		struct BintreeNode							*right;
+		struct BintreeNode							*next;
+		struct BintreeNode							*prev;
+		typename std::list<t_bstnode *>::iterator	assoc_lst_it;
+		//struct BintreeNode*	const					_end;
+		//C_key										key; //store in C_key?? could it be consted then??
+		t_bstcolor									color;
+		Data										data;
+		Key const									*key;
+		Value										*value;
+		
 		BintreeNode(void) {}
 		BintreeNode(Data const & src_data) : data(src_data) {}
 		private:
@@ -798,7 +800,7 @@ namespace ft
 						//while (it != end && C_key(*((*it)->key)) <= C_key(new_key))
 						while (it != end && *it != new_node->next)
 							++it;
-						_thread.insert(it, new_node);
+						new_node->assoc_lst_it = _thread.insert(it, new_node);
 					}
 						
 				}
@@ -967,6 +969,7 @@ namespace ft
 				//got to play rough with the consted key in the pair :P
 				*const_cast<key_type *>(original->key) = *successor->key;
 				*original->value = *successor->value;
+				*original->assoc_lst_it = *successor->assoc_lst_it;
 				if (original->next == successor)
 				{
 					if (successor->next != NULL)
@@ -1955,12 +1958,12 @@ namespace ft
 			*/
 			iterator		find(key_type const & key) {
 				t_bstnode *	node = bintree_search(_root, key);
-				return (node == NULL ? end() : iterator(node));
+				return (node == NULL ? end() : iterator(node->assoc_lst_it, &_root));
 			}
 
 			const_iterator	find(key_type const & key) const {
 				t_bstnode *	node = bintree_search(_root, key);
-				return (node == NULL ? end() : const_iterator(node));
+				return (node == NULL ? end() : const_iterator(node->assoc_lst_it, &_root));
 			}
 
 			/* ---- PUBLIC NODE GETTERS ----- */

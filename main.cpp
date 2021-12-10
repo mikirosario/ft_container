@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/09 18:59:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/10 09:12:50 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1149,6 +1149,14 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< color << mit->second << TXT_NL
 			<< sit->second << END;
 	}
+	PRINT	<< TXT_BYEL << TXT_TAB << "Count Existent Element" << TXT_NL;
+	check(mi_map_default.count("agua") == su_map_default.count("agua"), color, ret);
+	PRINT	<< "MY  " << TXT_TAB << "STD " << TXT_NL
+			<< color << mi_map_default.count("agua") << TXT_TAB << su_map_default.count("agua") << END;
+	PRINT	<< TXT_BYEL << TXT_TAB << "Count Non-Existent Element" << TXT_NL;
+	check(mi_map_default.count("santana") == su_map_default.count("santana"), color, ret);
+	PRINT	<< "MY  " << TXT_TAB << "STD " << TXT_NL
+			<< color << mi_map_default.count("santana") << TXT_TAB << su_map_default.count("santana") << END;
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "INSERT TESTS" << TXT_NL
 			<< TXT_TAB << "Insert Single Element and Access by Key Reference" << END;

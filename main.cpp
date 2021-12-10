@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/10 09:12:50 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/10 15:35:05 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1082,6 +1082,10 @@ void	print_map_rev_comp(MyMap const & my_map, StdMap const & std_map, char const
 		}
 }
 
+bool	isGreen(std::string const color) {
+	return (color.compare(TXT_BGRN) == 0);
+}
+
 template<typename Key, typename Value>
 bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 {
@@ -1094,7 +1098,7 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	ft_map		mi_map_default;
 	std_map		su_map_default;
 	print_map_comp(mi_map_default, su_map_default, color, ret);
-	PRINT	<< (ret == true ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
+	PRINT	<< (isGreen(color) == true ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	
 
 	PRINT	<< TXT_NL << TXT_BYEL << "RANGE CONSTRUCTION TESTS" << END;
@@ -1130,33 +1134,82 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< TXT_BWHT << mi_map_default.max_size() << TXT_TAB << su_map_default.max_size() << END;
 
 	PRINT	<< TXT_NL << TXT_BYEL << "ACCESS ELEMENT BY KEY REFERENCE TEST" << TXT_NL
-			<< TXT_TAB << "Existent Element" << END;
+			<< TXT_TAB << "Existent Element ('norminette')" << END;
 	check(mi_map_default["norminette"] == su_map_default["norminette"], color, ret);
 	PRINT	<< color << mi_map_default["norminette"] << TXT_NL
 			<< su_map_default["norminette"] << END;
-	PRINT	<< TXT_BYEL << TXT_TAB << "Non-Existent Element" << TXT_NL;
+	PRINT	<< TXT_BYEL << TXT_TAB << "Non-Existent Element ('aguafiestas')" << TXT_NL;
 	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
 	PRINT	<< (ret == true ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
 			<< su_map_default["aguafiestas"] << END;
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "OPERATIONS TESTS" << TXT_NL
-			<< TXT_TAB << "Find by Key" << END;
+			<< TXT_TAB << "Find by Key ('marvin')" << END;
 	{
-	typename ft_map::iterator mit = mi_map_default.find(std::string("marvin"));
+	typename ft_map::iterator mit = mi_map_default.find("marvin");
 	typename std_map::iterator sit = su_map_default.find("marvin");
 	check(mit->first == sit->first & mit->second == sit->second, color, ret);
 	PRINT	<< color << mit->second << TXT_NL
 			<< sit->second << END;
 	}
-	PRINT	<< TXT_BYEL << TXT_TAB << "Count Existent Element" << TXT_NL;
+	PRINT	<< TXT_BYEL << TXT_TAB << "Count Existent Element ('agua')" << TXT_NL;
 	check(mi_map_default.count("agua") == su_map_default.count("agua"), color, ret);
 	PRINT	<< "MY  " << TXT_TAB << "STD " << TXT_NL
 			<< color << mi_map_default.count("agua") << TXT_TAB << su_map_default.count("agua") << END;
-	PRINT	<< TXT_BYEL << TXT_TAB << "Count Non-Existent Element" << TXT_NL;
+	PRINT	<< TXT_BYEL << TXT_TAB << "Count Non-Existent Element ('santana')" << TXT_NL;
 	check(mi_map_default.count("santana") == su_map_default.count("santana"), color, ret);
 	PRINT	<< "MY  " << TXT_TAB << "STD " << TXT_NL
 			<< color << mi_map_default.count("santana") << TXT_TAB << su_map_default.count("santana") << END;
+	{
+	PRINT	<< TXT_BYEL << TXT_TAB << "Lower Bound Existent Element ('marvin')" << TXT_NL;
+	typename ft_map::iterator mit = mi_map_default.lower_bound("marvin");
+	typename std_map::iterator sit = su_map_default.lower_bound("marvin");
+	check(mit->first == sit->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << mit->second << TXT_NL << sit->second << END;
+	
+	PRINT	<< TXT_BYEL << TXT_TAB << "Lower Bound Non-Existent Subsequent Element ('marvinovich')" << TXT_NL;
+	mit = mi_map_default.lower_bound("marvinovich");
+	sit = su_map_default.lower_bound("marvinovich");
+	check(mit->first == sit->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << mit->second << TXT_NL << sit->second << END;
+	
+	PRINT	<< TXT_BYEL << TXT_TAB << "Lower Bound Non-Existent Min Element ('aaaa')" << TXT_NL;
+	mit = mi_map_default.lower_bound("aaaa");
+	sit = su_map_default.lower_bound("aaaa");
+	check(mit->first == sit->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << mit->second << TXT_NL << sit->second << END;
+
+	PRINT	<< TXT_BYEL << TXT_TAB << "Lower Bound Non-Existent Max Element ('zzzz')" << TXT_NL;
+	mit = mi_map_default.lower_bound("zzzz");
+	sit = su_map_default.lower_bound("zzzz");
+	check((--mit)->first == (--sit)->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << (isGreen(color) == true ? "END()" : "NOT END()!") << END;
+
+	PRINT	<< TXT_BYEL << TXT_TAB << "Upper Bound Existent Element ('cafe')" << TXT_NL;
+	mit = mi_map_default.upper_bound("cafe");
+	sit = su_map_default.upper_bound("cafe");
+	check(mit->first == sit->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << mit->second << TXT_NL << sit->second << END;
+
+	PRINT	<< TXT_BYEL << TXT_TAB << "Upper Bound Non-Existent Subsequent Element ('cafeteria')" << TXT_NL;
+	mit = mi_map_default.upper_bound("cafeteria");
+	sit = su_map_default.upper_bound("cafeteria");
+	check(mit->first == sit->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << mit->second << TXT_NL << sit->second << END;
+
+	PRINT	<< TXT_BYEL << TXT_TAB << "Upper Bound Non-Existent Min Element ('aaaa')" << TXT_NL;
+	mit = mi_map_default.upper_bound("aaaa");
+	sit = su_map_default.upper_bound("aaaa");
+	check(mit->first == sit->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << mit->second << TXT_NL << sit->second << END;
+
+	PRINT	<< TXT_BYEL << TXT_TAB << "Upper Bound Non-Existent Max Element ('zzzz')" << TXT_NL;
+	mit = mi_map_default.upper_bound("zzzz");
+	sit = su_map_default.upper_bound("zzzz");
+	check((--mit)->first == (--sit)->first & mit->second == sit->second, color, ret);
+	PRINT	<< color << (isGreen(color) == true ? "END()" : "NOT END()!") << END;
+	}
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "INSERT TESTS" << TXT_NL
 			<< TXT_TAB << "Insert Single Element and Access by Key Reference" << END;

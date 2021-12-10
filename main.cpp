@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/10 15:35:05 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/10 19:22:35 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1089,7 +1089,7 @@ bool	isGreen(std::string const color) {
 template<typename Key, typename Value>
 bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 {
-	char const *	color;
+	char const *	color = TXT_BGRN;
 	bool	ret = true;
 	typedef ft::map<Key, Value>		ft_map;
 	typedef std::map<Key, Value>	std_map;
@@ -1098,7 +1098,7 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	ft_map		mi_map_default;
 	std_map		su_map_default;
 	print_map_comp(mi_map_default, su_map_default, color, ret);
-	PRINT	<< (isGreen(color) == true ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
+	PRINT	<< ((isGreen(color) == true) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	
 
 	PRINT	<< TXT_NL << TXT_BYEL << "RANGE CONSTRUCTION TESTS" << END;
@@ -1209,7 +1209,20 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	sit = su_map_default.upper_bound("zzzz");
 	check((--mit)->first == (--sit)->first & mit->second == sit->second, color, ret);
 	PRINT	<< color << (isGreen(color) == true ? "END()" : "NOT END()!") << END;
+
+	PRINT	<< TXT_BYEL << TXT_TAB << "Equal Range Existent Element ('norminette')" << TXT_NL;
+	ft::pair<typename ft_map::iterator, typename ft_map::iterator> mi_range = mi_map_default.equal_range("norminette");
+	std::pair<typename std_map::iterator, typename std_map::iterator> su_range = su_map_default.equal_range("norminette");
+	check(mi_range.first->first == su_range.first->first
+		& mi_range.first->second == su_range.first->second
+		& mi_range.second->first == su_range.second->first
+		& mi_range.second->second == su_range.second->second
+		, color, ret);
+	PRINT	<< color << mi_range.first->second << TXT_NL << mi_range.second->second
+			<< TXT_NL << su_range.first->second << TXT_NL << su_range.second->second << END;
 	}
+
+	
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "INSERT TESTS" << TXT_NL
 			<< TXT_TAB << "Insert Single Element and Access by Key Reference" << END;

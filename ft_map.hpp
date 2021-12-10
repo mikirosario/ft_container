@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_map.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/08 19:41:34 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/10 19:23:48 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,14 +295,14 @@ namespace ft
 
 			/* EQUAL RANGE */
 			ft::pair<iterator, iterator>				equal_range(key_type const & key) {
-				typename ft::pair<typename ft::bintree_pair<Key const, Value>::iterator, typename ft::bintree_pair<Key, Value>::iterator>	bintree_range;
+				typename ft::pair<typename t_tree::iterator, typename t_tree::iterator>	bintree_range;
 
 				bintree_range = _tree.equal_range(key);
 				return (ft::pair<iterator, iterator>(bintree_range.first, bintree_range.second));
 			}
 			
 			ft::pair<const_iterator, const_iterator>	equal_range(key_type const & key) const {
-				typename ft::pair<typename ft::bintree_pair<Key const, Value>::const_iterator, typename ft::bintree_pair<Key, Value>::const_iterator>	bintree_range;
+				typename ft::pair<typename t_tree::const_iterator, typename t_tree::const_iterator>	bintree_range;
 
 				bintree_range = _tree.equal_range(key);
 				return (ft::pair<const_iterator, const_iterator>(bintree_range.first, bintree_range.second));

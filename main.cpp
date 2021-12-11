@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/11 20:34:28 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/11 21:55:54 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1060,7 +1060,7 @@ void	print_map_comp(MyMap const & my_map, StdMap const & std_map, char const *& 
 	typename StdMap::const_iterator sit;
 	typename StdMap::const_iterator send;
 
-	for (mit = my_map.begin(), mend = my_map.end(), sit = std_map.begin(), send = std_map.end(); sit != send || mit != mend; ++mit, ++sit)
+	for (mit = my_map.begin(), mend = my_map.end(), sit = std_map.begin(), send = std_map.end(); sit != send; ++mit, ++sit)
 		{
 			check((mit->second == sit->second), color, ret);
 			PRINT << color << "MY  > " << mit->second << TXT_NL << "STL > " << sit->second << END;
@@ -1139,7 +1139,7 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< color << mi_map_default["norminette"] << TXT_NL
 			<< su_map_default["norminette"] << END;
 	
-
+//forgot that access element key ref inserts blank entry for non-existent key xD
 // //debug territory
 // PRINT <<	"DEBUG BEFORE" << END;
 // print_map_comp(mi_map_default, su_map_default, color, ret);
@@ -1263,12 +1263,23 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	su_map_default.insert(su_map_default.begin(), std::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 
-	PRINT	<< TXT_TAB << TXT_BYEL << "Insert by Range" << END; //insert range from alex to tig, including santana and rorozco
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert by Range" << END; //insert range from agua to tig, including alex, santana and rorozco
 	mi_map_copy.insert(++mi_map_default.begin(), --mi_map_default.end());
 	su_map_copy.insert(++su_map_default.begin(), --su_map_default.end());
 	print_map_comp(mi_map_copy, su_map_copy, color, ret);
 	
+	PRINT	<< TXT_NL << TXT_BYEL << "ERASE TESTS" << TXT_NL
+			<< TXT_TAB << "Erase by Position (begin())" << END;
+	mi_map_default.erase(mi_map_default.begin()); //should erase 'a'
+	su_map_default.erase(su_map_default.begin()); //should erase 'a'
+	print_map_comp(mi_map_default, su_map_default, color, ret);
 
+	PRINT << TXT_TAB << "Erase by Key ('marvin')" << END;
+	mi_map_default.erase("marvin"); //should erase 'marvin'
+	su_map_default.erase("marvin"); //should erase 'marvin'
+	print_map_comp(mi_map_default, su_map_default, color, ret);
+
+	
 	return (true);
 }
 

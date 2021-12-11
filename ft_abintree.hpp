@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/11 21:39:49 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/11 22:03:34 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1017,7 +1017,12 @@ namespace ft
 					typename std::list<t_bstnode *>::iterator thread_suc = _thread.begin();
 					//find original node address in thread
 					while (*thread_org != original)
+					{
+						//debug //infinite loop WHYYYY :_(
+						std::cerr << "CHIPAPI" << std::endl;
+						//debug
 						++thread_org;
+					}
 					//find successor node address in thread
 					while (*thread_suc != successor)
 						++thread_suc;

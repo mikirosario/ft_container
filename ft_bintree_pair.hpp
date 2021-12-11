@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/10 19:52:21 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/11 21:38:33 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,21 +210,70 @@ namespace ft
 			** to by the hint. If the hint is perfect, the new node will be
 			** inserted in constant time. If it is rejected, it will be done in
 			** logarithmic time, plus the time it took to check for validity.
+			**
+			** TL;DR NOTE: If the insertion point is the tree root, we reject it
+			** even if valid and use the logarithmic insertion. This remains
+			** compliant with the constant time requirement for this function
+			** because, for a root node insertion, we know the logarithmic
+			** look-up will behave as a constant time insertion anyway, since it
+			** will always be in the best case scenario, one comparison, which
+			** is O(1), constant time.
+			**
+			** LONG NOTE:
+			**
+			** So. Why do I do this, though?
+			**
+			** The node pointer passed by reference to bintree_add may be
+			** updated if the tree is rebalanced in a way that changes the
+			** identity of the node at that position. This does not normally
+			** matter, because all the references to the tree nodes are internal
+			** to the tree (present in other nodes) or to the _thread list, both
+			** of which are updated by separate logic inside the bintree_add
+			** function, mostly recently added logic.
+			**
+			** HOWEVER, the root node has an ADDITIONAL reference in the tree
+			** instance, namely: _root. A relic from when this was a C struct
+			** without iterators with a thousand levels of indirection and a
+			** bazillion getters and setters, and you simply accessed the root
+			** of the tree through the _root pointer. Ah, what simple days those
+			** were! Simple and happy!
+			**
+			** This reference must also be updated if the root node identity
+			** changes, or else the _root pointer will be invalidated. The
+			** bintree_balance function, also originally C code, was coded to
+			** take the address of a root node and automatically update it as
+			** needed. So, if we pass bintree_add a reference to the _root
+			** pointer, which is exactly what normal (non-hint) insert does,
+			** _root will be passed to bintree_balance and appropriately
+			** updated there. Otherwise, the local node pointer we create in
+			** this function would be updated by bintree_balance instead, and
+			** _root would become invalidated.
+			**
+			** In other words, I'd have to code new logic to update the _root
+			** pointer as needed, which would be a pain in the arse.
+			**
+			** Considering that realizing this case theoretically should exist
+			** (amazing what 10 hours of sleep will do for the mind! xD),
+			** confirming my theory was correct, and coming up with a workaround
+			** and confirming the workaround works has all been a pain in the
+			** arse already, I've decided to give my poor arse a break.
 			*/
 			//DEBUG
 			iterator	insert(iterator hint, data_type const & data) {
-				if (this->is_valid_position(--hint, data.first))
+				if (hint == this->end()) //if lower bound of data is end(), data MUST be inserted as a right child of previous node in the sequence
+					--hint;
+				if (this->is_valid_position(hint, data.first))
 				{
-					t_bstnode * node = &(*hint);
 					//DEBUG
 					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					//DEBUG	
+					t_bstnode * node = &(*hint);
 					return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, &_root)); //constant time insertion
 				}
 				//DEBUG
 				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;
 				//DEBUG
-				return (insert(data).first);
+				return (insert(data).first); //log time insertion (if the insertion point is _root, constant tme)
 			}
 
 			/* INSERT RANGE WITH CONTAINER ITERATORS */

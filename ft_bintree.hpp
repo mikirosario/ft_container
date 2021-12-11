@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/10 09:00:36 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/11 20:04:51 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,10 +167,10 @@ namespace ft
 			iterator	insert(iterator hint, data_type const & data) {
 				if (this->is_valid_position(--hint, data))
 				{
-					t_bstnode * node = &(*hint);
 					//DEBUG
 					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					//DEBUG	
+					t_bstnode * node = &(*hint);
 					return (iterator(this->thread_search(this->bintree_add(node, data, data)), &_root)); //constant time insertion
 				}
 				//DEBUG

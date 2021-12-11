@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/11 18:30:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/11 20:34:28 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1253,12 +1253,20 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	su_map_default.insert(su_map_default.lower_bound("alex"), std::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element with Good Hint (aka. constant time insert, aka. DE GUAYS INSERT)" << END;
+	mi_map_default.insert(mi_map_default.lower_bound("a"), ft::make_pair<std::string, std::string>("a", "A: \t\t\t\tPrimera letra del alafabeto latino."));
+	su_map_default.insert(su_map_default.lower_bound("a"), std::make_pair<std::string, std::string>("a", "A: \t\t\t\tPrimera letra del alafabeto latino."));
+	print_map_comp(mi_map_default, su_map_default, color, ret);
+
 	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element with Bad Hint (aka. logarithmic time + correction time insert, aka. GILIPOLLAS INSERT)" << END;
 	mi_map_default.insert(mi_map_default.begin(), ft::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
 	su_map_default.insert(su_map_default.begin(), std::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 
-	
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert by Range" << END; //insert range from alex to tig, including santana and rorozco
+	mi_map_copy.insert(++mi_map_default.begin(), --mi_map_default.end());
+	su_map_copy.insert(++su_map_default.begin(), --su_map_default.end());
+	print_map_comp(mi_map_copy, su_map_copy, color, ret);
 	
 
 	return (true);

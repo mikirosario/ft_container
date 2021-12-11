@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/10 22:03:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/11 21:39:49 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,16 +391,29 @@ namespace ft
 			** This is a friend function to the first argument's iterator type,
 			** to provide direct access to its protected thread list iterator.
 			** Specifically, this is to check the embedded list iterator against
-			** list.end().
+			** list.end() and the tree root's associated list iterator.
+			**
+			** If the position is end(), it is invalid as an insertion position
+			** as end() has no valid node. If it is _root we say it is invalid,
+			** because the logarithmic insert will do it in constant time anyway
+			** and otherwise we'd need to handle changing the tree._root address
+			** in case of re-balancing the tree, as _root is an additional
+			** external reference, which would be a pain in the arse. See my
+			** note to ft_bintree_pair INSERT WITH HINT for the gory details.
+			**
+			** Otherwise, if the preceding node's key is greater than the new
+			** node's key, or the next node's key is less than or equal to the
+			** new node's key, the insertion point must be invalid. We can check
+			** these facts in constant time thanks to the thread.
 			**
 			** -- RETURN VALUE --
 			** If the insertion position is valid, true is returned. Otherwise,
 			** false is returned.
 			*/
 			bool is_valid_position(iterator const & position, key_type const & key) const {
-				if (position._lst_it == _thread.end() ||
-				(position->prev != NULL && C_key(*position->prev->key) > C_key(key)) ||
-				(position->next != NULL && C_key(*position->next->key) <= C_key(key)))
+				if (position._lst_it == _thread.end() || position._lst_it == _root->assoc_lst_it
+				|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
+				|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
 					return false;
 				return true;
 			}
@@ -777,6 +790,13 @@ namespace ft
 				{
 					root = bintree_insert(NULL, root, data, new_key, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
 					//bintree_balance(&_root, new_node); //WHY DID I DO THIS!? THERE MUST HAVE BEEN A REASON AND NOW I CAN'T REMEMBER :_(
+					//OK, I remember now. bintree_balance may change the node pointer address passed as root, but this is irrelevant unless the
+					//pointer is an external reference. There are only two external references to nodes in the binary tree. One is the _thread
+					//list, which is handled separately (see the while loop below). The only other one is the _root pointer itself, probably a bit
+					//superfluous by now tbh, might remove it since _root == _thread[0] anyway... but until then, we need some logic somewhere
+					//that will pass it to balance so it can be updated... for the moment, I modified is_valid_position to reject positions that
+					//point to _root node and use log search (which will still be constant time in that case if valid, since it will be found always
+					//in one examination).
 					bintree_balance(&root, new_node);
 					++_size;
 					t_bstnode *	next_node = getNextNode(new_node);

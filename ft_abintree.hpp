@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/10 09:00:30 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/10 22:03:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,7 +328,7 @@ namespace ft
 					liT	_lst_it;
 					//iT							_lst_it;
 					t_bstnode **				_root_ptr_addr;
-//this worked		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(iterator const & position, key_type const & key) const;
+/*this worked*/		friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(Iterator<iT, Category, liT> const & position, key_type const & key) const;
 //this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
@@ -399,10 +399,8 @@ namespace ft
 			*/
 			bool is_valid_position(iterator const & position, key_type const & key) const {
 				if (position._lst_it == _thread.end() ||
-				(position->prev != NULL && C_key(*position->prev->key) <= C_key(key)) ||
+				(position->prev != NULL && C_key(*position->prev->key) > C_key(key)) ||
 				(position->next != NULL && C_key(*position->next->key) <= C_key(key)))
-				// ((*position._lst_it)->prev != NULL && C_key(*(*position._lst_it)->prev->key) <= C_key(key)) ||
-				// ((*position._lst_it)->next != NULL && C_key(*(*position._lst_it)->next->key) <= C_key(key))) 
 					return false;
 				return true;
 			}

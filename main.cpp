@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/10 19:22:35 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/11 18:30:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1060,7 +1060,7 @@ void	print_map_comp(MyMap const & my_map, StdMap const & std_map, char const *& 
 	typename StdMap::const_iterator sit;
 	typename StdMap::const_iterator send;
 
-	for (mit = my_map.begin(), mend = my_map.end(), sit = std_map.begin(), send = std_map.end(); sit != send; ++mit, ++sit)
+	for (mit = my_map.begin(), mend = my_map.end(), sit = std_map.begin(), send = std_map.end(); sit != send || mit != mend; ++mit, ++sit)
 		{
 			check((mit->second == sit->second), color, ret);
 			PRINT << color << "MY  > " << mit->second << TXT_NL << "STL > " << sit->second << END;
@@ -1138,11 +1138,29 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	check(mi_map_default["norminette"] == su_map_default["norminette"], color, ret);
 	PRINT	<< color << mi_map_default["norminette"] << TXT_NL
 			<< su_map_default["norminette"] << END;
-	PRINT	<< TXT_BYEL << TXT_TAB << "Non-Existent Element ('aguafiestas')" << TXT_NL;
-	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
-	PRINT	<< (ret == true ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
-	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
-			<< su_map_default["aguafiestas"] << END;
+	
+
+// //debug territory
+// PRINT <<	"DEBUG BEFORE" << END;
+// print_map_comp(mi_map_default, su_map_default, color, ret);
+// PRINT <<	"DEBUG BEFORE" << END;
+// //debug
+
+// 	//extra entry
+// 			PRINT	<< TXT_BYEL << TXT_TAB << "Non-Existent Element ('aguafiestas')" << TXT_NL;
+// 	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret); //forgot that access element key ref inserts blank entry for non-existent key
+// 			PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
+// 	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
+// 			<< su_map_default["aguafiestas"] << END;
+// 	PRINT << "MI SIZE: " << mi_map_default.size() << " SU SIZE: " << su_map_default.size() << END;
+
+// 	//extra entry
+
+// //debug
+// PRINT <<	"DEBUG AFTER" << END;
+// print_map_comp(mi_map_default, su_map_default, color, ret);
+// PRINT <<	"DEBUG AFTER" << END;
+// //debug territory
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "OPERATIONS TESTS" << TXT_NL
 			<< TXT_TAB << "Find by Key ('marvin')" << END;
@@ -1221,8 +1239,6 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< color << mi_range.first->second << TXT_NL << mi_range.second->second
 			<< TXT_NL << su_range.first->second << TXT_NL << su_range.second->second << END;
 	}
-
-	
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "INSERT TESTS" << TXT_NL
 			<< TXT_TAB << "Insert Single Element and Access by Key Reference" << END;
@@ -1231,6 +1247,17 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	check(mi_map_default["santana"] == su_map_default["santana"], color, ret);
 	PRINT	<< color << mi_map_default["santana"] << TXT_NL
 			<< su_map_default["santana"] << END;
+	
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element with Good Hint (aka. constant time insert, aka. DE GUAYS INSERT)" << END;
+	mi_map_default.insert(mi_map_default.lower_bound("alex"), ft::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
+	su_map_default.insert(su_map_default.lower_bound("alex"), std::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
+	print_map_comp(mi_map_default, su_map_default, color, ret);
+
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element with Bad Hint (aka. logarithmic time + correction time insert, aka. GILIPOLLAS INSERT)" << END;
+	mi_map_default.insert(mi_map_default.begin(), ft::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
+	su_map_default.insert(su_map_default.begin(), std::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
+	print_map_comp(mi_map_default, su_map_default, color, ret);
+
 	
 	
 

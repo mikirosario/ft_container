@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_pair.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/10 09:00:39 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/10 19:52:21 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ namespace ft
 					//DEBUG
 					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					//DEBUG	
-					return (iterator(this->bintree_add(node, data, data.first), &_root)); //constant time insertion
+					return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, &_root)); //constant time insertion
 				}
 				//DEBUG
 				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;

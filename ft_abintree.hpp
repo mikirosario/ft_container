@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/12 10:21:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/12 12:49:58 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1062,6 +1062,17 @@ namespace ft
 				if (node->right == NULL && node->left == NULL) //it's a leaf/both children are NULL
 				{
 					stitch_neighbor_nodes(node);
+					// if (node->parent != NULL)
+					// {
+					// 	if (node->parent->right == node)
+					// 		node->parent->right = NULL;
+					// 	else
+					// 		node->parent->left = NULL;
+					// }
+					if (node->color == t_bstnode::RED) //NULLs are black, so if original node is RED
+						node->color = t_bstnode::BLK; //replacement node is BLACK
+					else // if both original node and replacement node are BLACK
+						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
 					if (node->parent != NULL)
 					{
 						if (node->parent->right == node)
@@ -1069,12 +1080,8 @@ namespace ft
 						else
 							node->parent->left = NULL;
 					}
-					if (node->color == t_bstnode::RED) //NULLs are black, so if original node is RED
-						node->color = t_bstnode::BLK; //replacement node is BLACK
-					else // if both original node and replacement node are BLACK
-						fix_double_black(node); //replacement node is... DOUBLE BLACK! of course! what you mean that's not a color??? xD
-				
 					node_delete(node);
+					
 				}
 				else if (node->left == NULL) //has only right child
 				{		
@@ -1251,7 +1258,6 @@ namespace ft
 				enum help	my_sibling;
 				//enum help	myself;
 				t_bstnode *	sibling;
-				
 				if (node->parent->left == node) //if I am the left child
 				{
 					sibling = node->parent->right;
@@ -1280,6 +1286,7 @@ namespace ft
 					}
 					else //I have a black sibling
 					{
+
 						bool sibling_right_child_is_red = (sibling->right != NULL && sibling->right->color == t_bstnode::RED);
 						bool sibling_left_child_is_red = (sibling->left != NULL && sibling->left->color == t_bstnode::RED);
 						//sibling has at least one red child

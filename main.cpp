@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/12 10:23:48 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/12 12:00:05 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1059,7 +1059,6 @@ void	print_map_comp(MyMap const & my_map, StdMap const & std_map, char const *& 
 	typename MyMap::const_iterator mend;
 	typename StdMap::const_iterator sit;
 	typename StdMap::const_iterator send;
-
 	for (mit = my_map.begin(), mend = my_map.end(), sit = std_map.begin(), send = std_map.end(); sit != send; ++mit, ++sit)
 		{
 			check((mit->second == sit->second), color, ret);
@@ -1300,6 +1299,13 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	su_map_default.erase(sit, send);
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 	}
+
+	PRINT << TXT_BYEL << "SWAP TEST" << END;
+	ft::swap(mi_map_default, mi_map_range);
+	std::swap(su_map_default, su_map_range);
+	print_map_comp(mi_map_default, su_map_default, color, ret);
+
+
 	return (true);
 }
 

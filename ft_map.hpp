@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/12 08:55:20 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/12 10:42:30 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,7 @@ namespace ft
 			}
 
 			/* SWAP */
-			void					swap(map const & src) {
+			void					swap(map & src) {
 				ft::swap(_tree, src._tree);
 			}
 

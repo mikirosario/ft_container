@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/12 03:31:02 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/12 09:36:32 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1290,7 +1290,16 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	su_map_default.erase("marvin"); //should erase 'marvin'
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 
-	
+	{
+	PRINT << TXT_BYEL << TXT_TAB << "Erase by Range ('norminette' to 'santana')" << END;
+	typename ft_map::iterator mit = mi_map_default.find("norminette");
+	typename ft_map::iterator mend = mi_map_default.find("santana");
+	//typename std_map::iterator sit = su_map_default.find("norminette");
+	//typename std_map::iterator send = su_map_default.find("santana");
+	mi_map_default.insert(mit, mend);
+	//su_map_default.insert(sit, send);
+	print_map_comp(mi_map_default, su_map_default, color, ret);
+	}
 	return (true);
 }
 

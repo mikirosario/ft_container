@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/10 19:23:48 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/12 08:55:20 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,6 +218,14 @@ namespace ft
 			}
 
 			/* INSERT BY RANGE OF KEY-VALUE PAIRS */
+			void					insert(const_iterator first, const_iterator last) {
+				_tree.insert(first._tree_it, last._tree_it);
+			}
+
+			void					insert(iterator first, iterator last) {
+				_tree.insert(first._tree_it, last._tree_it);
+			}
+
 			template<typename InputIt>
 			void					insert(InputIt first, InputIt last,
 									typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) {

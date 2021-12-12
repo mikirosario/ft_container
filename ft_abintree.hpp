@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/12 02:57:38 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/12 10:21:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,13 +251,13 @@ namespace ft
 
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
-					return (*this->_lst_it == *rhs._lst_it); //lst_it contiene un puntero a t_bstnode; dereferenciamos para comparar un puntero con otro, es decir, las direcciones de los nodos subyacentes
+					return (this->_lst_it == rhs._lst_it);
 				}
 				bool	operator!=(Iterator const & rhs) const {
 					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
 				bool	operator<(Iterator const & rhs) const {
-					return (C_key(*(*this->_lst_it->key)) < C_key(*(*rhs._lst_it->key)));
+					return (C_key(*(*this->_lst_it)->key) < C_key(*(*rhs._lst_it)->key));
 				}
 				bool	operator>(Iterator const & rhs) const {
 					return (rhs < *this); //a>b == b<a
@@ -988,10 +988,7 @@ namespace ft
 	
 				*const_cast<key_type *>(original->key) = *successor->key;
 				*original->value = *successor->value;
-//				*original->assoc_lst_it = *successor->assoc_lst_it
-// this was dumb of me, of course the associated list iterator of a node will be the same after a swap, since the iterator merely points to the node address,
-// saying nothing about the order, it is invariant, like the key and value pointers.
-							
+				
 				if (original->next == successor)
 				{
 					if (successor->next != NULL)
@@ -1033,8 +1030,18 @@ namespace ft
 					//deletes any thread member pointing to 'tmp' (thread_suc's
 					//original address), which is the same as successor.
 					t_bstnode	*tmp = *thread_suc;
-					*thread_suc = *thread_org;
-					*thread_org = tmp;
+					*thread_suc = *thread_org; //thread_org node ADDRESS copied to thread_suc, BUT thread_suc retains its ORIGINAL next and prev addresses indicating its order in the list
+					 *thread_org = tmp; //thread_suc node address copied to thread_org, so _thread.delete(node) will find it and delete the original list entry
+					original->assoc_lst_it = thread_suc; //original's associated list iterator is refreshed with the new thread_suc, containing original's node address and suc's next and prev pointers
+					//note, in this case if thread_suc and thread_org are neighbours, it should be handled for us by _thread.delete(node), which will update next and prev pointers as needed
+					//since list iterators are actually pointers to list members, existing iterator instances will all be affected.
+					//you can think of what happens here like this:
+					//list iterator -> list member struct {
+					//										t_bstnode * node = org_node_ptr
+					//										t_bstnode * next = suc_next;
+					//										t_bstnode * prev = suc_prev;
+					//										}
+					//Where, if _thread.delete(node) affects a neighbour of the associated list member, next/prev will be updated there.
 				}
 			}
 

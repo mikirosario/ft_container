@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/11 22:03:34 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/12 02:57:38 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,7 +328,7 @@ namespace ft
 					liT	_lst_it;
 					//iT							_lst_it;
 					t_bstnode **				_root_ptr_addr;
-/*this worked*/		friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(Iterator<iT, Category, liT> const & position, key_type const & key) const;
+/*this worked*/		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(Iterator<iT, Category, liT> const & position, key_type const & key) const;
 //this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
@@ -985,9 +985,13 @@ namespace ft
 				void	node_replace(t_bstnode * original, t_bstnode * successor) {				
 				//original->data = successor->data; //copy successor data to original data
 				//got to play rough with the consted key in the pair :P
+	
 				*const_cast<key_type *>(original->key) = *successor->key;
 				*original->value = *successor->value;
-				*original->assoc_lst_it = *successor->assoc_lst_it;
+//				*original->assoc_lst_it = *successor->assoc_lst_it
+// this was dumb of me, of course the associated list iterator of a node will be the same after a swap, since the iterator merely points to the node address,
+// saying nothing about the order, it is invariant, like the key and value pointers.
+							
 				if (original->next == successor)
 				{
 					if (successor->next != NULL)
@@ -1017,12 +1021,7 @@ namespace ft
 					typename std::list<t_bstnode *>::iterator thread_suc = _thread.begin();
 					//find original node address in thread
 					while (*thread_org != original)
-					{
-						//debug //infinite loop WHYYYY :_(
-						std::cerr << "CHIPAPI" << std::endl;
-						//debug
 						++thread_org;
-					}
 					//find successor node address in thread
 					while (*thread_suc != successor)
 						++thread_suc;

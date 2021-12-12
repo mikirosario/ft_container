@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/11 21:55:54 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/12 03:31:02 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1248,22 +1248,33 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< color << mi_map_default["santana"] << TXT_NL
 			<< su_map_default["santana"] << END;
 	
-	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element with Good Hint (aka. constant time insert, aka. DE GUAYS INSERT)" << END;
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element ('alex') with GOOD Hint (aka. constant time insert, aka. DE GUAYS INSERT)" << END;
 	mi_map_default.insert(mi_map_default.lower_bound("alex"), ft::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
 	su_map_default.insert(su_map_default.lower_bound("alex"), std::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
-	print_map_comp(mi_map_default, su_map_default, color, ret);
+	check(mi_map_default["alex"] == su_map_default["alex"], color, ret);
+	PRINT	<< color << mi_map_default["alex"] << TXT_NL
+			<< su_map_default["alex"] << END;
+	//print_map_comp(mi_map_default, su_map_default, color, ret);
 
-	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element with Good Hint (aka. constant time insert, aka. DE GUAYS INSERT)" << END;
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element ('a') with GOOD Hint (aka. constant time insert, aka. DE GUAYS INSERT)" << END;
 	mi_map_default.insert(mi_map_default.lower_bound("a"), ft::make_pair<std::string, std::string>("a", "A: \t\t\t\tPrimera letra del alafabeto latino."));
 	su_map_default.insert(su_map_default.lower_bound("a"), std::make_pair<std::string, std::string>("a", "A: \t\t\t\tPrimera letra del alafabeto latino."));
-	print_map_comp(mi_map_default, su_map_default, color, ret);
+	check(mi_map_default["a"] == su_map_default["a"], color, ret);
+	PRINT	<< color << mi_map_default["a"] << TXT_NL
+			<< su_map_default["a"] << END;
+	//print_map_comp(mi_map_default, su_map_default, color, ret);
 
-	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element with Bad Hint (aka. logarithmic time + correction time insert, aka. GILIPOLLAS INSERT)" << END;
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element ('rorozco') with BAD Hint (aka. logarithmic time + correction time insert, aka. GILIPOLLAS INSERT)" << END;
 	mi_map_default.insert(mi_map_default.begin(), ft::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
 	su_map_default.insert(su_map_default.begin(), std::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
+	check(mi_map_default["rorozco"] == su_map_default["rorozco"], color, ret);
+	PRINT	<< color << mi_map_default["rorozco"] << TXT_NL
+			<< su_map_default["rorozco"] << END;
+	
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insertion Result for map_default: " << END;
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 
-	PRINT	<< TXT_TAB << TXT_BYEL << "Insert by Range" << END; //insert range from agua to tig, including alex, santana and rorozco
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insert by Range to map_copy (from agua to tig, including alex, santana and rorozco, excluding a)" << END; //insert range from agua to tig, including alex, santana and rorozco
 	mi_map_copy.insert(++mi_map_default.begin(), --mi_map_default.end());
 	su_map_copy.insert(++su_map_default.begin(), --su_map_default.end());
 	print_map_comp(mi_map_copy, su_map_copy, color, ret);
@@ -1274,7 +1285,7 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	su_map_default.erase(su_map_default.begin()); //should erase 'a'
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 
-	PRINT << TXT_TAB << "Erase by Key ('marvin')" << END;
+	PRINT << TXT_BYEL << TXT_TAB << "Erase by Key ('marvin')" << END;
 	mi_map_default.erase("marvin"); //should erase 'marvin'
 	su_map_default.erase("marvin"); //should erase 'marvin'
 	print_map_comp(mi_map_default, su_map_default, color, ret);

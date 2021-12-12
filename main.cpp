@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/12 09:36:32 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/12 10:23:48 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1294,10 +1294,10 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT << TXT_BYEL << TXT_TAB << "Erase by Range ('norminette' to 'santana')" << END;
 	typename ft_map::iterator mit = mi_map_default.find("norminette");
 	typename ft_map::iterator mend = mi_map_default.find("santana");
-	//typename std_map::iterator sit = su_map_default.find("norminette");
-	//typename std_map::iterator send = su_map_default.find("santana");
-	mi_map_default.insert(mit, mend);
-	//su_map_default.insert(sit, send);
+	typename std_map::iterator sit = su_map_default.find("norminette");
+	typename std_map::iterator send = su_map_default.find("santana");
+	mi_map_default.erase(mit, mend);
+	su_map_default.erase(sit, send);
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 	}
 	return (true);

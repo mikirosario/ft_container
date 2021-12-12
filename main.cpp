@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/12 12:00:05 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/12 15:38:30 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1300,10 +1300,17 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 	}
 
-	PRINT << TXT_BYEL << "SWAP TEST" << END;
-	ft::swap(mi_map_default, mi_map_range);
-	std::swap(su_map_default, su_map_range);
+
+	PRINT << TXT_NL << TXT_BYEL << "SWAP TEST (map_default <-> map_range)" << END;
+	swap(mi_map_default, mi_map_range);
+	swap(su_map_default, su_map_range);
 	print_map_comp(mi_map_default, su_map_default, color, ret);
+
+	PRINT << TXT_NL << TXT_BYEL << "CLEAR TEST (map_range)" << END;
+	mi_map_range.clear();
+	su_map_range.clear();
+	print_map_comp(mi_map_range, su_map_range, color, ret);
+
 
 
 	return (true);

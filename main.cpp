@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/12 15:38:30 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/13 00:28:52 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1133,33 +1133,36 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< TXT_BWHT << mi_map_default.max_size() << TXT_TAB << su_map_default.max_size() << END;
 
 	PRINT	<< TXT_NL << TXT_BYEL << "ACCESS ELEMENT BY KEY REFERENCE TEST" << TXT_NL
-			<< TXT_TAB << "Existent Element ('norminette')" << END;
+			<< TXT_TAB << "Find Reference to Existent Element ('norminette')" << END;
 	check(mi_map_default["norminette"] == su_map_default["norminette"], color, ret);
 	PRINT	<< color << mi_map_default["norminette"] << TXT_NL
 			<< su_map_default["norminette"] << END;
 	
-//forgot that access element key ref inserts blank entry for non-existent key xD
-// //debug territory
-// PRINT <<	"DEBUG BEFORE" << END;
-// print_map_comp(mi_map_default, su_map_default, color, ret);
-// PRINT <<	"DEBUG BEFORE" << END;
-// //debug
+	PRINT	<< TXT_BYEL << TXT_TAB << "Insert New Key and Default-Instantiated Value ('aguafiestas')" << TXT_NL;
+	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
+			PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
+	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
+			<< su_map_default["aguafiestas"] << END;
 
-// 	//extra entry
-// 			PRINT	<< TXT_BYEL << TXT_TAB << "Non-Existent Element ('aguafiestas')" << TXT_NL;
-// 	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret); //forgot that access element key ref inserts blank entry for non-existent key
-// 			PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
-// 	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
-// 			<< su_map_default["aguafiestas"] << END;
-// 	PRINT << "MI SIZE: " << mi_map_default.size() << " SU SIZE: " << su_map_default.size() << END;
+	PRINT	<< TXT_BYEL << TXT_TAB << "Insert Value by Key Reference ('miyamoto')" << TXT_NL;
+	mi_map_default["miyamoto"] = "MIYAMOTO: \t\t\tEminencia de los videojuegos que descubrió que la constante gravitacional está más guapa como variable.";
+	su_map_default["miyamoto"] = "MIYAMOTO: \t\t\tEminencia de los videojuegos que descubrió que la constante gravitacional está más guapa como variable.";
+	check(mi_map_default["miyamoto"] == su_map_default["miyamoto"], color, ret);
+	PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
+	PRINT	<< color << mi_map_default["miyamoto"] << TXT_NL
+			<< su_map_default["miyamoto"] << END;
 
-// 	//extra entry
+	PRINT	<< TXT_BYEL << TXT_TAB << "Replace Value by Key Reference ('aguafiestas')" << TXT_NL;
+	mi_map_default["aguafiestas"] = "AGUAFIESTAS: \t\t\tSinónimo de Marvin (véase 'marvin').";
+	su_map_default["aguafiestas"] = "AGUAFIESTAS: \t\t\tSinónimo de Marvin (véase 'marvin').";
+	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
+	PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
+	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
+			<< su_map_default["aguafiestas"] << END;
+	
+	PRINT	<< TXT_BYEL << TXT_TAB << "Result:" << END;
+	print_map_comp(mi_map_default, su_map_default, color, ret);
 
-// //debug
-// PRINT <<	"DEBUG AFTER" << END;
-// print_map_comp(mi_map_default, su_map_default, color, ret);
-// PRINT <<	"DEBUG AFTER" << END;
-// //debug territory
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "OPERATIONS TESTS" << TXT_NL
 			<< TXT_TAB << "Find by Key ('marvin')" << END;
@@ -1169,6 +1172,13 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	check(mit->first == sit->first & mit->second == sit->second, color, ret);
 	PRINT	<< color << mit->second << TXT_NL
 			<< sit->second << END;
+	}
+	PRINT	<< TXT_TAB << TXT_BYEL << "Find by Key Non-Existent ('marvine')" << END; //must return end()
+	{
+	typename ft_map::iterator mit = mi_map_default.find("marvine");
+	typename std_map::iterator sit = su_map_default.find("marvine");
+	check(mit == mi_map_default.end() & sit == su_map_default.end(), color, ret);
+	PRINT	<< ((isGreen(color) == true) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	}
 	PRINT	<< TXT_BYEL << TXT_TAB << "Count Existent Element ('agua')" << TXT_NL;
 	check(mi_map_default.count("agua") == su_map_default.count("agua"), color, ret);

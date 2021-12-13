@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/12 10:18:39 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/13 01:20:50 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,15 +264,15 @@ namespace ft
 					--hint;
 				if (this->is_valid_position(hint, data.first))
 				{
-					//DEBUG
-					std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
-					//DEBUG	
+					// //DEBUG
+					// std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
+					// //DEBUG	
 					t_bstnode * node = &(*hint);
 					return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, &_root)); //constant time insertion
 				}
-				//DEBUG
-				std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;
-				//DEBUG
+				// //DEBUG
+				// std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;
+				// //DEBUG
 				return (insert(data).first); //log time insertion (if the insertion point is _root, constant tme)
 			}
 

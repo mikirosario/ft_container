@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/13 00:28:52 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/13 01:36:57 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1321,6 +1321,8 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	su_map_range.clear();
 	print_map_comp(mi_map_range, su_map_range, color, ret);
 
+	PRINT	<< TXT_NL << TXT_BYEL << "COMP OBJECT TESTS" << END;
+	PRINT	<< std::boolalpha << mi_map_default.value_comp()(*mi_map_default.begin(), *(++mi_map_default.begin())) << END;
 
 
 	return (true);

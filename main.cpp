@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/13 01:55:01 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/13 10:03:10 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "ft_bintree.hpp"
 #include "ft_bintree_pair.hpp"
 #include "ft_map.hpp"
+#include "ft_stack.hpp"
 #include <iostream>
 #include <iomanip>
 #include <vector>

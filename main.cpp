@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/13 01:36:57 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/13 01:51:37 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1323,6 +1323,9 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 
 	PRINT	<< TXT_NL << TXT_BYEL << "COMP OBJECT TESTS" << END;
 	PRINT	<< std::boolalpha << mi_map_default.value_comp()(*mi_map_default.begin(), *(++mi_map_default.begin())) << END;
+
+	PRINT	<< TXT_NL << TXT_BYEL << "RELATIONAL OPERATORS??" << END; //UNDOCUMENTED RELATIONAL OPERATORS? :P
+	PRINT	<< std::boolalpha << (su_map_default > su_map_copy) << END;
 
 
 	return (true);

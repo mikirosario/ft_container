@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/14 19:39:29 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/14 23:49:44 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,13 +179,14 @@ namespace ft
 
 			typedef struct	s_lstnode
 			{
-				t_bstnode *			tree_node;
+				void *			tree_node;
 				struct s_lstnode *	prev;
 				struct s_lstnode *	next;
-				s_lstnode(void) : tree_node(NULL), prev(NULL), next(NULL) {}
+				s_lstnode(struct s_lstnode * end_list) : tree_node(NULL), prev(NULL), next(end_list) {}
 			}				t_lstnode;
 
 			std::allocator<t_lstnode>	_list_alloc;
+			t_lstnode					_end_lst;
 			t_lstnode *					_list_head;
 			t_lstnode * 				_list_tail;
 
@@ -201,7 +202,7 @@ namespace ft
 				try
 				{
 					new_node = _list_alloc.allocate(1);
-					_list_alloc.construct(new_node, t_lstnode());
+					_list_alloc.construct(new_node, t_lstnode(&_end_lst));
 					new_node->tree_node = tree_node;
 				}
 				catch(std::bad_alloc const & e)
@@ -222,10 +223,12 @@ namespace ft
 			*/
 			void			lst_add_back(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * node) {
 				list_tail = node;
-				if (list_head != NULL)
+				node->next = &_end_lst;
+				_end_lst.prev = list_tail;
+				if (list_head != &_end_lst)
 				{
 					t_lstnode * last_node = list_head;
-					while (last_node->next != NULL)
+					while (last_node->next != &_end_lst)
 						last_node = last_node->next;
 					last_node->next = node;
 					node->prev = last_node;
@@ -247,7 +250,7 @@ namespace ft
 			** self can't be arsed. So just use it properly. :p
 			*/
 			void			lst_del_one(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * node) {
-				if (node != NULL)
+				if (node != &_end_lst)
 				{
 					if (node == list_tail)
 						list_tail = node->prev;
@@ -255,8 +258,7 @@ namespace ft
 						list_head = node->next;
 					else //therefore, node != list_head is the same as node->prev != NULL
 						node->prev->next = node->next;
-					if (node->next != NULL)
-						node->next->prev = node->prev;
+					node->next->prev = node->prev;
 					_list_alloc.destroy(node);
 					_list_alloc.deallocate(node, 1);
 				}
@@ -270,15 +272,15 @@ namespace ft
 				t_lstnode * node = list_head;
 				t_lstnode *	tmp;
 
-				while (node != NULL)
+				while (node != &_end_lst)
 				{
 					tmp = node->next;
 					_list_alloc.destroy(node);
 					_list_alloc.deallocate(node, 1);
 					node = tmp;
 				}
-				list_head = NULL;
-				list_tail = NULL;
+				list_head = &_end_lst;
+				list_tail = &_end_lst;
 			}
 
 			/* LST_INSERT */
@@ -288,9 +290,9 @@ namespace ft
 			** list_head and list_tail pointers are valid.
 			*/
 			void			lst_insert(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * next, t_lstnode * new_node) {
-				if (next == NULL) //Next is lst_end, so do add_back. When list_head is NULL, then next MUST also be NULL, so we handle that case in add_back too.
+				if (next == &_end_lst) //Next is &_end_lst, so do add_back. When list_head is &_end_lst then next MUST be &_end_lst, as it's the only element, so we handle that case in add_back too.
 					lst_add_back(list_head, list_tail, new_node);
-				else //Next is not lst_end, therefore the list has elements, therefore list_head must not be NULL.
+				else //Next is not &_end_lst, therefore the list has elements, therefore list_head must not be &_end_lst.
 				{	
 					new_node->next = next;
 					new_node->prev = next->prev;
@@ -486,7 +488,7 @@ namespace ft
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 			
 			/* DEFAULT CONSTRUCTOR */
-			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc), _list_head(NULL), _list_tail(NULL) {}
+			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc), _end_lst(&_end_lst), _list_head(&_end_lst), _list_tail(&_end_lst) {}
 			//These constructors are defined in the derived classes, which all use the default abstract constructor first and then insert.
 			// /* RANGE CONSTRUCTOR */
 			// Abintree(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
@@ -563,6 +565,15 @@ namespace ft
 					return false;
 				return true;
 			}
+			// /*LST REPLACE*/
+			// bool is_valid_position(iterator const & position, key_type const & key) const {
+			// 	if (position._lst_node == NULL || position._lst_node == _root->assoc_lst_node
+			// 	|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
+			// 	|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
+			// 		return false;
+			// 	return true;
+			// }
+			// /*LST REPLACE*/
 
 			/* GET NEXT NODE */
 			/*
@@ -731,6 +742,16 @@ namespace ft
 				return (it);
 			}
 
+			// /*LST REPLACE*/
+			// t_lstnode *	thread_search(t_bstnode * node) {
+				
+			// 	t_lstnode * it = _list_head;
+			// 	while (it != NULL && it != node)
+			// 		it = it->next;
+			// 	return (it);
+			// }
+			// /*LST REPLACE*/
+
 			typename t_thread::const_iterator	thread_search(t_bstnode * node) const {
 				typename t_thread::const_iterator it = _thread.begin();
 				typename t_thread::const_iterator end = _thread.end();
@@ -738,6 +759,16 @@ namespace ft
 					++it;
 				return (it);
 			}
+
+			// /*LST REPLACE*/
+			// t_lstnode const *	thread_search(t_bstnode * node) const {
+				
+			// 	t_lstnode * it = _list_head;
+			// 	while (it != NULL && it != node)
+			// 		it = it->next;
+			// 	return (it);
+			// }
+			// /*LST REPLACE*/
 
 			/* BINTREE SEARCH */
 			/*
@@ -968,7 +999,7 @@ namespace ft
 							++it;
 						new_node->assoc_lst_it = _thread.insert(it, new_node);
 
-						
+						/*LST REPLACE*/
 						//*sigh* STL-free version incoming...
 						new_lst_node->tree_node = new_node;
 						new_node->assoc_lst_node = new_lst_node;
@@ -976,6 +1007,7 @@ namespace ft
 						while (insert_pos != NULL && insert_pos->tree_node != new_node->next)
 						 	insert_pos = insert_pos->next;
 						lst_insert(_list_head, _list_tail, insert_pos, new_lst_node);
+						/*LST REPLACE*/
 					}
 						
 				}
@@ -1008,6 +1040,9 @@ namespace ft
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
 				_thread.remove(node);
+				// /*LST REPLACE*/
+				// lst_del_one(_list_head, _list_tail, thread_search(node));
+				// /*LST REPLACE*/
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
 				_alloc.deallocate(node, sizeof(t_bstnode));
@@ -1201,6 +1236,7 @@ namespace ft
 					//Where, if _thread.delete(node) affects a neighbour of the associated list member, next/prev will be updated there.
 				}
 
+				/*LST REPLACE*/
 				{
 					//le sigh. STL-free version here.
 					t_lstnode * thread_org = _list_head;
@@ -1212,11 +1248,12 @@ namespace ft
 					while (thread_suc->tree_node != successor)
 						thread_suc = thread_suc->next;
 
-					t_bstnode * tmp = thread_suc->tree_node;
+					t_bstnode * tmp = static_cast<t_bstnode *>(thread_suc->tree_node);
 					thread_suc->tree_node = thread_org->tree_node;
 					thread_org->tree_node = tmp;
 					original->assoc_lst_node = thread_suc;
 				}
+				/*LST REPLACE*/
 			}
 
 			/* BINTREE DELETE */
@@ -1885,6 +1922,22 @@ namespace ft
 				return (const_iterator(_thread.end(), &_root));
 			}
 
+
+			// /*LST REPLACE*/
+			// iterator begin(void) {
+			// 	return (iterator(_list_head), &_root));
+			// }
+			// const_iterator begin(void) const {
+			// 	return (const_iterator(_list_head, &_root));
+			// }
+			// iterator end(void) {
+			// 	return (iterator(_list_tail->next, &_root));
+			// }
+			// const_iterator end(void) const {
+			// 	return (const_iterator(_list_tail->next, &_root));
+			// }
+			// /*LST REPLACE*/
+
 			reverse_iterator rbegin(void) {
 				return (reverse_iterator(end()));
 			}
@@ -2012,6 +2065,28 @@ namespace ft
 				this->_thread = src._thread;
 				src._thread = org_thread;
 			}
+			
+			// /*LST REPLACE*/
+			// template<typename T>
+			// void	swap(T & src) {
+			// 	t_bstnode *		org_tree = this->_root;
+			// 	size_type		org_size = this->_size;
+			// 	allocator_type	org_alloc = this->_alloc;
+			// 	t_lstnode *		org_lst_head = this->_list_head;
+			// 	t_lstnode *		org_lst_tail = this->_list_tail;
+
+			// 	this->_alloc = src._alloc;
+			// 	src._alloc = org_alloc;
+			// 	this->_root = src._root;
+			// 	src._root = org_tree;
+			// 	this->_size = src._size;
+			// 	src._size = org_size;
+			// 	this->_list_head = src._list_head;
+			// 	src._list_head = org_lst_head;
+			// 	this->_list_tail = src._list_tail;
+			// 	src._list_tail = org_list_tail;
+			// }
+			// /*LST REPLACE*/
 
 			/* ---- OBSERVERS ----- */
 			key_compare	key_comp(void) const {
@@ -2201,6 +2276,24 @@ namespace ft
 			t_bstnode const & getMax(void) const {
 				return(*(*(--_thread.end())));
 			}
+
+			// /*LST REPLACE*/
+			// t_bstnode & getMin(void) {
+			// 	return(static_cast<t_bstnode *>(_list_head->tree_node));
+			// }
+
+			// t_bstnode & getMax(void) {
+			// 	return(static_cast<t_bstnode *>(_list_tail->tree_node));
+			// }
+
+			// t_bstnode const & getMin(void) const {
+			// 	return(static_cast<t_bstnode const *>(_list_head->tree_node));
+			// }
+
+			// t_bstnode const & getMax(void) const {
+			// 	return(static_cast<t_bstnode const *>(_list_tail->tree_node));
+			// }
+			// /*LST REPLACE*/
 
 			allocator_type	get_allocator(void) const {
 				return(_alloc);

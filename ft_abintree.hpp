@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/14 23:49:44 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/15 00:07:41 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -567,7 +567,7 @@ namespace ft
 			}
 			// /*LST REPLACE*/
 			// bool is_valid_position(iterator const & position, key_type const & key) const {
-			// 	if (position._lst_node == NULL || position._lst_node == _root->assoc_lst_node
+			// 	if (position._lst_node == &_end_lst || position._lst_node == _root->assoc_lst_node
 			// 	|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
 			// 	|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
 			// 		return false;
@@ -746,7 +746,7 @@ namespace ft
 			// t_lstnode *	thread_search(t_bstnode * node) {
 				
 			// 	t_lstnode * it = _list_head;
-			// 	while (it != NULL && it != node)
+			// 	while (it != &_end_lst && it != node)
 			// 		it = it->next;
 			// 	return (it);
 			// }
@@ -764,7 +764,7 @@ namespace ft
 			// t_lstnode const *	thread_search(t_bstnode * node) const {
 				
 			// 	t_lstnode * it = _list_head;
-			// 	while (it != NULL && it != node)
+			// 	while (it != &_end_lst && it != node)
 			// 		it = it->next;
 			// 	return (it);
 			// }
@@ -1004,7 +1004,7 @@ namespace ft
 						new_lst_node->tree_node = new_node;
 						new_node->assoc_lst_node = new_lst_node;
 						t_lstnode * insert_pos = _list_head;
-						while (insert_pos != NULL && insert_pos->tree_node != new_node->next)
+						while (insert_pos != &_end_lst && insert_pos->tree_node != new_node->next)
 						 	insert_pos = insert_pos->next;
 						lst_insert(_list_head, _list_tail, insert_pos, new_lst_node);
 						/*LST REPLACE*/
@@ -1931,10 +1931,10 @@ namespace ft
 			// 	return (const_iterator(_list_head, &_root));
 			// }
 			// iterator end(void) {
-			// 	return (iterator(_list_tail->next, &_root));
+			// 	return (iterator(&_end_lst, &_root));
 			// }
 			// const_iterator end(void) const {
-			// 	return (const_iterator(_list_tail->next, &_root));
+			// 	return (const_iterator(&_end_lst, &_root));
 			// }
 			// /*LST REPLACE*/
 
@@ -2085,6 +2085,11 @@ namespace ft
 			// 	src._list_head = org_lst_head;
 			// 	this->_list_tail = src._list_tail;
 			// 	src._list_tail = org_list_tail;
+
+			// 	this->_list_tail->next = &this->_end_lst;
+			// 	this->_end_lst.prev = this->_list_tail;
+			// 	src._list_tail->next = &src._end_lst;
+			// 	src._end_lst.prev = src._list_tail;
 			// }
 			// /*LST REPLACE*/
 
@@ -2250,6 +2255,18 @@ namespace ft
 				t_bstnode *	node = bintree_search(_root, key);
 				return (node == NULL ? end() : const_iterator(node->assoc_lst_it, &_root));
 			}
+
+			/*LST REPLACE*/
+			// iterator		find(key_type const & key) {
+			// 	t_bstnode *	node = bintree_search(_root, key);
+			// 	return (node == NULL ? end() : iterator(node->assoc_lst_node, &_root));
+			// }
+
+			// const_iterator	find(key_type const & key) const {
+			// 	t_bstnode *	node = bintree_search(_root, key);
+			// 	return (node == NULL ? end() : const_iterator(node->assoc_lst_node, &_root));
+			// }
+			/*LST REPLACE*/
 
 			/* ---- PUBLIC NODE GETTERS ----- */
 

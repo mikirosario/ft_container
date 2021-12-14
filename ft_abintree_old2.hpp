@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/14 19:39:29 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/13 01:15:59 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,11 @@ namespace ft
 	// 	private:
 	// 		//struct ABintreeNode &	operator=(struct ABintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
 	// };
+
 	//pair specialization
-
-
-
-
-
-
 	template<typename Data, typename Key, typename Value>
 	struct	BintreeNode
 	{
-		struct s_lstnode;
 		/*
 		** This enum field will define a node color as red or black.
 		*/
@@ -63,7 +57,6 @@ namespace ft
 		struct BintreeNode							*next;
 		struct BintreeNode							*prev;
 		typename std::list<t_bstnode *>::iterator	assoc_lst_it;
-		void										*assoc_lst_node;
 		//struct BintreeNode*	const					_end;
 		//C_key										key; //store in C_key?? could it be consted then??
 		t_bstcolor									color;
@@ -137,19 +130,19 @@ namespace ft
 					}
 			};
 
-			// class value_compare : std::binary_function<value_type, value_type, bool>
-			// {
-			// 	protected:
-			// 		key_compare	_comp;
-			// 		value_compare (key_compare src) : _comp(src) {}
-			// 	public:
-			// 		typedef bool		result_type;
-			// 		typedef value_type	first_argument_type;
-			// 		typedef value_type	second_argument_type;
-			// 		bool operator()(value_type const & x, value_type const & y) const {
-			// 			return _comp(x.first, y.first);
-			// 		}
-			// };
+			class value_compare : std::binary_function<value_type, value_type, bool>
+			{
+				protected:
+					key_compare	_comp;
+					value_compare (key_compare src) : _comp(src) {}
+				public:
+					typedef bool		result_type;
+					typedef value_type	first_argument_type;
+					typedef value_type	second_argument_type;
+					bool operator()(value_type const & x, value_type const & y) const {
+						return _comp(x.first, y.first);
+					}
+			};
 
 			typedef struct ft::BintreeNode<Data, Key, Value>	t_bstnode;
 			typedef typename std::list<t_bstnode *>				t_thread;
@@ -162,146 +155,7 @@ namespace ft
 			key_compare				_is_less;
 			allocator_type			_alloc;
 			t_thread				_thread;
-
-			/* THREAD LIST */
-			/*
-			** These functions implement a simple doubly linked list. Can't use
-			** std::list because subject bans STL containers. The list is used
-			** to create a _thread that preserves the sequential order of
-			** elements. Bintree iterators use the list members as an additional
-			** level of indirection to the tree nodes, so that when tree node
-			** addresses change we can propagate the changes to the iterators by
-			** updating the list.
-			**
-			** We can't use new, so I use std::allocator to allocate memory for
-			** the list nodes.
-			*/
-
-			typedef struct	s_lstnode
-			{
-				t_bstnode *			tree_node;
-				struct s_lstnode *	prev;
-				struct s_lstnode *	next;
-				s_lstnode(void) : tree_node(NULL), prev(NULL), next(NULL) {}
-			}				t_lstnode;
-
-			std::allocator<t_lstnode>	_list_alloc;
-			t_lstnode *					_list_head;
-			t_lstnode * 				_list_tail;
-
-			/* LST_NEW */
-			/*
-			** Tries to reserve memory for a new list node. If successful,
-			** returns a pointer to the new node, otherwise rethrows an
-			** allocator exception to the caller.
-			*/
-			t_lstnode *	lst_new(t_bstnode * tree_node) throw (std::bad_alloc, std::exception) {
-				t_lstnode * new_node;
-
-				try
-				{
-					new_node = _list_alloc.allocate(1);
-					_list_alloc.construct(new_node, t_lstnode());
-					new_node->tree_node = tree_node;
-				}
-				catch(std::bad_alloc const & e)
-				{
-					throw ;
-				}
-				catch(std::exception const & e)
-				{
-					throw ;
-				}
-				return (new_node);
-			}
-
-			/* LST_ADD_BACK */
-			/* Takes the address of a list head pointer and a new node as
-			** arguments and pushes the new node to the back of the list. If the
-			** list head pointer is NULL, it is set to point to the new node.
-			*/
-			void			lst_add_back(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * node) {
-				list_tail = node;
-				if (list_head != NULL)
-				{
-					t_lstnode * last_node = list_head;
-					while (last_node->next != NULL)
-						last_node = last_node->next;
-					last_node->next = node;
-					node->prev = last_node;
-				}
-				else
-					list_head = node;
-			}
-
-			/* LST_DEL_ONE */
-			/*
-			** Deletes a list node. If a null node pointer is passed, nothing is
-			** done. If your list_head and list_tail pointers are not valid,
-			** then this function will do gruesome, hideous things to your list.
-			** That's a feature.
-			**
-			** What, do you want me to turn this into some kind of bloated,
-			** hand-holdy object that "remembers" what list it's meant to be
-			** responsible for? Well my grisled, 42-school-educated, C-loving
-			** self can't be arsed. So just use it properly. :p
-			*/
-			void			lst_del_one(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * node) {
-				if (node != NULL)
-				{
-					if (node == list_tail)
-						list_tail = node->prev;
-					if (node == list_head) //node == list_head is the same as node->prev == NULL
-						list_head = node->next;
-					else //therefore, node != list_head is the same as node->prev != NULL
-						node->prev->next = node->next;
-					if (node->next != NULL)
-						node->next->prev = node->prev;
-					_list_alloc.destroy(node);
-					_list_alloc.deallocate(node, 1);
-				}
-			}
-
-			/* LST_CLR */
-			/*
-			** Deletes all nodes in a list.
-			*/
-			void			lst_clr(t_lstnode *& list_head, t_lstnode *& list_tail) {
-				t_lstnode * node = list_head;
-				t_lstnode *	tmp;
-
-				while (node != NULL)
-				{
-					tmp = node->next;
-					_list_alloc.destroy(node);
-					_list_alloc.deallocate(node, 1);
-					node = tmp;
-				}
-				list_head = NULL;
-				list_tail = NULL;
-			}
-
-			/* LST_INSERT */
-			/*
-			** Inserts new_node before next node. If list_head is NULL, new_node
-			** becomes list_head. Minimal ifelsing around. Make sure your
-			** list_head and list_tail pointers are valid.
-			*/
-			void			lst_insert(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * next, t_lstnode * new_node) {
-				if (next == NULL) //Next is lst_end, so do add_back. When list_head is NULL, then next MUST also be NULL, so we handle that case in add_back too.
-					lst_add_back(list_head, list_tail, new_node);
-				else //Next is not lst_end, therefore the list has elements, therefore list_head must not be NULL.
-				{	
-					new_node->next = next;
-					new_node->prev = next->prev;
-					next->prev = new_node;
-					if (new_node->prev != NULL)
-						new_node->prev->next = new_node;
-					else //if new_node->prev == NULL, it must be the new _list_head
-						list_head = new_node;
-				}
-			}
-
+			
 
 			/* BINTREE ITERATOR */
 			/* THEY CONTAIN A LIST ITERATOR THAT POINTS TO BINTREE NODE */
@@ -486,7 +340,7 @@ namespace ft
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 			
 			/* DEFAULT CONSTRUCTOR */
-			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc), _list_head(NULL), _list_tail(NULL) {}
+			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
 			//These constructors are defined in the derived classes, which all use the default abstract constructor first and then insert.
 			// /* RANGE CONSTRUCTOR */
 			// Abintree(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
@@ -929,13 +783,11 @@ namespace ft
 			t_bstnode *	bintree_add(t_bstnode *& root, data_type const & data, key_type const new_key) //Not a ref because I was worried it might not jive with a std::move instruction if I ever use one :p
 			{
 				t_bstnode *		new_node = NULL;
-				t_lstnode *		new_lst_node = NULL;
 
 				if ((new_node = bintree_search(root, new_key)) != NULL) //ban duplicate keys
 					return (new_node);
 				try
 				{
-					new_lst_node = lst_new(NULL); //throws
 					root = bintree_insert(NULL, root, data, new_key, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
 					//bintree_balance(&_root, new_node); //WHY DID I DO THIS!? THERE MUST HAVE BEEN A REASON AND NOW I CAN'T REMEMBER :_(
 					//OK, I remember now. bintree_balance may change the node pointer address passed as root, but this is irrelevant unless the
@@ -967,15 +819,6 @@ namespace ft
 						while (it != end && *it != new_node->next)
 							++it;
 						new_node->assoc_lst_it = _thread.insert(it, new_node);
-
-						
-						//*sigh* STL-free version incoming...
-						new_lst_node->tree_node = new_node;
-						new_node->assoc_lst_node = new_lst_node;
-						t_lstnode * insert_pos = _list_head;
-						while (insert_pos != NULL && insert_pos->tree_node != new_node->next)
-						 	insert_pos = insert_pos->next;
-						lst_insert(_list_head, _list_tail, insert_pos, new_lst_node);
 					}
 						
 				}
@@ -1199,23 +1042,6 @@ namespace ft
 					//										t_bstnode * prev = suc_prev;
 					//										}
 					//Where, if _thread.delete(node) affects a neighbour of the associated list member, next/prev will be updated there.
-				}
-
-				{
-					//le sigh. STL-free version here.
-					t_lstnode * thread_org = _list_head;
-					t_lstnode * thread_suc = _list_head;
-					//find original node address in thread
-					while (thread_org->tree_node != original)
-						thread_org = thread_org->next;
-					//find successor node address in thread
-					while (thread_suc->tree_node != successor)
-						thread_suc = thread_suc->next;
-
-					t_bstnode * tmp = thread_suc->tree_node;
-					thread_suc->tree_node = thread_org->tree_node;
-					thread_org->tree_node = tmp;
-					original->assoc_lst_node = thread_suc;
 				}
 			}
 
@@ -2018,9 +1844,9 @@ namespace ft
 				return (_is_less);
 			}
 
-			// value_compare	value_comp(void) const {
-			// 	return (value_compare(_is_less));
-			// }		
+			value_compare	value_comp(void) const {
+				return (value_compare(_is_less));
+			}		
 
 			/* ---- OPERATIONS ---- */
 

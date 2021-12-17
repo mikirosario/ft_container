@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_pair.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/13 01:20:50 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/17 13:17:33 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ namespace ft
 			*/
 			typedef ft::pair<T1 const, T2>							data_type;
 			typedef typename bintree_pair::t_bstnode				t_bstnode;
+			typedef typename bintree_pair::t_lstnode				t_lstnode;
 			typedef typename bintree_pair::size_type				size_type;
 			typedef typename bintree_pair::iterator					iterator;
 			typedef typename bintree_pair::const_iterator			const_iterator;
@@ -268,7 +269,8 @@ namespace ft
 					// std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					// //DEBUG	
 					t_bstnode * node = &(*hint);
-					return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, &_root)); //constant time insertion
+					//return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, &_root)); //constant time insertion
+					return (iterator( static_cast<t_lstnode *>((this->bintree_add(node, data, data.first))->assoc_lst_node)  , &_root)); //constant time insertion
 				}
 				// //DEBUG
 				// std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;

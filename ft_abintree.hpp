@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/15 00:07:41 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/17 13:23:15 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ namespace ft
 		struct BintreeNode							*right;
 		struct BintreeNode							*next;
 		struct BintreeNode							*prev;
-		typename std::list<t_bstnode *>::iterator	assoc_lst_it;
+		//typename std::list<t_bstnode *>::iterator	assoc_lst_it;
 		void										*assoc_lst_node;
 		//struct BintreeNode*	const					_end;
 		//C_key										key; //store in C_key?? could it be consted then??
@@ -179,10 +179,10 @@ namespace ft
 
 			typedef struct	s_lstnode
 			{
-				void *			tree_node;
+				t_bstnode *			tree_node;
 				struct s_lstnode *	prev;
 				struct s_lstnode *	next;
-				s_lstnode(struct s_lstnode * end_list) : tree_node(NULL), prev(NULL), next(end_list) {}
+				s_lstnode(struct s_lstnode * end_lst) : tree_node(NULL), prev(NULL), next(end_lst) {}
 			}				t_lstnode;
 
 			std::allocator<t_lstnode>	_list_alloc;
@@ -370,42 +370,56 @@ namespace ft
 					 //cannot be NULL-instantiated, as functioning depends on the definition of a non-NULL, tree-instantiation-specific rootaddress
 				public:
 				Iterator(void) {}
-				//explicit Iterator(t_bstnode * ptr) : _m_ptr(ptr), _last_node(NULL) {}
-				Iterator(Iterator const & src) : _lst_it(src._lst_it), _root_ptr_addr(src._root_ptr_addr) {}
-				//Iterator(t_bstnode const & node) : _m_ptr(&node), _last_node(NULL) {}
-				//Iterator(typename t_thread::iterator const & lst_iterator) : _lst_it(lst_iterator) {}
-				Iterator(typename t_thread::iterator const & lst_iterator, t_bstnode ** root_ptr_addr) : _lst_it(lst_iterator), _root_ptr_addr(root_ptr_addr) {
-					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << root_ptr_addr << std::endl;
-					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << _root_ptr_addr << std::endl;
-				}
+				/*LST REPLACE*/
+				Iterator(liT * lst_node, t_bstnode * const * root_ptr_addr) : _lst_node(lst_node), _root_ptr_addr(root_ptr_addr) {}
+				Iterator(Iterator const & src) : _lst_node(src._lst_node), _root_ptr_addr(src._root_ptr_addr) {}
+				/*LST REPLACE*/
+				
 
-				Iterator(typename t_thread::const_iterator const & lst_iterator, t_bstnode * const * root_ptr_addr) : _lst_it(lst_iterator), _root_ptr_addr(const_cast<t_bstnode **>(root_ptr_addr)) {
-					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << root_ptr_addr << std::endl;
-					// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << _root_ptr_addr << std::endl;
-				}
+				// Iterator(Iterator const & src) : _lst_it(src._lst_it), _root_ptr_addr(src._root_ptr_addr) {}
+				// Iterator(typename t_thread::iterator const & lst_iterator, t_bstnode ** root_ptr_addr) : _lst_it(lst_iterator), _root_ptr_addr(root_ptr_addr) {
+				// 	// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << root_ptr_addr << std::endl;
+				// 	// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << _root_ptr_addr << std::endl;
+				// }
+				// //Iterator(typename t_thread::const_iterator const & lst_iterator, t_bstnode * const * root_ptr_addr) : _lst_it(lst_iterator), _root_ptr_addr(const_cast<t_bstnode **>(root_ptr_addr)) {
+				// 	// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << root_ptr_addr << std::endl;
+				// 	// std::cerr << "INTERNAL ROOT PTR ADDR REPORT: " << _root_ptr_addr << std::endl;
+				// }
 
 				//Assignment Operator Overload
+				// Iterator &	operator=(Iterator const & rhs) {
+				// 	// this->_m_ptr = rhs._m_ptr;
+				// 	// this->_last_node = rhs._last_node;
+				// 	this->_lst_it = rhs._lst_it;
+				// 	return (*this);
+				// }
+				/*LST REPLACE*/
 				Iterator &	operator=(Iterator const & rhs) {
-					// this->_m_ptr = rhs._m_ptr;
-					// this->_last_node = rhs._last_node;
-					this->_lst_it = rhs._lst_it;
+					this->_lst_node = rhs._lst_node;
 					return (*this);
 				}
+				/*LST REPLACE*/
 
 				//Conversion operator - Iterator is always convertible to const_iterator
-				operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >() const {
-					return (Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >(this->_lst_it, this->_root_ptr_addr));
+				// operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >() const {
+				// 	return (Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >(this->_lst_it, this->_root_ptr_addr));
+				// }
+				
+				/*LST REPLACE*/
+				operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, liT const>() const {
+					return (Iterator<t_bstnode const, std::bidirectional_iterator_tag, liT const>(this->_lst_node, this->_root_ptr_addr));
 				}
+				/*LST REPLACE*/
 
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
-					return (this->_lst_it == rhs._lst_it);
+					return (this->_lst_node == rhs._lst_node);
 				}
 				bool	operator!=(Iterator const & rhs) const {
 					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
 				bool	operator<(Iterator const & rhs) const {
-					return (C_key(*(*this->_lst_it)->key) < C_key(*(*rhs._lst_it)->key));
+					return (C_key(*this->_lst_node->tree_node->key) < C_key(*rhs._lst_node->tree_node->key));
 				}
 				bool	operator>(Iterator const & rhs) const {
 					return (rhs < *this); //a>b == b<a
@@ -418,7 +432,8 @@ namespace ft
 				}
 				//Arithmetic Operator Overloads
 				Iterator &							operator++(void) {
-					++this->_lst_it;
+					//++this->_lst_it;
+					this->_lst_node = this->_lst_node->next;
 					return (*this);
 				}
 				Iterator							operator++(int) {
@@ -427,7 +442,9 @@ namespace ft
 					return (ret);
 				}
 				Iterator & 							operator--(void) {
-					--this->_lst_it;
+					//--this->_lst_it;
+					if (this->_lst_node->prev != NULL)
+						this->_lst_node = this->_lst_node->prev;
 					return (*this);
 				}
 				Iterator							operator--(int) {
@@ -459,36 +476,45 @@ namespace ft
 				//instantiation for const_iterators, which uses a const T. 
 				//The function is always consted, as it itself doesn't modify
 				//any class member.
-				typename Iterator::reference	operator*(void) const {
+				typename Iterator::reference	operator*(void) const { //return node ref
 					//return(*this->_m_ptr);
-					return (*(*this->_lst_it));
+					return (*this->_lst_node->tree_node);
 				}
 				typename Iterator::reference	operator[](typename Iterator::difference_type pos) const {
 					return (*(*this + pos));
 				}
 				//aaaaah!!!! -> . ... claro!!!! :D
-				typename Iterator::pointer		operator->(void) const {
+				typename Iterator::pointer		operator->(void) const { //return node pointer
 					//return (this->_m_ptr);
-					return (*this->_lst_it);
+					return (this->_lst_node->tree_node);
 				}
+				
 				protected:
 					//typename t_thread::iterator	_lst_it;
-					liT	_lst_it;
+					//liT	_lst_it;
+					liT *						_lst_node;
 					//iT							_lst_it;
-					t_bstnode **				_root_ptr_addr;
-/*this worked*/		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(Iterator<iT, Category, liT> const & position, key_type const & key) const;
-//this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
+					t_bstnode * const *				_root_ptr_addr;
+				/*this worked*/		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(Iterator<iT, Category, liT> const & position, key_type const & key) const;
+				//this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
-			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::iterator >			iterator;
-			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >	const_iterator; //Iterator formed with embedded const_iterator to list<tree_node *>, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			// typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::iterator >			iterator;
+			// typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, typename t_thread::const_iterator >	const_iterator; //Iterator formed with embedded const_iterator to list<tree_node *>, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, t_lstnode>			iterator;
+			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, t_lstnode const>	const_iterator; //Iterator formed with embedded const_iterator to list<tree_node *>, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			typedef ft::reverse_iterator<iterator>																reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>														const_reverse_iterator;
 
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 			
 			/* DEFAULT CONSTRUCTOR */
-			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc), _end_lst(&_end_lst), _list_head(&_end_lst), _list_tail(&_end_lst) {}
+			// Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) :
+			// // _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}	
+	
+			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) :
+			_root(NULL), _size(0), _is_less(comp), _alloc(alloc), _end_lst(&_end_lst), _list_head(&_end_lst), _list_tail(&_end_lst)	{}
+
 			//These constructors are defined in the derived classes, which all use the default abstract constructor first and then insert.
 			// /* RANGE CONSTRUCTOR */
 			// Abintree(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : _root(NULL), _size(0), _is_less(comp), _alloc(alloc) {}
@@ -558,22 +584,22 @@ namespace ft
 			** If the insertion position is valid, true is returned. Otherwise,
 			** false is returned.
 			*/
-			bool is_valid_position(iterator const & position, key_type const & key) const {
-				if (position._lst_it == _thread.end() || position._lst_it == _root->assoc_lst_it
-				|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
-				|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
-					return false;
-				return true;
-			}
-			// /*LST REPLACE*/
 			// bool is_valid_position(iterator const & position, key_type const & key) const {
-			// 	if (position._lst_node == &_end_lst || position._lst_node == _root->assoc_lst_node
+			// 	if (position._lst_it == _thread.end() || position._lst_it == _root->assoc_lst_it
 			// 	|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
 			// 	|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
 			// 		return false;
 			// 	return true;
 			// }
-			// /*LST REPLACE*/
+			/*LST REPLACE*/
+			bool is_valid_position(iterator const & position, key_type const & key) const {
+				if (position._lst_node == &_end_lst || position._lst_node == _root->assoc_lst_node
+				|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
+				|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
+					return false;
+				return true;
+			}
+			/*LST REPLACE*/
 
 			/* GET NEXT NODE */
 			/*
@@ -734,41 +760,41 @@ namespace ft
 			** the iterator after deleting, on the school Mac it works even
 			** then! Good show, Apple! ;)
 			*/
-			typename t_thread::iterator			thread_search(t_bstnode * node) {
-				typename t_thread::iterator it = _thread.begin();
-				typename t_thread::iterator end = _thread.end();
-				while (it != end && *it != node)
-					++it;
-				return (it);
-			}
-
-			// /*LST REPLACE*/
-			// t_lstnode *	thread_search(t_bstnode * node) {
-				
-			// 	t_lstnode * it = _list_head;
-			// 	while (it != &_end_lst && it != node)
-			// 		it = it->next;
+			// typename t_thread::iterator			thread_search(t_bstnode * node) {
+			// 	typename t_thread::iterator it = _thread.begin();
+			// 	typename t_thread::iterator end = _thread.end();
+			// 	while (it != end && *it != node)
+			// 		++it;
 			// 	return (it);
 			// }
-			// /*LST REPLACE*/
 
-			typename t_thread::const_iterator	thread_search(t_bstnode * node) const {
-				typename t_thread::const_iterator it = _thread.begin();
-				typename t_thread::const_iterator end = _thread.end();
-				while (it != end && *it != node)
-					++it;
+			/*LST REPLACE*/
+			t_lstnode *	thread_search(t_bstnode * node) {
+				
+				t_lstnode * it = _list_head;
+				while (it != &_end_lst && it->tree_node != node)
+					it = it->next;
 				return (it);
 			}
+			/*LST REPLACE*/
 
-			// /*LST REPLACE*/
-			// t_lstnode const *	thread_search(t_bstnode * node) const {
-				
-			// 	t_lstnode * it = _list_head;
-			// 	while (it != &_end_lst && it != node)
-			// 		it = it->next;
+			// typename t_thread::const_iterator	thread_search(t_bstnode * node) const {
+			// 	typename t_thread::const_iterator it = _thread.begin();
+			// 	typename t_thread::const_iterator end = _thread.end();
+			// 	while (it != end && *it != node)
+			// 		++it;
 			// 	return (it);
 			// }
-			// /*LST REPLACE*/
+
+			/*LST REPLACE*/
+			t_lstnode const *	thread_search(t_bstnode * node) const {
+				
+				t_lstnode * it = _list_head;
+				while (it != &_end_lst && it->tree_node != node)
+					it = it->next;
+				return (it);
+			}
+			/*LST REPLACE*/
 
 			/* BINTREE SEARCH */
 			/*
@@ -992,12 +1018,12 @@ namespace ft
 						prev_node->next = new_node;
 					}
 					{
-						typename t_thread::iterator it = _thread.begin();
-						typename t_thread::iterator end = _thread.end();
-						//while (it != end && C_key(*((*it)->key)) <= C_key(new_key))
-						while (it != end && *it != new_node->next)
-							++it;
-						new_node->assoc_lst_it = _thread.insert(it, new_node);
+						// typename t_thread::iterator it = _thread.begin();
+						// typename t_thread::iterator end = _thread.end();
+						// //while (it != end && C_key(*((*it)->key)) <= C_key(new_key))
+						// while (it != end && *it != new_node->next)
+						// 	++it;
+						// new_node->assoc_lst_it = _thread.insert(it, new_node);
 
 						/*LST REPLACE*/
 						//*sigh* STL-free version incoming...
@@ -1039,10 +1065,10 @@ namespace ft
 			*/
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
-				_thread.remove(node);
-				// /*LST REPLACE*/
-				// lst_del_one(_list_head, _list_tail, thread_search(node));
-				// /*LST REPLACE*/
+				//_thread.remove(node);
+				/*LST REPLACE*/
+				lst_del_one(_list_head, _list_tail, thread_search(node));
+				/*LST REPLACE*/
 				std::memset(node, 0, sizeof(t_bstnode));
 				_alloc.destroy(node);
 				_alloc.deallocate(node, sizeof(t_bstnode));
@@ -1205,35 +1231,35 @@ namespace ft
 				}
 				
 				{
-					//SWAP ADDRESSES IN THREAD
-					typename std::list<t_bstnode *>::iterator thread_org = _thread.begin();
-					typename std::list<t_bstnode *>::iterator thread_suc = _thread.begin();
-					//find original node address in thread
-					while (*thread_org != original)
-						++thread_org;
-					//find successor node address in thread
-					while (*thread_suc != successor)
-						++thread_suc;
-					//thread member that pointed to successor node now points to
-					//original node, because successor replaces original in tree,
-					//but in the thread they maintain the same sequential order,
-					//so the inverse happens, original replaces successor and
-					//original is deleted. deletion happens in delete_node, which
-					//deletes any thread member pointing to 'tmp' (thread_suc's
-					//original address), which is the same as successor.
-					t_bstnode	*tmp = *thread_suc;
-					*thread_suc = *thread_org; //thread_org node ADDRESS copied to thread_suc, BUT thread_suc retains its ORIGINAL next and prev addresses indicating its order in the list
-					 *thread_org = tmp; //thread_suc node address copied to thread_org, so _thread.delete(node) will find it and delete the original list entry
-					original->assoc_lst_it = thread_suc; //original's associated list iterator is refreshed with the new thread_suc, containing original's node address and suc's next and prev pointers
-					//note, in this case if thread_suc and thread_org are neighbours, it should be handled for us by _thread.delete(node), which will update next and prev pointers as needed
-					//since list iterators are actually pointers to list members, existing iterator instances will all be affected.
-					//you can think of what happens here like this:
-					//list iterator -> list member struct {
-					//										t_bstnode * node = org_node_ptr
-					//										t_bstnode * next = suc_next;
-					//										t_bstnode * prev = suc_prev;
-					//										}
-					//Where, if _thread.delete(node) affects a neighbour of the associated list member, next/prev will be updated there.
+					// //SWAP ADDRESSES IN THREAD
+					// typename std::list<t_bstnode *>::iterator thread_org = _thread.begin();
+					// typename std::list<t_bstnode *>::iterator thread_suc = _thread.begin();
+					// //find original node address in thread
+					// while (*thread_org != original)
+					// 	++thread_org;
+					// //find successor node address in thread
+					// while (*thread_suc != successor)
+					// 	++thread_suc;
+					// //thread member that pointed to successor node now points to
+					// //original node, because successor replaces original in tree,
+					// //but in the thread they maintain the same sequential order,
+					// //so the inverse happens, original replaces successor and
+					// //original is deleted. deletion happens in delete_node, which
+					// //deletes any thread member pointing to 'tmp' (thread_suc's
+					// //original address), which is the same as successor.
+					// t_bstnode	*tmp = *thread_suc;
+					// *thread_suc = *thread_org; //thread_org node ADDRESS copied to thread_suc, BUT thread_suc retains its ORIGINAL next and prev addresses indicating its order in the list
+					//  *thread_org = tmp; //thread_suc node address copied to thread_org, so _thread.delete(node) will find it and delete the original list entry
+					// original->assoc_lst_it = thread_suc; //original's associated list iterator is refreshed with the new thread_suc, containing original's node address and suc's next and prev pointers
+					// //note, in this case if thread_suc and thread_org are neighbours, it should be handled for us by _thread.delete(node), which will update next and prev pointers as needed
+					// //since list iterators are actually pointers to list members, existing iterator instances will all be affected.
+					// //you can think of what happens here like this:
+					// //list iterator -> list member struct {
+					// //										t_bstnode * node = org_node_ptr
+					// //										t_bstnode * next = suc_next;
+					// //										t_bstnode * prev = suc_prev;
+					// //										}
+					// //Where, if _thread.delete(node) affects a neighbour of the associated list member, next/prev will be updated there.
 				}
 
 				/*LST REPLACE*/
@@ -1909,34 +1935,34 @@ namespace ft
 			** Note: While technically these are bidirectional iterators, full
 			** functionality is implemented.
 			*/
-			iterator begin(void) {
-				return (iterator(_thread.begin(), &_root));
-			}
-			const_iterator begin(void) const {
-				return (const_iterator(_thread.begin(), &_root));
-			}
-			iterator end(void) {
-				return (iterator(_thread.end(), &_root));
-			}
-			const_iterator end(void) const {
-				return (const_iterator(_thread.end(), &_root));
-			}
-
-
-			// /*LST REPLACE*/
 			// iterator begin(void) {
-			// 	return (iterator(_list_head), &_root));
+			// 	return (iterator(_thread.begin(), &_root));
 			// }
 			// const_iterator begin(void) const {
-			// 	return (const_iterator(_list_head, &_root));
+			// 	return (const_iterator(_thread.begin(), &_root));
 			// }
 			// iterator end(void) {
-			// 	return (iterator(&_end_lst, &_root));
+			// 	return (iterator(_thread.end(), &_root));
 			// }
 			// const_iterator end(void) const {
-			// 	return (const_iterator(&_end_lst, &_root));
+			// 	return (const_iterator(_thread.end(), &_root));
 			// }
-			// /*LST REPLACE*/
+
+
+			/*LST REPLACE*/
+			iterator begin(void) {
+				return (iterator(_list_head, &_root));
+			}
+			const_iterator begin(void) const {
+				return (const_iterator(_list_head, &_root));
+			}
+			iterator end(void) {
+				return (iterator(&_end_lst, &_root));
+			}
+			const_iterator end(void) const {
+				return (const_iterator(&_end_lst, &_root));
+			}
+			/*LST REPLACE*/
 
 			reverse_iterator rbegin(void) {
 				return (reverse_iterator(end()));
@@ -2045,35 +2071,16 @@ namespace ft
 				this->_root = bintree_free(this->_root);
 			}
 
-			/* SWAP */
-			/*
-			** This function does what it says on the tin.
-			*/
-			template<typename T>
-			void	swap(T & src) {
-				t_bstnode *				org_tree = this->_root;
-				size_type				org_size = this->_size;
-				allocator_type			org_alloc = this->_alloc;
-				std::list<t_bstnode *>	org_thread = this->_thread;
-
-				this->_alloc = src._alloc;
-				src._alloc = org_alloc;
-				this->_root = src._root;
-				src._root = org_tree;
-				this->_size = src._size;
-				src._size = org_size;
-				this->_thread = src._thread;
-				src._thread = org_thread;
-			}
-			
-			// /*LST REPLACE*/
+			// /* SWAP */
+			// /*
+			// ** This function does what it says on the tin.
+			// */
 			// template<typename T>
 			// void	swap(T & src) {
-			// 	t_bstnode *		org_tree = this->_root;
-			// 	size_type		org_size = this->_size;
-			// 	allocator_type	org_alloc = this->_alloc;
-			// 	t_lstnode *		org_lst_head = this->_list_head;
-			// 	t_lstnode *		org_lst_tail = this->_list_tail;
+			// 	t_bstnode *				org_tree = this->_root;
+			// 	size_type				org_size = this->_size;
+			// 	allocator_type			org_alloc = this->_alloc;
+			// 	std::list<t_bstnode *>	org_thread = this->_thread;
 
 			// 	this->_alloc = src._alloc;
 			// 	src._alloc = org_alloc;
@@ -2081,17 +2088,36 @@ namespace ft
 			// 	src._root = org_tree;
 			// 	this->_size = src._size;
 			// 	src._size = org_size;
-			// 	this->_list_head = src._list_head;
-			// 	src._list_head = org_lst_head;
-			// 	this->_list_tail = src._list_tail;
-			// 	src._list_tail = org_list_tail;
-
-			// 	this->_list_tail->next = &this->_end_lst;
-			// 	this->_end_lst.prev = this->_list_tail;
-			// 	src._list_tail->next = &src._end_lst;
-			// 	src._end_lst.prev = src._list_tail;
+			// 	this->_thread = src._thread;
+			// 	src._thread = org_thread;
 			// }
-			// /*LST REPLACE*/
+			
+			/*LST REPLACE*/
+			template<typename T>
+			void	swap(T & src) {
+				t_bstnode *		org_tree = this->_root;
+				size_type		org_size = this->_size;
+				allocator_type	org_alloc = this->_alloc;
+				t_lstnode *		org_lst_head = this->_list_head;
+				t_lstnode *		org_lst_tail = this->_list_tail;
+
+				this->_alloc = src._alloc;
+				src._alloc = org_alloc;
+				this->_root = src._root;
+				src._root = org_tree;
+				this->_size = src._size;
+				src._size = org_size;
+				this->_list_head = src._list_head;
+				src._list_head = org_lst_head;
+				this->_list_tail = src._list_tail;
+				src._list_tail = org_lst_tail;
+
+				this->_list_tail->next = &this->_end_lst;
+				this->_end_lst.prev = this->_list_tail;
+				src._list_tail->next = &src._end_lst;
+				src._end_lst.prev = src._list_tail;
+			}
+			/*LST REPLACE*/
 
 			/* ---- OBSERVERS ----- */
 			key_compare	key_comp(void) const {
@@ -2246,26 +2272,26 @@ namespace ft
 			** passed as 'key'. If no such node exists, returns the end
 			** iterator.
 			*/
-			iterator		find(key_type const & key) {
-				t_bstnode *	node = bintree_search(_root, key);
-				return (node == NULL ? end() : iterator(node->assoc_lst_it, &_root));
-			}
-
-			const_iterator	find(key_type const & key) const {
-				t_bstnode *	node = bintree_search(_root, key);
-				return (node == NULL ? end() : const_iterator(node->assoc_lst_it, &_root));
-			}
-
-			/*LST REPLACE*/
 			// iterator		find(key_type const & key) {
 			// 	t_bstnode *	node = bintree_search(_root, key);
-			// 	return (node == NULL ? end() : iterator(node->assoc_lst_node, &_root));
+			// 	return (node == NULL ? end() : iterator(node->assoc_lst_it, &_root));
 			// }
 
 			// const_iterator	find(key_type const & key) const {
 			// 	t_bstnode *	node = bintree_search(_root, key);
-			// 	return (node == NULL ? end() : const_iterator(node->assoc_lst_node, &_root));
+			// 	return (node == NULL ? end() : const_iterator(node->assoc_lst_it, &_root));
 			// }
+
+			/*LST REPLACE*/
+			iterator		find(key_type const & key) {
+				t_bstnode *	node = bintree_search(_root, key);
+				return (node == NULL ? end() : iterator(static_cast<t_lstnode *>(node->assoc_lst_node), &_root));
+			}
+
+			const_iterator	find(key_type const & key) const {
+				t_bstnode *	node = bintree_search(_root, key);
+				return (node == NULL ? end() : const_iterator(static_cast<t_lstnode const *>(node->assoc_lst_node), &_root));
+			}
 			/*LST REPLACE*/
 
 			/* ---- PUBLIC NODE GETTERS ----- */
@@ -2278,39 +2304,39 @@ namespace ft
 				return (*(bintree_search(_root, key)));
 			}
 
-			t_bstnode & getMin(void) {
-				return(*(*_thread.begin()));
-			}
-
-			t_bstnode & getMax(void) {
-				return(*(*(--_thread.end())));
-			}
-
-			t_bstnode const & getMin(void) const {
-				return(*(*_thread.begin()));
-			}
-
-			t_bstnode const & getMax(void) const {
-				return(*(*(--_thread.end())));
-			}
-
-			// /*LST REPLACE*/
 			// t_bstnode & getMin(void) {
-			// 	return(static_cast<t_bstnode *>(_list_head->tree_node));
+			// 	return(*(*_thread.begin()));
 			// }
 
 			// t_bstnode & getMax(void) {
-			// 	return(static_cast<t_bstnode *>(_list_tail->tree_node));
+			// 	return(*(*(--_thread.end())));
 			// }
 
 			// t_bstnode const & getMin(void) const {
-			// 	return(static_cast<t_bstnode const *>(_list_head->tree_node));
+			// 	return(*(*_thread.begin()));
 			// }
 
 			// t_bstnode const & getMax(void) const {
-			// 	return(static_cast<t_bstnode const *>(_list_tail->tree_node));
+			// 	return(*(*(--_thread.end())));
 			// }
-			// /*LST REPLACE*/
+
+			/*LST REPLACE*/
+			t_bstnode & getMin(void) {
+				return(*_list_head->tree_node);
+			}
+
+			t_bstnode & getMax(void) {
+				return(*_list_tail->tree_node);
+			}
+
+			t_bstnode const & getMin(void) const {
+				return(*_list_head->tree_node);
+			}
+
+			t_bstnode const & getMax(void) const {
+				return(*_list_tail->tree_node);
+			}
+			/*LST REPLACE*/
 
 			allocator_type	get_allocator(void) const {
 				return(_alloc);
@@ -2333,6 +2359,6 @@ namespace ft
 	void	swap(ft::Abintree<Data, Key, Value, Compare, Alloc> & x, ft::Abintree<Data, Key, Value, Compare, Alloc> & y) {
 		x.swap(y);
 	}
-}
+};
 
 #endif

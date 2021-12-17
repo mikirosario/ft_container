@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/17 19:35:44 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/18 00:18:47 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,11 +172,13 @@ namespace ft
 				t_bstnode *			tree_node;
 				struct s_lstnode *	prev;
 				struct s_lstnode *	next;
+				s_lstnode(void) : tree_node(NULL), prev(NULL), next(NULL) {}
 				s_lstnode(struct s_lstnode * end_lst) : tree_node(NULL), prev(NULL), next(end_lst) {}
 			}				t_lstnode;
 
 			std::allocator<t_lstnode>	_list_alloc;
-			t_lstnode					_end_lst;
+			//t_lstnode					_end_lst;
+			t_lstnode *					_end_lst;
 			t_lstnode *					_list_head;
 			t_lstnode * 				_list_tail;
 
@@ -192,7 +194,7 @@ namespace ft
 				try
 				{
 					new_node = _list_alloc.allocate(1);
-					_list_alloc.construct(new_node, t_lstnode(&_end_lst));
+					_list_alloc.construct(new_node, t_lstnode(_end_lst));
 					new_node->tree_node = tree_node;
 				}
 				catch(std::bad_alloc const & e)
@@ -213,12 +215,12 @@ namespace ft
 			*/
 			void			lst_add_back(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * node) {
 				list_tail = node;
-				node->next = &_end_lst;
-				_end_lst.prev = list_tail;
-				if (list_head != &_end_lst)
+				node->next = _end_lst;
+				_end_lst->prev = list_tail;
+				if (list_head != _end_lst)
 				{
 					t_lstnode * last_node = list_head;
-					while (last_node->next != &_end_lst)
+					while (last_node->next != _end_lst)
 						last_node = last_node->next;
 					last_node->next = node;
 					node->prev = last_node;
@@ -240,7 +242,7 @@ namespace ft
 			** self can't be arsed. So just use it properly. :p
 			*/
 			void			lst_del_one(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * node) {
-				if (node != &_end_lst)
+				if (node != _end_lst)
 				{
 					if (node == list_tail)
 						list_tail = node->prev;
@@ -262,15 +264,15 @@ namespace ft
 				t_lstnode * node = list_head;
 				t_lstnode *	tmp;
 
-				while (node != &_end_lst)
+				while (node != _end_lst)
 				{
 					tmp = node->next;
 					_list_alloc.destroy(node);
 					_list_alloc.deallocate(node, 1);
 					node = tmp;
 				}
-				list_head = &_end_lst;
-				list_tail = &_end_lst;
+				list_head = _end_lst;
+				list_tail = _end_lst;
 			}
 
 			/* LST_INSERT */
@@ -280,9 +282,9 @@ namespace ft
 			** list_head and list_tail pointers are valid.
 			*/
 			void			lst_insert(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * next, t_lstnode * new_node) {
-				if (next == &_end_lst) //Next is &_end_lst, so do add_back. When list_head is &_end_lst then next MUST be &_end_lst, as it's the only element, so we handle that case in add_back too.
+				if (next == _end_lst) //Next is _end_lst, so do add_back. When list_head is _end_lst then next MUST be _end_lst, as it's the only element, so we handle that case in add_back too.
 					lst_add_back(list_head, list_tail, new_node);
-				else //Next is not &_end_lst, therefore the list has elements, therefore list_head must not be &_end_lst.
+				else //Next is not _end_lst, therefore the list has elements, therefore list_head must not be _end_lst.
 				{	
 					new_node->next = next;
 					new_node->prev = next->prev;
@@ -293,7 +295,6 @@ namespace ft
 						list_head = new_node;
 				}
 			}
-
 
 			/* BINTREE ITERATOR */
 			/* CONTAINS A POINTER TO LIST NODE THAT POINTS TO BINTREE NODE */
@@ -364,21 +365,25 @@ namespace ft
 				friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
 				//Constructors and Destructor
 				public:
-				Iterator(void) : _lst_node(NULL), _root_ptr_addr(NULL) {}
-				Iterator(lstNodeT * lst_node, t_bstnode * const * root_ptr_addr) : _lst_node(lst_node), _root_ptr_addr(root_ptr_addr) {}
-				Iterator(Iterator const & src) : _lst_node(src._lst_node), _root_ptr_addr(src._root_ptr_addr) {}
+				Iterator(void) : _lst_node(NULL), _end_ptr_addr(NULL) {}
+				//Iterator(lstNodeT * lst_node, t_bstnode * const * root_ptr_addr) : _lst_node(lst_node), _root_ptr_addr(root_ptr_addr) {}
+				Iterator(lstNodeT * lst_node, t_lstnode const * end_ptr_addr) : _lst_node(lst_node), _end_ptr_addr(end_ptr_addr) {}
+				Iterator(Iterator const & src) : _lst_node(src._lst_node), _end_ptr_addr(src._end_ptr_addr) {}
 				~Iterator(void) {}
 
 				//Assignment Operator Overload
 				Iterator &	operator=(Iterator const & rhs) {
+					//if(_end_ptr_addr != rhs.end_ptr_addr) // ??????
 					this->_lst_node = rhs._lst_node;
+					this->_end_ptr_addr = rhs._end_ptr_addr; //should I allow this????
 					return (*this);
 				}
 
 				//Conversion Overload OBSOLETE?? Trivial pointer to const pointer should be handled automatically by compiler.
-				// operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, lstNodeT const>() const {
-				// 	return (Iterator<t_bstnode const, std::bidirectional_iterator_tag, lstNodeT const>(this->_lst_node, this->_root_ptr_addr));
-				// }
+				//NOT OBSOLETE!!!! NOT OBSOLETE!!!!!!!!!!
+				operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, lstNodeT const>() const {
+					return (Iterator<t_bstnode, std::bidirectional_iterator_tag, lstNodeT const>(this->_lst_node, this->_end_ptr_addr));
+				}
 
 				//Relational Operator Overloads
 				bool	operator==(Iterator const & rhs) const {
@@ -453,28 +458,52 @@ namespace ft
 				typename Iterator::pointer		operator->(void) const { //return node pointer
 					return (this->_lst_node->tree_node);
 				}
+
+				lstNodeT const *	get_end_lst_addr(void) const {
+					return (_end_ptr_addr);
+				}
 				
 				protected:
 					lstNodeT *						_lst_node;
-					t_bstnode * const *				_root_ptr_addr;
+					//t_bstnode * const *				_root_ptr_addr;
+					lstNodeT const *				_end_ptr_addr;
 				/*this worked*/		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(Iterator<iT, Category, lstNodeT> const & position, key_type const & key) const;
 				//this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, t_lstnode>			iterator;
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, t_lstnode const>	const_iterator; //Iterator formed with embedded const_iterator to list<t_lstnode const>, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
-			typedef ft::reverse_iterator<iterator>																reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>														const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator>											reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>									const_reverse_iterator;
 
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 			
 			/* DEFAULT CONSTRUCTOR */	
 			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) :
-			_root(NULL), _size(0), _is_less(comp), _alloc(alloc), _end_lst(&_end_lst), _list_head(&_end_lst), _list_tail(&_end_lst)	{}
+			_root(NULL), _size(0), _is_less(comp), _alloc(alloc)/*, _list_head(_end_lst), _list_tail(_end_lst)*/	{
+				try
+				{
+					_end_lst = _list_alloc.allocate(sizeof(t_lstnode));
+					_list_alloc.construct(_end_lst);
+					_list_head = _end_lst;
+					_list_tail = _end_lst;
+				}
+				catch (std::bad_alloc const & e)
+				{
+					std::cerr << e.what() << std::endl;
+				}
+				catch (std::exception const & e)
+				{
+					std::cerr << e.what() << std::endl;
+				}
+			}
 			//These constructors are defined in the derived classes, which all use the default abstract constructor first and then insert.
 			// /* RANGE CONSTRUCTOR */
 			// /* (DEEP) COPY CONSTRUCTOR */
-			virtual ~Abintree(void) {}
+			virtual ~Abintree(void) {
+				_list_alloc.destroy(_end_lst);
+				_list_alloc.deallocate(_end_lst, sizeof(t_lstnode));
+			}
 			
 			/* ---- ASSIGNMENT OPERATOR OVERLOAD ---- */
 			/*
@@ -554,7 +583,7 @@ namespace ft
 			** false is returned.
 			*/
 			bool is_valid_position(iterator const & position, key_type const & key) const {
-				if (position._lst_node == &_end_lst || position._lst_node == _root->assoc_lst_node
+				if (position._lst_node == _end_lst || position._lst_node == _root->assoc_lst_node
 				|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
 				|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
 					return false;
@@ -723,7 +752,7 @@ namespace ft
 			t_lstnode *	thread_search(t_bstnode * node) {
 				
 				t_lstnode * it = _list_head;
-				while (it != &_end_lst && it->tree_node != node)
+				while (it != _end_lst && it->tree_node != node)
 					it = it->next;
 				return (it);
 			}
@@ -731,7 +760,7 @@ namespace ft
 			t_lstnode const *	thread_search(t_bstnode * node) const {
 				
 				t_lstnode * it = _list_head;
-				while (it != &_end_lst && it->tree_node != node)
+				while (it != _end_lst && it->tree_node != node)
 					it = it->next;
 				return (it);
 			}
@@ -945,7 +974,7 @@ namespace ft
 				{
 					new_lst_node = lst_new(NULL); //throws
 					root = bintree_insert(NULL, root, data, new_key, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
-					//bintree_balance(&_root, new_node); //WHY DID I DO THIS!? THERE MUST HAVE BEEN A REASON AND NOW I CAN'T REMEMBER :_(
+					//bintree_balance(_end_lst, new_node); //WHY DID I DO THIS!? THERE MUST HAVE BEEN A REASON AND NOW I CAN'T REMEMBER :_(
 					//OK, I remember now. bintree_balance may change the node pointer address passed as root, but this is irrelevant unless the
 					//pointer is an external reference. There are only two external references to nodes in the binary tree. One is the _thread
 					//list, which is handled separately (see the while loop below). The only other one is the _root pointer itself, probably a bit
@@ -973,7 +1002,7 @@ namespace ft
 						new_lst_node->tree_node = new_node;
 						new_node->assoc_lst_node = new_lst_node;
 						t_lstnode * insert_pos = _list_head;
-						while (insert_pos != &_end_lst && insert_pos->tree_node != new_node->next)
+						while (insert_pos != _end_lst && insert_pos->tree_node != new_node->next)
 						 	insert_pos = insert_pos->next;
 						lst_insert(_list_head, _list_tail, insert_pos, new_lst_node);
 					}
@@ -1821,16 +1850,16 @@ namespace ft
 			** those 'in the know'. ;)
 			*/
 			iterator begin(void) {
-				return (iterator(_list_head, &_root));
+				return (iterator(_list_head, _end_lst));
 			}
 			const_iterator begin(void) const {
-				return (const_iterator(_list_head, &_root));
+				return (const_iterator(_list_head, _end_lst));
 			}
 			iterator end(void) {
-				return (iterator(&_end_lst, &_root));
+				return (iterator(_end_lst, _end_lst));
 			}
 			const_iterator end(void) const {
-				return (const_iterator(&_end_lst, &_root));
+				return (const_iterator(_end_lst, _end_lst));
 			}
 			reverse_iterator rbegin(void) {
 				return (reverse_iterator(end()));
@@ -1885,7 +1914,7 @@ namespace ft
 			** root pointer of the tree instance to which it belongs.
 			*/
 			void		erase(iterator position) {
-				if (position._root_ptr_addr == &_root)
+				if (position._end_ptr_addr == _end_lst)
 					bintree_delete(&(*position));
 			}
 
@@ -1947,6 +1976,7 @@ namespace ft
 			*/
 		//DEBUG
 		// Urgh, this would invalidate the end_lst iterator, _lst_tail->next and _end_lst->prev... need ugly surgery here to fix it xD
+		// I think _end_lst will need to be in heap for this to work as a pointer swap
 		//DEBUG
 			template<typename T>
 			void	swap(T & src) {
@@ -1955,6 +1985,7 @@ namespace ft
 				allocator_type	org_alloc = this->_alloc;
 				t_lstnode *		org_lst_head = this->_list_head;
 				t_lstnode *		org_lst_tail = this->_list_tail;
+				t_lstnode *		org_end_lst = this->_end_lst;
 
 				this->_alloc = src._alloc;
 				src._alloc = org_alloc;
@@ -1966,11 +1997,13 @@ namespace ft
 				src._list_head = org_lst_head;
 				this->_list_tail = src._list_tail;
 				src._list_tail = org_lst_tail;
+				this->_end_lst = src._end_lst;
+				src._end_lst = org_end_lst;
 
-				this->_list_tail->next = &this->_end_lst;
-				this->_end_lst.prev = this->_list_tail;
-				src._list_tail->next = &src._end_lst;
-				src._end_lst.prev = src._list_tail;
+				// this->_list_tail->next = this->_end_lst;
+				// this->_end_lst->prev = this->_list_tail;
+				// src._list_tail->next = src._end_lst;
+				// src._end_lst->prev = src._list_tail;
 			}
 
 			/* ---- OBSERVERS ----- */
@@ -2002,7 +2035,7 @@ namespace ft
 			*/
 			iterator		lower_bound(key_type const & key) {
 				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
-				iterator		ret(this->thread_search(nearest_node), &_root);
+				iterator		ret(this->thread_search(nearest_node), _end_lst);
 
 				if (C_key(*nearest_node->key) < C_key(key))
 					++ret;
@@ -2011,7 +2044,7 @@ namespace ft
 
 			const_iterator	lower_bound(key_type const & key) const {
 				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
-				const_iterator	ret(this->thread_search(nearest_node), &_root);
+				const_iterator	ret(this->thread_search(nearest_node), _end_lst);
 
 				if (C_key(*nearest_node->key) < C_key(key))
 					++ret;
@@ -2034,7 +2067,7 @@ namespace ft
 			*/
 			iterator		upper_bound(key_type const & key) {
 				t_bstnode * nearest_node = getNearestNode(_root, NULL, key);
-				iterator	ret(this->thread_search(nearest_node), &_root);
+				iterator	ret(this->thread_search(nearest_node), _end_lst);
 
 				if (C_key(*nearest_node->key) <= C_key(key))
 					++ret;
@@ -2043,7 +2076,7 @@ namespace ft
 
 			const_iterator	upper_bound(key_type const & key) const {
 				t_bstnode * 	nearest_node = getNearestNode(_root, NULL, key);
-				const_iterator	ret(this->thread_search(nearest_node), &_root);
+				const_iterator	ret(this->thread_search(nearest_node), _end_lst);
 
 				if (C_key(*nearest_node->key) <= C_key(key))
 					++ret;
@@ -2129,12 +2162,12 @@ namespace ft
 			*/
 			iterator		find(key_type const & key) {
 				t_bstnode *	node = bintree_search(_root, key);
-				return (node == NULL ? end() : iterator(static_cast<t_lstnode *>(node->assoc_lst_node), &_root));
+				return (node == NULL ? end() : iterator(static_cast<t_lstnode *>(node->assoc_lst_node), _end_lst));
 			}
 
 			const_iterator	find(key_type const & key) const {
 				t_bstnode *	node = bintree_search(_root, key);
-				return (node == NULL ? end() : const_iterator(static_cast<t_lstnode const *>(node->assoc_lst_node), &_root));
+				return (node == NULL ? end() : const_iterator(static_cast<t_lstnode const *>(node->assoc_lst_node), _end_lst));
 			}
 
 			/* ---- PUBLIC NODE GETTERS ----- */

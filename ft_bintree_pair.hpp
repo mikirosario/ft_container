@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/17 19:13:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/17 23:23:19 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ namespace ft
 			*/
 			/* PRIVATE BASE CLASS VARIABLE REFERENCES */
 			using Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>::_root;
+			using Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>::_end_lst;
 
 		public:
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
@@ -194,7 +195,7 @@ namespace ft
 				size_type	old_size = this->size();
 				t_bstnode *	new_node = this->bintree_add(_root, key_val_pair, key_val_pair.first);
 				bool		return_status = this->size() > old_size ? true : false;
-				return (ft::make_pair(iterator(this->thread_search(new_node), &_root), return_status));
+				return (ft::make_pair(iterator(this->thread_search(new_node), _end_lst), return_status));
 			}
 
 			//DEBUG
@@ -269,8 +270,8 @@ namespace ft
 					// std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					// //DEBUG	
 					t_bstnode * node = &(*hint);
-					//return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, &_root)); //constant time insertion
-					return (iterator( static_cast<t_lstnode *>((this->bintree_add(node, data, data.first))->assoc_lst_node)  , &_root)); //constant time insertion
+					//return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, _end_lst)); //constant time insertion
+					return (iterator( static_cast<t_lstnode *>((this->bintree_add(node, data, data.first))->assoc_lst_node)  , _end_lst)); //constant time insertion
 				}
 				// //DEBUG
 				// std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;

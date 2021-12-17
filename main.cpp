@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/13 10:03:10 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/17 23:38:56 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1313,9 +1313,28 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 
 
 	PRINT << TXT_NL << TXT_BYEL << "SWAP TEST (map_default <-> map_range)" << END;
+	{
+	// 	typename ft_map::iterator mit_d = mi_map_default.begin();
+	// 	typename ft_map::iterator mend_d = mi_map_default.end();
+	// 	typename std_map::iterator sit_d = su_map_default.begin();
+	// 	typename std_map::iterator send_d = su_map_default.end();
+	// PRINT << NL << "MI BEFORE" << END;
+	// for (typename ft_map::iterator it(mit_d); it != mend_d; ++it)
+	// 	PRINT << it->second << NL;
+	// PRINT << NL << "SU BEFORE" << END;
+	// for (typename std_map::iterator it(sit_d); it != send_d; ++it)
+	// 	PRINT << it->second << NL;
+	// swap(mi_map_default, mi_map_range);
+	// PRINT << NL << "MI AFTER" << NL << END;
+	// for (typename ft_map::iterator it(mit_d); it != mend_d; ++it)
+	// 	PRINT << it->second << NL;
+	// PRINT << NL << "SU AFTER" << END;
+	// for (typename std_map::iterator it(sit_d); it != send_d; ++it)
+	// 	PRINT << it->second << NL;
 	swap(mi_map_default, mi_map_range);
 	swap(su_map_default, su_map_range);
 	print_map_comp(mi_map_default, su_map_default, color, ret);
+	}
 
 	PRINT << TXT_NL << TXT_BYEL << "CLEAR TEST (map_range)" << END;
 	mi_map_range.clear();

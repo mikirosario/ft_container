@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 21:01:02 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/06 01:51:11 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/18 13:24:05 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,45 @@ namespace ft
 	pair<T1, T2>	make_pair(T1 x, T2 y)
 	{
 		return (pair<T1, T2>(x, y));
+	}
+
+	template<typename T1, typename T2>
+	bool	operator==(pair<T1, T2> const & lhs, pair<T1, T2> const & rhs) {
+		return (lhs.first == rhs.first & lhs.second == rhs.second);
+	}
+
+	template<typename T1, typename T2>
+	bool	operator!=(pair<T1, T2> const & lhs, pair<T1, T2> const & rhs) {
+		return (!operator==(lhs, rhs)); //a!=b == !a==b
+	}
+
+	template<typename T1, typename T2>
+	bool	operator<(pair<T1, T2> const & lhs, pair<T1, T2> const & rhs) {
+		bool ret;
+		if (lhs.first < rhs.first)
+			ret = true;
+		else if (rhs.first < lhs.first)
+			ret = false;
+		else if (lhs.second < rhs.second)
+			ret = true;
+		else
+			ret = false;
+		return (ret);
+	}
+
+	template<typename T1, typename T2>
+	bool	operator>(pair<T1, T2> const & lhs, pair<T1, T2> const & rhs) {
+		return (operator<(rhs, lhs)); //a>b == b<a
+	}
+
+	template<typename T1, typename T2>
+	bool	operator<=(pair<T1, T2> const & lhs, pair<T1, T2> const & rhs) {
+		return (!operator<(rhs, lhs)); //a<=b == !b<a
+	}
+
+	template<typename T1, typename T2>
+	bool	operator>=(pair<T1, T2> const & lhs, pair<T1, T2> const & rhs) {
+		return (!operator<(lhs, rhs)); //a>=b == !a<b
 	}
 
 	template<typename T>

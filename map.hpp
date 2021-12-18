@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/18 00:16:09 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/18 13:24:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #include "iterator.hpp"
 #include "algorithm.hpp"
 #include "ft_bintree_pair.hpp"
+#include "utility.hpp"
 
 //DEBUG CODE
 #include <vector>
@@ -356,8 +357,48 @@ namespace ft
 	** takes two parameters exactly like these".
 	*/
 	template<typename Key, typename Value, typename Compare, typename Alloc>
-	void	swap(ft::map<Key, Value, Compare, Alloc> & x, ft::map<Key, Value, Compare, Alloc> & y) {
+	void	swap(map<Key, Value, Compare, Alloc> & x, map<Key, Value, Compare, Alloc> & y) {
 		x.swap(y);
+	}
+
+	/* ---- RELATIONAL OPERATOR OVERLOADS ---- */
+
+	template<typename T, typename U>
+	bool	pair_comp(ft::pair<T, U> const & lhs, ft::pair<T, U> const & rhs) {
+		return (lhs.first < rhs.first || lhs.second < rhs.second);
+	}
+
+	template<typename Key, typename Value, typename Compare, typename Alloc>
+	bool	operator==(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+		if (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()))
+			return (true);
+		return (false);
+	}
+
+	template<typename Key, typename Value, typename Compare, typename Alloc>
+	bool	operator!=(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+		return(!operator==(lhs, rhs)); //a!=b == !a==b
+	}
+
+	template<typename Key, typename Value, typename Compare, typename Alloc>
+	bool	operator<(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+		return(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		//return(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), lhs.value_comp()));
+	}
+
+	template<typename Key, typename Value, typename Compare, typename Alloc>
+	bool	operator>(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+		return(operator<(rhs, lhs)); //a>b == b<a
+	}
+
+	template<typename Key, typename Value, typename Compare, typename Alloc>
+	bool	operator<=(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+		return(!operator<(rhs, lhs)); //a<=b == !b<a
+	}
+	
+	template<typename Key, typename Value, typename Compare, typename Alloc>
+	bool	operator>=(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+		return(!operator<(lhs, rhs)); //a>=b == !a<b
 	}
 };
 

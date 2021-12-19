@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/19 00:14:49 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/19 20:28:08 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,9 @@ namespace ft
 		
 		BintreeNode(void) {}
 		BintreeNode(t_bstnode * parent, Data const & src_data) : parent(parent), left(NULL), right(NULL), next(NULL), prev(NULL), assoc_lst_node(NULL), color(RED), data(src_data) {}
+		// ~BintreeNode(void) {
+		// 	std::memset(this, 0, sizeof(BintreeNode<Data, Key, Value>));
+		// }
 		private:
 			struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
 	};
@@ -152,7 +155,6 @@ namespace ft
 			size_type				_size;
 			key_compare				_is_less;
 			allocator_type			_alloc;
-			value_type				_tonti_val;
 			t_bstnode				_tonti_tree_node;
 
 			/* THREAD LIST */
@@ -179,7 +181,6 @@ namespace ft
 			}				t_lstnode;
 
 			std::allocator<t_lstnode>	_list_alloc;
-			//t_lstnode					_end_lst;
 			t_lstnode *					_end_lst;
 			t_lstnode *					_rend_lst;
 			t_lstnode *					_list_head;
@@ -503,20 +504,20 @@ namespace ft
 			
 			/* DEFAULT CONSTRUCTOR */	
 			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) :
-			_root(NULL), _size(0), _is_less(comp), _alloc(alloc)/*, _list_head(_end_lst), _list_tail(_end_lst)*/	{
+			_root(NULL), _size(0), _is_less(comp), _alloc(alloc), _end_lst(NULL), _rend_lst(NULL)/*, _list_head(_end_lst), _list_tail(_end_lst)*/	{
 				try
 				{
-					//DEBUG
-					//leak if rend_lst fails; contiguous memory space for both?
-					_end_lst = _list_alloc.allocate(sizeof(t_lstnode));
-					_rend_lst = _list_alloc.allocate(sizeof(t_lstnode));
-					//DEBUG
+					//_end_lst and _rend_lst dummy list nodes are assigned to a contiguous block of memory
+					_end_lst = _list_alloc.allocate(sizeof(t_lstnode) * 2);
+					_rend_lst = _end_lst + 1;
 					_list_alloc.construct(_end_lst, _end_lst, _rend_lst);
 					_list_alloc.construct(_rend_lst, _end_lst, _rend_lst);
 					_list_head = _end_lst;
 					_list_tail = _end_lst;
-					_end_lst->tree_node = &_tonti_tree_node;
-					_rend_lst->tree_node = &_tonti_tree_node;
+					_end_lst->tree_node = &_tonti_tree_node; //the dummy list nodes point to a dummy tree node with default-instantiated value_type
+					_rend_lst->tree_node = &_tonti_tree_node; //this imitates Mac functionality where dereferencing map.end() does not segfault.
+					//Mac seems to instantiate the pair->second to 0 instead of default-instantiating and they don't necessarily compare equal, but whatever.
+					//What maniac dereferences an end iterator anyway? As far as I'm concerned that should SEGFAULT like I had it before. :p
 				}
 				catch (std::bad_alloc const & e)
 				{
@@ -532,9 +533,10 @@ namespace ft
 			// /* (DEEP) COPY CONSTRUCTOR */
 			virtual ~Abintree(void) {
 				_list_alloc.destroy(_end_lst);
-				_list_alloc.deallocate(_end_lst, sizeof(t_lstnode));
 				_list_alloc.destroy(_rend_lst);
-				_list_alloc.deallocate(_rend_lst, sizeof(t_lstnode));
+				_list_alloc.deallocate(_end_lst, sizeof(t_lstnode) * 2);
+				
+				//_list_alloc.deallocate(_rend_lst, sizeof(t_lstnode));
 			}
 			
 			/* ---- ASSIGNMENT OPERATOR OVERLOAD ---- */
@@ -1070,8 +1072,12 @@ namespace ft
 			t_bstnode *	node_delete(t_bstnode * node)
 			{
 				lst_del_one(_list_head, _list_tail, thread_search(node));
+				if (node == _root)
+					_root = NULL;
+				//put this in t_bstnode destructor :p
 				std::memset(node, 0, sizeof(t_bstnode));
-				_alloc.destroy(node);
+
+				_alloc.destroy(node);				
 				_alloc.deallocate(node, sizeof(t_bstnode));
 				--_size;
 				return (NULL);
@@ -1350,13 +1356,11 @@ namespace ft
 			**
 			** I hope you're happy, Valgrind. :_(
 			*/
-			t_bstnode	*bintree_free(t_bstnode * root)
+			t_bstnode	*bintree_free(t_bstnode *& root)
 			{
-				t_bstnode	*parent;
-
-				parent = root;
 				if (root != NULL)
 				{
+					t_bstnode *	parent = root;
 					while (parent != NULL)
 					{
 						while (parent->left != NULL || parent->right != NULL)
@@ -1378,8 +1382,9 @@ namespace ft
 						}
 						parent = parent->parent;
 					}
+					//_size = 0;
 					root = node_delete(root);
-					_size = 0;
+					//_root = node_delete(_root);
 				}
 				return (root);
 			}
@@ -1999,6 +2004,7 @@ namespace ft
 			*/
 			void		clear(void) {
 				this->_root = bintree_free(this->_root);
+				//bintree_free(this->_root);
 				//LEAK
 				//lst_clr(_list_head, _list_tail);
 			}

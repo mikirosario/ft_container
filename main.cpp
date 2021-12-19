@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/19 01:42:14 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/19 20:24:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1086,6 +1086,7 @@ bool	isGreen(std::string const color) {
 	return (color.compare(TXT_BGRN) == 0);
 }
 
+//ONLY WORKS WITH MAP OF STRING/STRING, SO WHY IS THIS EVEN A TEMPLATE? xD
 template<typename Key, typename Value>
 bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 {
@@ -1099,7 +1100,6 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	std_map		su_map_default;
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 	PRINT	<< ((isGreen(color) == true) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
-	
 
 	PRINT	<< TXT_NL << TXT_BYEL << "RANGE CONSTRUCTION TESTS" << END;
 	//RANGE CONSTRUCTOR
@@ -1118,25 +1118,26 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	print_map_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
 
 	PRINT	<< TXT_NL << TXT_BYEL << "REVERSE ITERATOR TESTS" << END;
+	PRINT	<< TXT_TAB << TXT_BYEL << "Normal Person Reverse Iterator Test" << END;
 	print_map_rev_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
-	{
-		//typename ft_map::reverse_iterator mrit = mi_map_default.rbegin();
-		//ft_map const	mi_map_const(mi_map_default);
-		typename ft_map::reverse_iterator mrend = mi_map_default.rend();
-		//typename ft_map::const_reverse_iterator cmrend = mi_map_const.rend();
-		typename ft_map::const_reverse_iterator cmrend = mi_map_default.rend();
-		// typename std_map::reverse_iterator srit = su_map_default.rbegin();
-		typename std_map::reverse_iterator srend = su_map_default.rend();
-		typename std_map::const_reverse_iterator csrend = su_map_default.rend();
-		PRINT	<< TXT_TAB << TXT_BYEL << "Reverse Iterator" << END;
-		PRINT	<< TXT_NL << srend->second << END;
-		PRINT	<< TXT_NL << csrend->second << END;
-		PRINT	<< TXT_NL << cmrend->second << END;
-		PRINT	<< TXT_NL << mrend->second << END;
-		// size_t i = su_map_default.size() * 2;
-		// for (typename std_map::reverse_iterator srit = su_map_default.rbegin(); i > 0; --i, ++srit)
-		// 	PRINT	<< TXT_NL << srit->second << END;
-	}
+	typename ft_map::reverse_iterator mrend = mi_map_default.rend();
+	typename ft_map::const_reverse_iterator cmrend = mi_map_default.rend();
+	typename std_map::reverse_iterator srend = su_map_default.rend();
+	typename std_map::const_reverse_iterator csrend = su_map_default.rend();
+	PRINT	<< TXT_TAB << TXT_BYEL << "Insane Person Who Dereferences Reverse End Iterator Test (Consted and Non-Consted)" << END;
+	PRINT	<< TXT_NL << mrend->second << END;
+	PRINT	<< TXT_NL << srend->second << END;
+	PRINT	<< TXT_NL << csrend->second << END;
+	PRINT	<< TXT_NL << cmrend->second << END;
+	PRINT	<< TXT_TAB << TXT_BGRN << "OK" << END; //This just tests that the end iterator value is dereferenceable without segfault; there is no equality guarantee. For whatever reason, STD seems to make this possible. :P
+
+	PRINT	<< TXT_NL << TXT_BYEL << "THE EVIL DOUBLE-FREE TEST" << END; //Ensure erasing and clearing doesn't lead to any double-free attempts.
+	ft_map	mi_map_dblfree;
+	mi_map_dblfree.insert(ft::make_pair("testing", "123"));
+	mi_map_dblfree.erase("testing");
+	mi_map_dblfree.clear();
+	check(mi_map_dblfree.size() == 0 & mi_map_dblfree.empty() == true, color, ret);
+	PRINT	<< TXT_TAB << color << color << (color == TXT_BGRN ? "OK" : "KO") << END;
 
 	PRINT	<< TXT_NL << TXT_BYEL << "CAPACITY TESTS" << TXT_NL
 			<< "Empty Test: " << TXT_NL
@@ -1366,8 +1367,8 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< std::boolalpha << (su_map_default > su_map_copy) << END;
 	PRINT	<< std::boolalpha << (mi_map_default > mi_map_copy) << END;
 
-
-	return (true);
+	system("leaks ft_container");
+	return (ret);
 }
 
 int main(void)
@@ -1860,7 +1861,6 @@ int main(void)
 // 	// // 	<< "Unsigned Int Is Integral?" << std::boolalpha << " " << std::is_integral<unsigned int>::value << END;
 // 	// // }
 // 	// // //DEBUG
-
 
 	return (0);
 }

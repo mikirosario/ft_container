@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/18 00:18:47 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/19 00:14:49 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,8 @@ namespace ft
 			size_type				_size;
 			key_compare				_is_less;
 			allocator_type			_alloc;
+			value_type				_tonti_val;
+			t_bstnode				_tonti_tree_node;
 
 			/* THREAD LIST */
 			/*
@@ -173,12 +175,13 @@ namespace ft
 				struct s_lstnode *	prev;
 				struct s_lstnode *	next;
 				s_lstnode(void) : tree_node(NULL), prev(NULL), next(NULL) {}
-				s_lstnode(struct s_lstnode * end_lst) : tree_node(NULL), prev(NULL), next(end_lst) {}
+				s_lstnode(struct s_lstnode * end_lst, struct s_lstnode *rend_lst) : tree_node(NULL), prev(rend_lst), next(end_lst) {}
 			}				t_lstnode;
 
 			std::allocator<t_lstnode>	_list_alloc;
 			//t_lstnode					_end_lst;
 			t_lstnode *					_end_lst;
+			t_lstnode *					_rend_lst;
 			t_lstnode *					_list_head;
 			t_lstnode * 				_list_tail;
 
@@ -194,7 +197,7 @@ namespace ft
 				try
 				{
 					new_node = _list_alloc.allocate(1);
-					_list_alloc.construct(new_node, t_lstnode(_end_lst));
+					_list_alloc.construct(new_node, _end_lst, _rend_lst);
 					new_node->tree_node = tree_node;
 				}
 				catch(std::bad_alloc const & e)
@@ -216,8 +219,14 @@ namespace ft
 			void			lst_add_back(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * node) {
 				list_tail = node;
 				node->next = _end_lst;
-				_end_lst->prev = list_tail;
-				if (list_head != _end_lst)
+				if (_end_lst->prev == _rend_lst) //node is new list head
+				{
+					list_head = node;
+					node->prev = _rend_lst;
+					_rend_lst->next = list_head;
+					
+				}
+				else
 				{
 					t_lstnode * last_node = list_head;
 					while (last_node->next != _end_lst)
@@ -225,8 +234,17 @@ namespace ft
 					last_node->next = node;
 					node->prev = last_node;
 				}
-				else
-					list_head = node;
+				_end_lst->prev = list_tail;
+				// if (list_head != NULL)
+				// {
+				// 	t_lstnode * last_node = list_head;
+				// 	while (last_node->next != _end_lst)
+				// 		last_node = last_node->next;
+				// 	last_node->next = node;
+				// 	node->prev = last_node;
+				// }
+				// else
+				// 	list_head = node;
 			}
 
 			/* LST_DEL_ONE */
@@ -242,14 +260,15 @@ namespace ft
 			** self can't be arsed. So just use it properly. :p
 			*/
 			void			lst_del_one(t_lstnode *& list_head, t_lstnode *& list_tail, t_lstnode * node) {
-				if (node != _end_lst)
+				if (node == _end_lst || node == _rend_lst)
+					return ;
+				else
 				{
 					if (node == list_tail)
 						list_tail = node->prev;
-					if (node == list_head) //node == list_head is the same as node->prev == NULL
+					if (node == list_head)
 						list_head = node->next;
-					else //therefore, node != list_head is the same as node->prev != NULL
-						node->prev->next = node->next;
+					node->prev->next = node->next;
 					node->next->prev = node->prev;
 					_list_alloc.destroy(node);
 					_list_alloc.deallocate(node, 1);
@@ -273,6 +292,8 @@ namespace ft
 				}
 				list_head = _end_lst;
 				list_tail = _end_lst;
+				_end_lst->prev = _rend_lst;
+				_rend_lst->next = _end_lst;
 			}
 
 			/* LST_INSERT */
@@ -285,13 +306,14 @@ namespace ft
 				if (next == _end_lst) //Next is _end_lst, so do add_back. When list_head is _end_lst then next MUST be _end_lst, as it's the only element, so we handle that case in add_back too.
 					lst_add_back(list_head, list_tail, new_node);
 				else //Next is not _end_lst, therefore the list has elements, therefore list_head must not be _end_lst.
+				// if next == _rend_lst???
 				{	
 					new_node->next = next;
 					new_node->prev = next->prev;
 					next->prev = new_node;
-					if (new_node->prev != NULL)
-						new_node->prev->next = new_node;
-					else //if new_node->prev == NULL, it must be the new _list_head
+					//if (new_node->prev != NULL)
+					new_node->prev->next = new_node;
+					if (new_node->prev == _rend_lst) //if new_node->prev == _rend_lst, it must be the new _list_head
 						list_head = new_node;
 				}
 			}
@@ -359,10 +381,11 @@ namespace ft
 			** deletion (++it, instead of just it++). Above and beyond the STL!
 			** Apple finally won one!
 			*/			
-			template<typename iT, typename Category, typename lstNodeT>
+			template<typename iT, typename Category, typename lstNodeT = t_lstnode>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
 				friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
+				typedef	typename ft::Abintree<Data, Key, Value, Compare, Alloc>	Abintree;
 				//Constructors and Destructor
 				public:
 				Iterator(void) : _lst_node(NULL), _end_ptr_addr(NULL) {}
@@ -415,7 +438,7 @@ namespace ft
 					return (ret);
 				}
 				Iterator & 							operator--(void) {
-					if (this->_lst_node->prev != NULL) // imitating my Linux compiler's implementation here, probably less efficiently ;p
+					//if (this->_lst_node->prev != NULL) // imitating my Linux compiler's implementation here, probably less efficiently ;p
 						this->_lst_node = this->_lst_node->prev;
 					return (*this);
 				}
@@ -483,10 +506,17 @@ namespace ft
 			_root(NULL), _size(0), _is_less(comp), _alloc(alloc)/*, _list_head(_end_lst), _list_tail(_end_lst)*/	{
 				try
 				{
+					//DEBUG
+					//leak if rend_lst fails; contiguous memory space for both?
 					_end_lst = _list_alloc.allocate(sizeof(t_lstnode));
-					_list_alloc.construct(_end_lst);
+					_rend_lst = _list_alloc.allocate(sizeof(t_lstnode));
+					//DEBUG
+					_list_alloc.construct(_end_lst, _end_lst, _rend_lst);
+					_list_alloc.construct(_rend_lst, _end_lst, _rend_lst);
 					_list_head = _end_lst;
 					_list_tail = _end_lst;
+					_end_lst->tree_node = &_tonti_tree_node;
+					_rend_lst->tree_node = &_tonti_tree_node;
 				}
 				catch (std::bad_alloc const & e)
 				{
@@ -503,6 +533,8 @@ namespace ft
 			virtual ~Abintree(void) {
 				_list_alloc.destroy(_end_lst);
 				_list_alloc.deallocate(_end_lst, sizeof(t_lstnode));
+				_list_alloc.destroy(_rend_lst);
+				_list_alloc.deallocate(_rend_lst, sizeof(t_lstnode));
 			}
 			
 			/* ---- ASSIGNMENT OPERATOR OVERLOAD ---- */
@@ -583,7 +615,8 @@ namespace ft
 			** false is returned.
 			*/
 			bool is_valid_position(iterator const & position, key_type const & key) const {
-				if (position._lst_node == _end_lst || position._lst_node == _root->assoc_lst_node
+				if (position._lst_node == _end_lst || position._lst_node == _rend_lst
+				|| position._lst_node == _root->assoc_lst_node
 				|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
 				|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
 					return false;
@@ -1986,6 +2019,7 @@ namespace ft
 				t_lstnode *		org_lst_head = this->_list_head;
 				t_lstnode *		org_lst_tail = this->_list_tail;
 				t_lstnode *		org_end_lst = this->_end_lst;
+				t_lstnode *		org_rend_lst = this->_rend_lst;
 
 				this->_alloc = src._alloc;
 				src._alloc = org_alloc;
@@ -1999,6 +2033,8 @@ namespace ft
 				src._list_tail = org_lst_tail;
 				this->_end_lst = src._end_lst;
 				src._end_lst = org_end_lst;
+				this->_rend_lst = src._rend_lst;
+				src._rend_lst = org_rend_lst;
 
 				// this->_list_tail->next = this->_end_lst;
 				// this->_end_lst->prev = this->_list_tail;

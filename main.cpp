@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/18 12:15:38 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/19 01:42:14 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1117,8 +1117,26 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	su_map_default = su_map_copy;
 	print_map_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
 
-	PRINT	<< TXT_NL << TXT_BYEL << "REVERSE ITERATOR TEST" << END;
+	PRINT	<< TXT_NL << TXT_BYEL << "REVERSE ITERATOR TESTS" << END;
 	print_map_rev_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
+	{
+		//typename ft_map::reverse_iterator mrit = mi_map_default.rbegin();
+		//ft_map const	mi_map_const(mi_map_default);
+		typename ft_map::reverse_iterator mrend = mi_map_default.rend();
+		//typename ft_map::const_reverse_iterator cmrend = mi_map_const.rend();
+		typename ft_map::const_reverse_iterator cmrend = mi_map_default.rend();
+		// typename std_map::reverse_iterator srit = su_map_default.rbegin();
+		typename std_map::reverse_iterator srend = su_map_default.rend();
+		typename std_map::const_reverse_iterator csrend = su_map_default.rend();
+		PRINT	<< TXT_TAB << TXT_BYEL << "Reverse Iterator" << END;
+		PRINT	<< TXT_NL << srend->second << END;
+		PRINT	<< TXT_NL << csrend->second << END;
+		PRINT	<< TXT_NL << cmrend->second << END;
+		PRINT	<< TXT_NL << mrend->second << END;
+		// size_t i = su_map_default.size() * 2;
+		// for (typename std_map::reverse_iterator srit = su_map_default.rbegin(); i > 0; --i, ++srit)
+		// 	PRINT	<< TXT_NL << srit->second << END;
+	}
 
 	PRINT	<< TXT_NL << TXT_BYEL << "CAPACITY TESTS" << TXT_NL
 			<< "Empty Test: " << TXT_NL
@@ -1344,8 +1362,7 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< TXT_NL << TXT_BYEL << "COMP OBJECT TESTS" << END;
 	PRINT	<< std::boolalpha << mi_map_default.value_comp()(*mi_map_default.begin(), *(++mi_map_default.begin())) << END;
 
-	//PASS MY BEGIN AND END ITERATORS TO FT::LEXICOGRAPHICAL COMPARE FOR THIS NONSENSE
-	PRINT	<< TXT_NL << TXT_BYEL << "RELATIONAL OPERATORS??" << END; //UNDOCUMENTED RELATIONAL OPERATORS? :P
+	PRINT	<< TXT_NL << TXT_BYEL << "RELATIONAL OPERATORS??" << END;
 	PRINT	<< std::boolalpha << (su_map_default > su_map_copy) << END;
 	PRINT	<< std::boolalpha << (mi_map_default > mi_map_copy) << END;
 

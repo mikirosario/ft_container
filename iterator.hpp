@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/08 19:36:53 by miki             ###   ########.fr       */
+/*   Updated: 2021/12/19 01:51:19 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,12 @@ namespace ft
 		reverse_iterator(void) : current(Iter()) {}
 		reverse_iterator(Iter const & normal_iterator) : current(normal_iterator) {}
 		reverse_iterator(reverse_iterator const & src) : current(src.current) {}
+		virtual ~reverse_iterator(void) {}
+
+		//Conversion Overload, All Iterators Convertible to Const
+		operator	reverse_iterator<typename Iter::const_it>() const {
+			return (reverse_iterator<typename Iter::const_it>(current));
+		}
 		//Base Iterator Getter
 		Iter	base(void) const {
 			return (this->current);

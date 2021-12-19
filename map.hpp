@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/18 13:24:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/19 01:47:59 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,10 @@ namespace ft
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
 				friend class ft::map<Key, Value, Compare, Alloc>;
+
+				typedef typename ft::pair<Key const, Value> const								val_t;
+				typedef typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator	const_tree_it;
+				typedef Iterator<val_t, Category, const_tree_it>								const_it;
 				//Constructible
 				Iterator(void) {}
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
@@ -152,9 +156,14 @@ namespace ft
 			const allocator_type & alloc = allocator_type(),
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first, last, comp, alloc) {} 
 			
+			// //Conversion Operator - Iterator is always convertible to const_iterator
+			// operator	map<Key, Value, Compare, Alloc> const() const {
+			// 		return(*this);
+			// 	}
+
 			/* COPY CONSTRUCTOR */
-			//map(map const & src) : _tree(src._tree) {}
-			map(map & src) : _tree(src._tree) {}
+			map(map const & src) : _tree(src._tree) {}
+			//map(map & src) : _tree(src._tree) {}
 			
 			/* DESTRUCTOR */
 			~map(void) {}
@@ -363,11 +372,6 @@ namespace ft
 
 	/* ---- RELATIONAL OPERATOR OVERLOADS ---- */
 
-	template<typename T, typename U>
-	bool	pair_comp(ft::pair<T, U> const & lhs, ft::pair<T, U> const & rhs) {
-		return (lhs.first < rhs.first || lhs.second < rhs.second);
-	}
-
 	template<typename Key, typename Value, typename Compare, typename Alloc>
 	bool	operator==(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
 		if (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()))
@@ -383,7 +387,6 @@ namespace ft
 	template<typename Key, typename Value, typename Compare, typename Alloc>
 	bool	operator<(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
 		return(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
-		//return(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), lhs.value_comp()));
 	}
 
 	template<typename Key, typename Value, typename Compare, typename Alloc>

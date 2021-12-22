@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/19 20:28:08 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/22 07:06:25 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ namespace ft
 		// ~BintreeNode(void) {
 		// 	std::memset(this, 0, sizeof(BintreeNode<Data, Key, Value>));
 		// }
-		private:
-			struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
+		// private:
+		// 	struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
 	};
 
 	template<typename Data, typename Key, typename Value, typename Compare, typename Alloc>

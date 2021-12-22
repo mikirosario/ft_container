@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/19 20:24:16 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/22 07:10:31 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1122,22 +1122,23 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	print_map_rev_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
 	typename ft_map::reverse_iterator mrend = mi_map_default.rend();
 	typename ft_map::const_reverse_iterator cmrend = mi_map_default.rend();
-	typename std_map::reverse_iterator srend = su_map_default.rend();
-	typename std_map::const_reverse_iterator csrend = su_map_default.rend();
+	//typename std_map::reverse_iterator srend = su_map_default.rend();
+	//typename std_map::const_reverse_iterator csrend = su_map_default.rend();
 	PRINT	<< TXT_TAB << TXT_BYEL << "Insane Person Who Dereferences Reverse End Iterator Test (Consted and Non-Consted)" << END;
 	PRINT	<< TXT_NL << mrend->second << END;
-	PRINT	<< TXT_NL << srend->second << END;
-	PRINT	<< TXT_NL << csrend->second << END;
+	//PRINT	<< TXT_NL << srend->second << END;
+	//PRINT	<< TXT_NL << csrend->second << END;
 	PRINT	<< TXT_NL << cmrend->second << END;
-	PRINT	<< TXT_TAB << TXT_BGRN << "OK" << END; //This just tests that the end iterator value is dereferenceable without segfault; there is no equality guarantee. For whatever reason, STD seems to make this possible. :P
-
+	PRINT	<< TXT_TAB << TXT_BGRN << "OK" << END;
+	//This just tests that the end iterator value is dereferenceable without segfault; there is no equality guarantee. For whatever reason, STD seems to make this possible. :P
+	//Update! It's not STD, it's fooking Mac!!!! This code crashed my Linux-compiled map, as it rightly should!!! xD
 	PRINT	<< TXT_NL << TXT_BYEL << "THE EVIL DOUBLE-FREE TEST" << END; //Ensure erasing and clearing doesn't lead to any double-free attempts.
 	ft_map	mi_map_dblfree;
 	mi_map_dblfree.insert(ft::make_pair("testing", "123"));
 	mi_map_dblfree.erase("testing");
 	mi_map_dblfree.clear();
 	check(mi_map_dblfree.size() == 0 & mi_map_dblfree.empty() == true, color, ret);
-	PRINT	<< TXT_TAB << color << color << (color == TXT_BGRN ? "OK" : "KO") << END;
+	PRINT	<< TXT_TAB << color << (color == std::string(TXT_BGRN) ? "OK" : "KO") << END;
 
 	PRINT	<< TXT_NL << TXT_BYEL << "CAPACITY TESTS" << TXT_NL
 			<< "Empty Test: " << TXT_NL

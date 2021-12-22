@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/22 07:41:39 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/22 08:21:33 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -556,8 +556,12 @@ namespace ft
 			** the old one. Otherwise, we clear the old tree and replace with
 			** the new one.
 			*/
+		//LEAK
+		//This is leak central right now because of the list. xD Need to protect the old list from the new or something.
+		//I think I'll need to leave this one for when I have a nap and am off the train. xD
 			Abintree &	operator=(Abintree const & src) {
 				t_bstnode *	new_root = NULL;
+				//want the old list out of the way for now, but not destroyed until I can validate the new tree.
 				t_lstnode * old_lst_head = _list_head;
 				t_lstnode * old_lst_tail = _list_tail;
 				size_type	new_size = 0;
@@ -566,17 +570,19 @@ namespace ft
 				//Attempt to build new tree from source nodes
 				for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next, ++new_size)
 					//attempt allocation using source allocator
-					if (this->bintree_add(new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
+					//add also adds to the list... need to isolate the new list from the old
+					if (bintree_add(new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
 					{
 						_alloc = tmp; //revert to original allocator
-						this->bintree_free(new_root); //free anything that was reserved
+						bintree_free(new_root); //free all the nodes reserved for the new tree
 						//LEAK
-						//this->lst_clr(_list_head, _list_tail);
+						lst_clr(_list_head, _list_tail); //clear new list
 						_list_head = old_lst_head; //revert to original lst
 						_list_tail = old_lst_tail;
 						return (*this); //return; exception has already been handled internally
 					}
-				this->clear(); //delete existing tree
+				bintree_free(_root); //delete existing tree
+				//lst_clr(old_lst_head, old_lst_tail); //delete old list
 				_root = new_root;
 				_size = new_size;
 				_is_less = src._is_less;
@@ -2010,7 +2016,7 @@ namespace ft
 				this->_root = bintree_free(this->_root);
 				//bintree_free(this->_root);
 				//LEAK
-				//lst_clr(_list_head, _list_tail);
+				lst_clr(_list_head, _list_tail);
 			}
 
 			/* SWAP */

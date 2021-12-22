@@ -6,7 +6,7 @@
 #    By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/06 18:21:39 by mrosario          #+#    #+#              #
-#    Updated: 2021/12/22 07:15:58 by mikiencolor      ###   ########.fr        #
+#    Updated: 2021/12/22 07:38:43 by mikiencolor      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ OBJS = $(SRCFILES:.cpp=.o)
 
 INCLUDES = -I $(SRCDIR)
 
-CXXFLAGS = -Wall -Werror -Wextra -g #-std=c++98
+CXXFLAGS = -Wall -Werror -Wextra -g -std=c++98
 
 all: $(NAME)
 

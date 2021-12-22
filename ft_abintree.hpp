@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/22 07:06:25 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/22 07:41:39 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ namespace ft
 		// ~BintreeNode(void) {
 		// 	std::memset(this, 0, sizeof(BintreeNode<Data, Key, Value>));
 		// }
-		// private:
-		// 	struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
+		private:
+			struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
 	};
 
 	template<typename Data, typename Key, typename Value, typename Compare, typename Alloc>
@@ -198,7 +198,7 @@ namespace ft
 				try
 				{
 					new_node = _list_alloc.allocate(1);
-					_list_alloc.construct(new_node, _end_lst, _rend_lst);
+					_list_alloc.construct(new_node, t_lstnode(_end_lst, _rend_lst));
 					new_node->tree_node = tree_node;
 				}
 				catch(std::bad_alloc const & e)
@@ -510,10 +510,14 @@ namespace ft
 					//_end_lst and _rend_lst dummy list nodes are assigned to a contiguous block of memory
 					_end_lst = _list_alloc.allocate(sizeof(t_lstnode) * 2);
 					_rend_lst = _end_lst + 1;
-					_list_alloc.construct(_end_lst, _end_lst, _rend_lst);
-					_list_alloc.construct(_rend_lst, _end_lst, _rend_lst);
+					_list_alloc.construct(_end_lst, t_lstnode(_end_lst, _rend_lst)); //c++98 compatible, Mac-friendly... that is some SEXEEEH code xD
+					_list_alloc.construct(_rend_lst, t_lstnode(_end_lst, _rend_lst));
 					_list_head = _end_lst;
 					_list_tail = _end_lst;
+					//_end_lst->prev = _rend_lst;
+					//_end_lst->next = NULL;
+					//_rend_lst->next = _end_lst;
+					//_rend_lst->prev = NULL;
 					_end_lst->tree_node = &_tonti_tree_node; //the dummy list nodes point to a dummy tree node with default-instantiated value_type
 					_rend_lst->tree_node = &_tonti_tree_node; //this imitates Mac functionality where dereferencing map.end() does not segfault.
 					//Mac seems to instantiate the pair->second to 0 instead of default-instantiating and they don't necessarily compare equal, but whatever.

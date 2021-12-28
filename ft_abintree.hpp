@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/22 08:21:33 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2021/12/28 14:47:37 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,7 @@ namespace ft
 		// ~BintreeNode(void) {
 		// 	std::memset(this, 0, sizeof(BintreeNode<Data, Key, Value>));
 		// }
-		private:
-			struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
+		struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; }
 	};
 
 	template<typename Data, typename Key, typename Value, typename Compare, typename Alloc>
@@ -562,13 +561,30 @@ namespace ft
 			Abintree &	operator=(Abintree const & src) {
 				t_bstnode *	new_root = NULL;
 				//want the old list out of the way for now, but not destroyed until I can validate the new tree.
+				//t_lstnode old_end_lst = *_end_lst;
+				//t_lstnode old_rend_lst = *_rend_lst;
+				
+				//lst_clr(_list_head, _list_tail);
+				// _end_lst->prev = _rend_lst;
+				// _rend_lst->next = _end_lst;
+				// _list_head = _end_lst;
+				// _list_tail = _rend_lst;
+				
+				
+				
 				t_lstnode * old_lst_head = _list_head;
 				t_lstnode * old_lst_tail = _list_tail;
-				size_type	new_size = 0;
+				_list_head = _end_lst;
+				_list_tail = _end_lst;
+				// _end_lst->prev = _rend_lst;
+				// _rend_lst->next = _end_lst;
+				//size_type	new_size = 0;
+				size_type	old_size = _size;
+				_size = 0;
 				Alloc	tmp = _alloc; //save copy of original allocator
 				Alloc	_alloc = src.get_allocator(); //take source allocator
 				//Attempt to build new tree from source nodes
-				for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next, ++new_size)
+				for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next/*, ++new_size*/)
 					//attempt allocation using source allocator
 					//add also adds to the list... need to isolate the new list from the old
 					if (bintree_add(new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
@@ -579,12 +595,24 @@ namespace ft
 						lst_clr(_list_head, _list_tail); //clear new list
 						_list_head = old_lst_head; //revert to original lst
 						_list_tail = old_lst_tail;
+						if (old_size > 0)
+						{
+							_end_lst->prev = _list_tail;
+							_rend_lst->next = _list_head;
+							_size = old_size;
+						}
 						return (*this); //return; exception has already been handled internally
 					}
 				bintree_free(_root); //delete existing tree
-				//lst_clr(old_lst_head, old_lst_tail); //delete old list
+				//LEAK
+				lst_clr(old_lst_head, old_lst_tail); //delete old list; this resets _end_lst and _rend_lst pointers
+				if (_size > 0) //if the new tree has content, the new list has content, re-point _end_lst and _rend_lst pointers.
+				{
+					_end_lst->prev = _list_tail;
+					_rend_lst->next = _list_head;
+				}
 				_root = new_root;
-				_size = new_size;
+				//_size = new_size;
 				_is_less = src._is_less;
 				return (*this);
 			}
@@ -887,7 +915,7 @@ namespace ft
 
 				try
 				{
-					node = _alloc.allocate(1);
+					node = _alloc.allocate(1, parent);
 					_alloc.construct(node, t_bstnode(parent, data));
 					this->assign_key_value_pointers(node); //virtual table lookup; don't remove 'this'
 					//node->parent = parent;
@@ -1018,7 +1046,7 @@ namespace ft
 				try
 				{
 					new_lst_node = lst_new(NULL); //throws
-					root = bintree_insert(NULL, root, data, new_key, (new_node = NULL)); //note: bintree_insert does not NULL new_node if it fails
+					root = bintree_insert(NULL, root, data, new_key, (new_node = NULL)); //throws //note: bintree_insert does not NULL new_node if it fails
 					//bintree_balance(_end_lst, new_node); //WHY DID I DO THIS!? THERE MUST HAVE BEEN A REASON AND NOW I CAN'T REMEMBER :_(
 					//OK, I remember now. bintree_balance may change the node pointer address passed as root, but this is irrelevant unless the
 					//pointer is an external reference. There are only two external references to nodes in the binary tree. One is the _thread
@@ -1055,10 +1083,20 @@ namespace ft
 				}
 				catch(std::bad_alloc const & e)
 				{
+					if (new_lst_node != NULL)
+					{
+						_list_alloc.destroy(new_lst_node);
+						_list_alloc.deallocate(new_lst_node, sizeof(t_lstnode));
+					}
 					std::cerr << e.what() << std::endl;
 				}
 				catch(std::exception const & e)
 				{
+					if (new_lst_node != NULL)
+					{
+						_list_alloc.destroy(new_lst_node);
+						_list_alloc.deallocate(new_lst_node, sizeof(t_lstnode));
+					}
 					std::cerr << e.what() << std::endl;
 				}
 				return (new_node);
@@ -1084,10 +1122,9 @@ namespace ft
 				lst_del_one(_list_head, _list_tail, thread_search(node));
 				if (node == _root)
 					_root = NULL;
+				_alloc.destroy(node);
 				//put this in t_bstnode destructor :p
 				std::memset(node, 0, sizeof(t_bstnode));
-
-				_alloc.destroy(node);				
 				_alloc.deallocate(node, sizeof(t_bstnode));
 				--_size;
 				return (NULL);

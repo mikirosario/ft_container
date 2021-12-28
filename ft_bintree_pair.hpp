@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_pair.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/19 18:03:45 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/12/28 14:43:53 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ namespace ft
 
 			/* DESTRUCTOR */
 			~bintree_pair(void) {
+				this->lst_clr(this->_list_head, this->_list_tail);
 				this->bintree_free(_root); //<- Look, ma! No 'this->' on my _root! ;)
 			}
 

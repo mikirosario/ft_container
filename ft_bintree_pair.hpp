@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2021/12/28 14:43:53 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2022/01/06 19:37:29 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,11 +133,6 @@ namespace ft
 				this->lst_clr(this->_list_head, this->_list_tail);
 				this->bintree_free(_root); //<- Look, ma! No 'this->' on my _root! ;)
 			}
-
-			/* ASSIGNMENT OPERATOR OVERLOAD */
-			//DEBUG
-			//Use base class overload implicitly?
-			//bintree_pair const &	operator=(bintree_pair const & src) = default;
 
 			/* ---- ELEMENT ACCESS ---- */
 

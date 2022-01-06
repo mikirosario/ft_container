@@ -6,7 +6,7 @@
 /*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/28 14:47:37 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2022/01/06 19:41:10 by mikiencolor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -537,6 +537,7 @@ namespace ft
 			virtual ~Abintree(void) {
 				_list_alloc.destroy(_end_lst);
 				_list_alloc.destroy(_rend_lst);
+				//DEBUG, should be 2, not sizeof * 2, check allocate also
 				_list_alloc.deallocate(_end_lst, sizeof(t_lstnode) * 2);
 				
 				//_list_alloc.deallocate(_rend_lst, sizeof(t_lstnode));
@@ -555,66 +556,136 @@ namespace ft
 			** the old one. Otherwise, we clear the old tree and replace with
 			** the new one.
 			*/
+		//DEBUG OBSOLETE LEAKY VERSION; REPLACEMENT BELOW; DELETE THIS
 		//LEAK
 		//This is leak central right now because of the list. xD Need to protect the old list from the new or something.
 		//I think I'll need to leave this one for when I have a nap and am off the train. xD
+			// Abintree &	operator=(Abintree const & src) {
+			// 	t_bstnode *	new_root = NULL;
+			// 	//want the old list out of the way for now, but not destroyed until I can validate the new tree.
+			// 	//t_lstnode old_end_lst = *_end_lst;
+			// 	//t_lstnode old_rend_lst = *_rend_lst;
+				
+			// 	//lst_clr(_list_head, _list_tail);
+			// 	// _end_lst->prev = _rend_lst;
+			// 	// _rend_lst->next = _end_lst;
+			// 	// _list_head = _end_lst;
+			// 	// _list_tail = _rend_lst;
+				
+				
+				
+			// 	t_lstnode * old_lst_head = _list_head;
+			// 	t_lstnode * old_lst_tail = _list_tail;
+			// 	_list_head = _end_lst;
+			// 	_list_tail = _end_lst;
+			// 	// _end_lst->prev = _rend_lst;
+			// 	// _rend_lst->next = _end_lst;
+			// 	//size_type	new_size = 0;
+			// 	size_type	old_size = _size;
+			// 	_size = 0;
+			// 	Alloc	tmp = _alloc; //save copy of original allocator
+			// 	Alloc	_alloc = src.get_allocator(); //take source allocator
+			// 	//Attempt to build new tree from source nodes
+			// 	for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next/*, ++new_size*/)
+			// 		//attempt allocation using source allocator
+			// 		//add also adds to the list... need to isolate the new list from the old
+			// 		if (bintree_add(new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
+			// 		{
+			// 			_alloc = tmp; //revert to original allocator
+			// 			bintree_free(new_root); //free all the nodes reserved for the new tree
+			// 			//LEAK
+			// 			lst_clr(_list_head, _list_tail); //clear new list
+			// 			_list_head = old_lst_head; //revert to original lst
+			// 			_list_tail = old_lst_tail;
+			// 			if (old_size > 0)
+			// 			{
+			// 				_end_lst->prev = _list_tail;
+			// 				_rend_lst->next = _list_head;
+			// 				_size = old_size;
+			// 			}
+			// 			return (*this); //return; exception has already been handled internally
+			// 		}
+			// 	bintree_free(_root); //delete existing tree
+			// 	//LEAK
+			// 	lst_clr(old_lst_head, old_lst_tail); //delete old list; this resets _end_lst and _rend_lst pointers
+			// 	if (_size > 0) //if the new tree has content, the new list has content, re-point _end_lst and _rend_lst pointers.
+			// 	{
+			// 		_end_lst->prev = _list_tail;
+			// 		_rend_lst->next = _list_head;
+			// 	}
+			// 	_root = new_root;
+			// 	//_size = new_size;
+			// 	_is_less = src._is_less;
+			// 	return (*this);
+			// }
+			//DEBUG OBSOLETE LEAKY VERSION; REPLACEMENT BELOW; DELETE THIS WHEW
+
+
 			Abintree &	operator=(Abintree const & src) {
-				t_bstnode *	new_root = NULL;
-				//want the old list out of the way for now, but not destroyed until I can validate the new tree.
-				//t_lstnode old_end_lst = *_end_lst;
-				//t_lstnode old_rend_lst = *_rend_lst;
-				
-				//lst_clr(_list_head, _list_tail);
-				// _end_lst->prev = _rend_lst;
-				// _rend_lst->next = _end_lst;
-				// _list_head = _end_lst;
-				// _list_tail = _rend_lst;
-				
-				
-				
-				t_lstnode * old_lst_head = _list_head;
-				t_lstnode * old_lst_tail = _list_tail;
-				_list_head = _end_lst;
-				_list_tail = _end_lst;
-				// _end_lst->prev = _rend_lst;
-				// _rend_lst->next = _end_lst;
-				//size_type	new_size = 0;
-				size_type	old_size = _size;
-				_size = 0;
-				Alloc	tmp = _alloc; //save copy of original allocator
-				Alloc	_alloc = src.get_allocator(); //take source allocator
-				//Attempt to build new tree from source nodes
-				for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next/*, ++new_size*/)
-					//attempt allocation using source allocator
-					//add also adds to the list... need to isolate the new list from the old
-					if (bintree_add(new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
-					{
-						_alloc = tmp; //revert to original allocator
-						bintree_free(new_root); //free all the nodes reserved for the new tree
-						//LEAK
-						lst_clr(_list_head, _list_tail); //clear new list
-						_list_head = old_lst_head; //revert to original lst
-						_list_tail = old_lst_tail;
-						if (old_size > 0)
-						{
-							_end_lst->prev = _list_tail;
-							_rend_lst->next = _list_head;
-							_size = old_size;
-						}
-						return (*this); //return; exception has already been handled internally
-					}
-				bintree_free(_root); //delete existing tree
-				//LEAK
-				lst_clr(old_lst_head, old_lst_tail); //delete old list; this resets _end_lst and _rend_lst pointers
-				if (_size > 0) //if the new tree has content, the new list has content, re-point _end_lst and _rend_lst pointers.
+			 	if (this == &src)
+				 	return (*this);
+				 //save original data
+				 t_bstnode *	old_root = _root;		//old root addr
+				 size_type		old_size = _size;		//old size
+				 t_lstnode		old_end_lst = *_end_lst;	//old end_lst
+				 t_lstnode		old_rend_lst = *_rend_lst;	//old rend_lst
+				 t_lstnode *	old_list_head = _list_head;	//old list head addr
+				 t_lstnode *	old_list_tail = _list_tail;	//old list tail addr
+				 allocator_type	old_alloc = _alloc;
+
+				 //we want the old tree out of the way for now, but not deleted
+				 //until we can validate the new tree.
+				 _root = NULL;
+				 _size = 0;
+				 _list_head = _end_lst;
+				 _list_tail = _end_lst;
+				 _end_lst->prev = _rend_lst;
+				 _rend_lst->next = _end_lst;
+				 _alloc = src._alloc;
+
+			//Attempt to build new tree from source nodes
+			for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next/*, ++new_size*/)
+				//attempt allocation using source allocator
+				//add also adds to the list... that's why we needed to isolate the new list from the old
+				if (bintree_add(_root, new_node->data, *new_node->key) == NULL) //memory alloc failed (valgrind approved, leak free)
 				{
-					_end_lst->prev = _list_tail;
-					_rend_lst->next = _list_head;
+					_alloc = old_alloc; //revert to original allocator
+					bintree_free(_root); //free all the nodes reserved for the new tree
+					lst_clr(_list_head, _list_tail); //clear new list
+
+					//revert to original tree
+					_root = old_root;
+					_size = old_size;
+					_list_head = old_list_head; //revert to original lst
+					_list_tail = old_list_tail;
+					*_end_lst = old_end_lst;
+					*_rend_lst = old_rend_lst;
+					return (*this); //return; exception has already been handled internally
 				}
-				_root = new_root;
-				//_size = new_size;
-				_is_less = src._is_less;
-				return (*this);
+			//new tree build successful
+			if (old_size > 0)
+			{
+				//delete old tree
+				for (t_bstnode * node = old_list_head->tree_node; node != NULL; )
+				{
+					t_bstnode * tmp = node->next;
+					_alloc.destroy(node);
+					std::memset(node, 0, sizeof(t_bstnode));
+					_alloc.deallocate(node, 1);
+					node = tmp;
+				}
+				//delete old list
+				for (t_lstnode * node = old_list_head; node != _end_lst; )
+				{
+						t_lstnode * tmp = node->next;
+						_list_alloc.destroy(node);
+						_list_alloc.deallocate(node, 1);
+						node = tmp;
+				}
+			}
+
+			return (*this);
+
 			}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
@@ -1125,7 +1196,7 @@ namespace ft
 				_alloc.destroy(node);
 				//put this in t_bstnode destructor :p
 				std::memset(node, 0, sizeof(t_bstnode));
-				_alloc.deallocate(node, sizeof(t_bstnode));
+				_alloc.deallocate(node, 1);
 				--_size;
 				return (NULL);
 			}
@@ -2050,20 +2121,14 @@ namespace ft
 			** to zero.
 			*/
 			void		clear(void) {
-				this->_root = bintree_free(this->_root);
-				//bintree_free(this->_root);
-				//LEAK
 				lst_clr(_list_head, _list_tail);
+				this->_root = bintree_free(this->_root);
 			}
 
 			/* SWAP */
 			/*
 			** This function does what it says on the tin.
 			*/
-		//DEBUG
-		// Urgh, this would invalidate the end_lst iterator, _lst_tail->next and _end_lst->prev... need ugly surgery here to fix it xD
-		// I think _end_lst will need to be in heap for this to work as a pointer swap
-		//DEBUG
 			template<typename T>
 			void	swap(T & src) {
 				t_bstnode *		org_tree = this->_root;

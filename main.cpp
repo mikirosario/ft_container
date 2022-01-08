@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 17:29:46 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/08 17:56:38 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1406,14 +1406,22 @@ PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 		for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
 			PRINT << "SU VEC: " << *it << '\n';
 
-        // lst_it = lst.begin();
-        // for (int i = 1; lst_it != lst.end(); ++i)
-        //         *lst_it++ = i * 5;
-        // vct.assign(lst.begin(), lst.end());
-        // printSize(vct);
+        lst_it = lst.begin();
+        for (int i = 1; lst_it != lst.end(); ++i)
+            *lst_it++ = i * 5;
+        vct.assign(lst.begin(), lst.end());
+		svct.assign(lst.begin(), lst.end());
+		for (ft::vector<int>::iterator it = vct.begin(), end = vct.end(); it != end; ++it)
+			PRINT << "MY VEC: " << *it << '\n';
+		for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
+			PRINT << "SU VEC: " << *it << '\n';
 
-        // vct.insert(vct.end(), lst.rbegin(), lst.rend());
-        // printSize(vct);
+        vct.insert(vct.end(), lst.rbegin(), lst.rend());
+		svct.insert(svct.end(), lst.rbegin(), lst.rend());
+        for (ft::vector<int>::iterator it = vct.begin(), end = vct.end(); it != end; ++it)
+			PRINT << "MY VEC: " << *it << '\n';
+		for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
+			PRINT << "SU VEC: " << *it << '\n';
 
 //debug
 	/*****/

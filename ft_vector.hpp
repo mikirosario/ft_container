@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 17:39:52 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/08 17:59:40 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -538,7 +538,10 @@ namespace ft
 			template<typename InputIt>
 			void				assign(InputIt first, InputIt last,
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type* = NULL) {
-				size_type	new_size = last - first;
+				//size_type	new_size = last - first;
+				size_type new_size = 0;
+				for (InputIt it = first; it != last; ++it)
+					++new_size;
 
 				try
 				{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/19 01:51:19 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/08 22:17:35 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ namespace ft
 	template<class Iter>
 	//could inherit from iterator_traits to define traits more locally??
 	struct reverse_iterator {
-		typedef typename Iter::iterator_category		iterator_category; //un poco cutre, pero... ;)
+		typedef typename Iter::iterator_category				iterator_category; //un poco cutre, pero... ;)
+		typedef reverse_iterator<typename Iter::const_it>		const_rit;
 		//reverse_iterator(void) : current(Iter::_m_ptr) {}
 		reverse_iterator(void) : current(Iter()) {}
 		reverse_iterator(Iter const & normal_iterator) : current(normal_iterator) {}
@@ -54,23 +55,41 @@ namespace ft
 			return (*this);
 		}
 		//Relational Operator Overloads
-		bool	operator==(reverse_iterator const & rhs) const {
-			return (this->current.operator==(rhs.current));
+		// bool	operator==(reverse_iterator const & rhs) const {
+		// 	return (this->current.operator==(rhs.current));
+		// }
+		// bool	operator!=(reverse_iterator const & rhs) const {
+		// 	return (this->current.operator!=(rhs.current));
+		// }
+		// bool	operator<(reverse_iterator const & rhs) const {
+		// 	return (this->current.operator>(rhs.current));
+		// }
+		// bool	operator>(reverse_iterator const & rhs) const {
+		// 	return (this->current.operator<(rhs.current));
+		// }
+		// bool	operator<=(reverse_iterator const & rhs) const {
+		// 	return (this->current.operator>=(rhs.current));
+		// }
+		// bool	operator>=(reverse_iterator const & rhs) const {
+		// 	return (this->current.operator<=(rhs.current));
+		// }
+		bool	operator==(const_rit const & rhs) const {
+			return (this->current.operator==(rhs.base()));
 		}
-		bool	operator!=(reverse_iterator const & rhs) const {
-			return (this->current.operator!=(rhs.current));
+		bool	operator!=(const_rit const & rhs) const {
+			return (this->current.operator!=(rhs.base()));
 		}
-		bool	operator<(reverse_iterator const & rhs) const {
-			return (this->current.operator>(rhs.current));
+		bool	operator<(const_rit const & rhs) const {
+			return (this->current.operator>(rhs.base()));
 		}
-		bool	operator>(reverse_iterator const & rhs) const {
-			return (this->current.operator<(rhs.current));
+		bool	operator>(const_rit const & rhs) const {
+			return (this->current.operator<(rhs.base()));
 		}
-		bool	operator<=(reverse_iterator const & rhs) const {
-			return (this->current.operator>=(rhs.current));
+		bool	operator<=(const_rit const & rhs) const {
+			return (this->current.operator>=(rhs.base()));
 		}
-		bool	operator>=(reverse_iterator const & rhs) const {
-			return (this->current.operator<=(rhs.current));
+		bool	operator>=(const_rit const & rhs) const {
+			return (this->current.operator<=(rhs.base()));
 		}
 		//Arithmetic Operator Overloads
 		reverse_iterator &			operator++() {

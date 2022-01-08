@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 21:23:42 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/08 22:04:40 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1440,34 +1440,43 @@ int main(void)
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 
-
-        const int size = 5;
+const int size = 5;
         ft::vector<int> vct(size);
-        ft::vector<int>::iterator it = vct.begin();
-        ft::vector<int>::const_iterator ite = vct.begin();
-		//ft::pair<int, int> test(2, 1);
+        ft::vector<int>::reverse_iterator it(vct.rbegin());
+        ft::vector<int>::const_reverse_iterator ite(vct.rend());
 
-        for (int i = 0; i < size; ++i)
-                it[i] = (size - i) * 5;
-        prepost_incdec(vct);
+        for (int i = 1; it != ite; ++i)
+                *it++ = (i * 7);
+        // printSize(vct, 1);
 
-        it = it + 5;
-        it = 1 + it;
-		//it = 1 + test;
-        it = it - 4;
-        std::cout << *(it += 2) << std::endl;
-        std::cout << *(it -= 1) << std::endl;
+        // it = vct.rbegin();
+        // ite = vct.rbegin();
 
-        // *(it -= 2) = 42;
-        // *(it += 2) = 21;
+        // std::cout << *(++ite) << std::endl;
+        // std::cout << *(ite++) << std::endl;
+        // std::cout << *ite++ << std::endl;
+        // std::cout << *++ite << std::endl;
 
-        // std::cout << "const_ite +=: " << *(ite += 2) << std::endl;
-        // std::cout << "const_ite -=: " << *(ite -= 2) << std::endl;
+        // it->m();
+        // ite->m();
 
-        // std::cout << "(it == const_it): " << (ite == it) << std::endl;
-        // std::cout << "(const_ite - it): " << (ite - it) << std::endl;
-        // std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
+        // std::cout << *(++it) << std::endl;
+        // std::cout << *(it++) << std::endl;
+        // std::cout << *it++ << std::endl;
+        // std::cout << *++it << std::endl;
 
+        // std::cout << *(--ite) << std::endl;
+        // std::cout << *(ite--) << std::endl;
+        // std::cout << *--ite << std::endl;
+        // std::cout << *ite-- << std::endl;
+
+        // (*it).m();
+        // (*ite).m();
+
+        // std::cout << *(--it) << std::endl;
+        // std::cout << *(it--) << std::endl;
+        // std::cout << *it-- << std::endl;
+        // std::cout << *--it << std::endl;
 
         // std::list<int> lst;
         // std::list<int>::iterator lst_it;

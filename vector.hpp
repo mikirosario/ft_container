@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 19:17:51 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/08 21:35:45 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,36 +82,41 @@ namespace ft
 				// bool	operator==(Iterator const & rhs) const {
 				// 	return (this->_m_ptr == rhs._m_ptr);
 				// }
-				bool	operator==(const_it const & rhs) const {
-					return (this->_m_ptr == rhs.base());
-				}
 				// bool	operator!=(Iterator const & rhs) const {
 				// 	return (!operator==(rhs)); //a!=b == !(a==b)
 				// }
-				bool	operator!=(const_it const & rhs) const {
-					return (!operator==(rhs)); //a!=b == !(a==b)
-				}
 				// bool	operator<(Iterator const & rhs) const {
 				// 	return (this->_m_ptr < rhs._m_ptr);
 				// }
-				bool	operator<(const_it const & rhs) const {
-					return (this->_m_ptr < rhs.base());
-				}
 				// bool	operator>(Iterator const & rhs) const {
 				// 	return (rhs < *this); //a>b == b<a
 				// }
-				bool	operator>(const_it const & rhs) const {
-					return (rhs < *this); //a>b == b<a
-				}
 				// bool	operator<=(Iterator const & rhs) const {
 				// 	return (!(rhs < *this)); //a<=b == !(b<a)
 				// }
-				bool	operator<=(const_it const & rhs) const {
-					return (!(rhs < *this)); //a<=b == !(b<a)
-				}
 				// bool	operator>=(Iterator const & rhs) const {
 				// 	return (!(*this < rhs)); //a>=b == !(a<b)
 				// }
+				bool	operator==(const_it const & rhs) const {
+					return (this->_m_ptr == rhs.base());
+				}
+				
+				bool	operator!=(const_it const & rhs) const {
+					return (!operator==(rhs)); //a!=b == !(a==b)
+				}
+				
+				bool	operator<(const_it const & rhs) const {
+					return (this->_m_ptr < rhs.base());
+				}
+				
+				bool	operator>(const_it const & rhs) const {
+					return (rhs < *this); //a>b == b<a
+				}
+				
+				bool	operator<=(const_it const & rhs) const {
+					return (!(rhs < *this)); //a<=b == !(b<a)
+				}
+				
 				bool	operator>=(const_it const & rhs) const {
 					return (!(*this < rhs)); //a>=b == !(a<b)
 				}
@@ -1107,6 +1112,33 @@ namespace ft
 	bool	operator>=(vector<T, Alloc> const & lhs, vector<T, Alloc> const & rhs) {
 		return(!operator<(lhs, rhs)); //a>=b == !a<b
 	}
+
+	/* INVERSE ITERATOR OPERATOR OVERLOAD */
+	/*
+	** The equation iterator = iterator + 1 is resolved by the overloads present
+	** in the iterator itself. But what about 1 + iterator? Bet you never
+	** thought of THAT! xD Yeah, neither did I. :_(
+	**
+	** This unholy abomination resolves 1 + iterator without resorting to
+	** separating the iterator from the structure. xD
+	*/
+	template<typename InputIt>
+	InputIt	operator+(int const val, InputIt const & it) {
+		typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * tonti = NULL;
+		tonti = NULL;
+		return (it + val);
+	}
+	template<typename InputIt>
+	InputIt	operator-(int const val, InputIt const & it) {
+		typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * tonti = NULL;
+		tonti = NULL;
+		return (it - val);
+	}
 };
+
+// namespace std
+// {
+
+// };
 
 #endif

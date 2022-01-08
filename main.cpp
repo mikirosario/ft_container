@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 18:24:34 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/08 21:23:42 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1372,6 +1372,52 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	return (ret);
 }
 
+void    prepost_incdec(ft::vector<int> &vct)
+{
+        ft::vector<int>::iterator it = vct.begin();
+        ft::vector<int>::iterator it_tmp;
+
+        std::cout << "Pre inc" << std::endl;
+        it_tmp = ++it;
+        std::cout << *it_tmp << " | " << *it << std::endl;
+
+        std::cout << "Pre dec" << std::endl;
+        it_tmp = --it;
+        std::cout << *it_tmp << " | " << *it << std::endl;
+
+        std::cout << "Post inc" << std::endl;
+        it_tmp = it++;
+        std::cout << *it_tmp << " | " << *it << std::endl;
+
+        std::cout << "Post dec" << std::endl;
+        it_tmp = it--;
+        std::cout << *it_tmp << " | " << *it << std::endl;
+        std::cout << "###############################################" << std::endl;
+}
+
+void    prepost_incdec(std::vector<int> &vct)
+{
+        std::vector<int>::iterator it = vct.begin();
+        std::vector<int>::iterator it_tmp;
+
+        std::cout << "Pre inc" << std::endl;
+        it_tmp = ++it;
+        std::cout << *it_tmp << " | " << *it << std::endl;
+
+        std::cout << "Pre dec" << std::endl;
+        it_tmp = --it;
+        std::cout << *it_tmp << " | " << *it << std::endl;
+
+        std::cout << "Post inc" << std::endl;
+        it_tmp = it++;
+        std::cout << *it_tmp << " | " << *it << std::endl;
+
+        std::cout << "Post dec" << std::endl;
+        it_tmp = it--;
+        std::cout << *it_tmp << " | " << *it << std::endl;
+        std::cout << "###############################################" << std::endl;
+}
+
 int main(void)
 {	
 	std::map<std::string, std::string>	seed_map;
@@ -1397,46 +1443,31 @@ PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 
         const int size = 5;
         ft::vector<int> vct(size);
-        ft::vector<int>::iterator it(vct.begin());
-        ft::vector<int>::const_iterator ite(vct.end());
-		
-		std::vector<int> svct(size);
-        std::vector<int>::iterator sit(svct.begin());
-        std::vector<int>::const_iterator site(svct.end());
+        ft::vector<int>::iterator it = vct.begin();
+        ft::vector<int>::const_iterator ite = vct.begin();
+		//ft::pair<int, int> test(2, 1);
 
-        for (int i = 1; it != ite; ++i)
-            *it++ = i;
+        for (int i = 0; i < size; ++i)
+                it[i] = (size - i) * 5;
+        prepost_incdec(vct);
 
-		for (int i = 1; sit != site; ++i)
-            *sit++ = i;
-        // it = vct.begin();
-        // ite = vct.begin();
+        it = it + 5;
+        it = 1 + it;
+		//it = 1 + test;
+        it = it - 4;
+        std::cout << *(it += 2) << std::endl;
+        std::cout << *(it -= 1) << std::endl;
 
-        // std::cout << *(++ite) << std::endl;
-        // std::cout << *(ite++) << std::endl;
-        // std::cout << *ite++ << std::endl;
-        // std::cout << *++ite << std::endl;
+        // *(it -= 2) = 42;
+        // *(it += 2) = 21;
 
-        // it->m();
-        // ite->m();
+        // std::cout << "const_ite +=: " << *(ite += 2) << std::endl;
+        // std::cout << "const_ite -=: " << *(ite -= 2) << std::endl;
 
-        // std::cout << *(++it) << std::endl;
-        // std::cout << *(it++) << std::endl;
-        // std::cout << *it++ << std::endl;
-        // std::cout << *++it << std::endl;
+        // std::cout << "(it == const_it): " << (ite == it) << std::endl;
+        // std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+        // std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
 
-        // std::cout << *(--ite) << std::endl;
-        // std::cout << *(ite--) << std::endl;
-        // std::cout << *--ite << std::endl;
-        // std::cout << *ite-- << std::endl;
-
-        // (*it).m();
-        // (*ite).m();
-
-        // std::cout << *(--it) << std::endl;
-        // std::cout << *(it--) << std::endl;
-        // std::cout << *it-- << std::endl;
-        // std::cout << *--it << std::endl;
 
         // std::list<int> lst;
         // std::list<int>::iterator lst_it;

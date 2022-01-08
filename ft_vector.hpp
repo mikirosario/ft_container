@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/19 01:53:19 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/08 17:39:52 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,11 @@ namespace ft
 			_capacity(0), _size(0), _alloc(alloc), _arr(NULL) {	
 				try
 				{
-					size_type	new_capacity = last - first;
+					//size_type	new_capacity = last - first;
+					size_type	new_capacity = 0;
+
+					for (InputIt it = first; it != last; ++it)
+						++new_capacity;
 
 					_arr = _alloc.allocate(new_capacity); //may throw bad_alloc
 					_capacity = new_capacity;
@@ -800,9 +804,12 @@ namespace ft
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) {
 				try
 				{
-					size_type	grow_by = last - first;
+					//size_type	grow_by = last - first;
+					size_type	grow_by = 0;
 					size_type	pos_index = (pos - this->begin());
 
+					for (InputIt it = first; it != last; ++it)
+						++grow_by;
 					this->resize(_size + grow_by); //iterators invalidated here
 					//right shift all values after and including _arr[pos_index]
 					iterator insert_pos(this->begin() + pos_index);

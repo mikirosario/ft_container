@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 17:56:38 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/08 18:24:34 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1394,34 +1394,78 @@ int main(void)
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 
-        std::list<int> lst;
-        std::list<int>::iterator lst_it;
-        for (int i = 1; i < 5; ++i)
-                lst.push_back(i * 3);
 
-        ft::vector<int> vct(lst.begin(), lst.end());
-		std::vector<int> svct(lst.begin(), lst.end());
-        for (ft::vector<int>::iterator it = vct.begin(), end = vct.end(); it != end; ++it)
-			PRINT << "MY VEC: " << *it << '\n';
-		for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
-			PRINT << "SU VEC: " << *it << '\n';
+        const int size = 5;
+        ft::vector<int> vct(size);
+        ft::vector<int>::iterator it(vct.begin());
+        ft::vector<int>::const_iterator ite(vct.end());
+		
+		std::vector<int> svct(size);
+        std::vector<int>::iterator sit(svct.begin());
+        std::vector<int>::const_iterator site(svct.end());
 
-        lst_it = lst.begin();
-        for (int i = 1; lst_it != lst.end(); ++i)
-            *lst_it++ = i * 5;
-        vct.assign(lst.begin(), lst.end());
-		svct.assign(lst.begin(), lst.end());
-		for (ft::vector<int>::iterator it = vct.begin(), end = vct.end(); it != end; ++it)
-			PRINT << "MY VEC: " << *it << '\n';
-		for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
-			PRINT << "SU VEC: " << *it << '\n';
+        for (int i = 1; it != ite; ++i)
+            *it++ = i;
 
-        vct.insert(vct.end(), lst.rbegin(), lst.rend());
-		svct.insert(svct.end(), lst.rbegin(), lst.rend());
-        for (ft::vector<int>::iterator it = vct.begin(), end = vct.end(); it != end; ++it)
-			PRINT << "MY VEC: " << *it << '\n';
-		for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
-			PRINT << "SU VEC: " << *it << '\n';
+		for (int i = 1; sit != site; ++i)
+            *sit++ = i;
+        // it = vct.begin();
+        // ite = vct.begin();
+
+        // std::cout << *(++ite) << std::endl;
+        // std::cout << *(ite++) << std::endl;
+        // std::cout << *ite++ << std::endl;
+        // std::cout << *++ite << std::endl;
+
+        // it->m();
+        // ite->m();
+
+        // std::cout << *(++it) << std::endl;
+        // std::cout << *(it++) << std::endl;
+        // std::cout << *it++ << std::endl;
+        // std::cout << *++it << std::endl;
+
+        // std::cout << *(--ite) << std::endl;
+        // std::cout << *(ite--) << std::endl;
+        // std::cout << *--ite << std::endl;
+        // std::cout << *ite-- << std::endl;
+
+        // (*it).m();
+        // (*ite).m();
+
+        // std::cout << *(--it) << std::endl;
+        // std::cout << *(it--) << std::endl;
+        // std::cout << *it-- << std::endl;
+        // std::cout << *--it << std::endl;
+
+        // std::list<int> lst;
+        // std::list<int>::iterator lst_it;
+        // for (int i = 1; i < 5; ++i)
+        //         lst.push_back(i * 3);
+
+        // ft::vector<int> vct(lst.begin(), lst.end());
+		// std::vector<int> svct(lst.begin(), lst.end());
+        // for (ft::vector<int>::iterator it = vct.begin(), end = vct.end(); it != end; ++it)
+		// 	PRINT << "MY VEC: " << *it << '\n';
+		// for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
+		// 	PRINT << "SU VEC: " << *it << '\n';
+
+        // lst_it = lst.begin();
+        // for (int i = 1; lst_it != lst.end(); ++i)
+        //     *lst_it++ = i * 5;
+        // vct.assign(lst.begin(), lst.end());
+		// svct.assign(lst.begin(), lst.end());
+		// for (ft::vector<int>::iterator it = vct.begin(), end = vct.end(); it != end; ++it)
+		// 	PRINT << "MY VEC: " << *it << '\n';
+		// for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
+		// 	PRINT << "SU VEC: " << *it << '\n';
+
+        // vct.insert(vct.end(), lst.rbegin(), lst.rend());
+		// svct.insert(svct.end(), lst.rbegin(), lst.rend());
+        // for (ft::vector<int>::iterator it = vct.begin(), end = vct.end(); it != end; ++it)
+		// 	PRINT << "MY VEC: " << *it << '\n';
+		// for (std::vector<int>::iterator it = svct.begin(), end = svct.end(); it != end; ++it)
+		// 	PRINT << "SU VEC: " << *it << '\n';
 
 //debug
 	/*****/

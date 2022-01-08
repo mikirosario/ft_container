@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 17:59:40 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/08 19:17:51 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ namespace ft
 			template<typename iT, typename Category>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
-				typedef iT const					val_t;
-				typedef Iterator<val_t, Category>	const_it;
+				//typedef iT const					val_t;
+				typedef Iterator<iT const, Category>	const_it;
 
 				//Constructible
 				Iterator(void) : _m_ptr(NULL) {}
@@ -79,22 +79,40 @@ namespace ft
 					return(Iterator<iT const, Category>(this->_m_ptr));
 				}
 				//Relational Operator Overloads
-				bool	operator==(Iterator const & rhs) const {
-					return (this->_m_ptr == rhs._m_ptr);
+				// bool	operator==(Iterator const & rhs) const {
+				// 	return (this->_m_ptr == rhs._m_ptr);
+				// }
+				bool	operator==(const_it const & rhs) const {
+					return (this->_m_ptr == rhs.base());
 				}
-				bool	operator!=(Iterator const & rhs) const {
+				// bool	operator!=(Iterator const & rhs) const {
+				// 	return (!operator==(rhs)); //a!=b == !(a==b)
+				// }
+				bool	operator!=(const_it const & rhs) const {
 					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
-				bool	operator<(Iterator const & rhs) const {
-					return (this->_m_ptr < rhs._m_ptr);
+				// bool	operator<(Iterator const & rhs) const {
+				// 	return (this->_m_ptr < rhs._m_ptr);
+				// }
+				bool	operator<(const_it const & rhs) const {
+					return (this->_m_ptr < rhs.base());
 				}
-				bool	operator>(Iterator const & rhs) const {
+				// bool	operator>(Iterator const & rhs) const {
+				// 	return (rhs < *this); //a>b == b<a
+				// }
+				bool	operator>(const_it const & rhs) const {
 					return (rhs < *this); //a>b == b<a
 				}
-				bool	operator<=(Iterator const & rhs) const {
+				// bool	operator<=(Iterator const & rhs) const {
+				// 	return (!(rhs < *this)); //a<=b == !(b<a)
+				// }
+				bool	operator<=(const_it const & rhs) const {
 					return (!(rhs < *this)); //a<=b == !(b<a)
 				}
-				bool	operator>=(Iterator const & rhs) const {
+				// bool	operator>=(Iterator const & rhs) const {
+				// 	return (!(*this < rhs)); //a>=b == !(a<b)
+				// }
+				bool	operator>=(const_it const & rhs) const {
 					return (!(*this < rhs)); //a>=b == !(a<b)
 				}
 				//Arithmetic Operator Overloads
@@ -150,6 +168,10 @@ namespace ft
 				typename Iterator::pointer		operator->(void) const {
 					return (this->_m_ptr);
 				}
+
+				typename Iterator::pointer	base(void) const {
+					return (this->_m_ptr);
+				}
 				protected:
 					typename Iterator::pointer	_m_ptr;
 			};
@@ -163,7 +185,7 @@ namespace ft
 			typedef value_type*											pointer;
 			typedef const value_type*									const_pointer;
 			typedef Iterator<T, std::random_access_iterator_tag>		iterator;
-			typedef Iterator<const T, std::random_access_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
+			typedef Iterator<T const, std::random_access_iterator_tag>	const_iterator; //Iterator formed with const T, so its value_type, pointers to value_type, references to value_type, etc, also all refer to const value
 			typedef ft::reverse_iterator<iterator>						reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 			

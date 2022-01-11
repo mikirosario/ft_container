@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/11 23:19:17 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/11 23:53:22 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1422,46 +1422,46 @@ void    prepost_incdec(std::vector<int> &vct)
         std::cout << "###############################################" << std::endl;
 }
 
-//DEBUG Y TAL Y CUAL
-template <typename T>
-T       dec(T it, int n)
-{
-        while (n-- > 0)
-                --it;
-        return (it);
-}
-static unsigned int i = 0;
-void    ft_comp(const ft::set<int> &st, const ft::set<int>::const_iterator &it1, const ft::set<int>::const_iterator &it2)
-{
-        bool res[2];
+// //DEBUG Y TAL Y CUAL
+// template <typename T>
+// T       dec(T it, int n)
+// {
+//         while (n-- > 0)
+//                 --it;
+//         return (it);
+// }
+// static unsigned int i = 0;
+// void    ft_comp(const ft::set<int> &st, const ft::set<int>::const_iterator &it1, const ft::set<int>::const_iterator &it2)
+// {
+//         bool res[2];
 
-        std::cout << "\t-- [" << ++i << "] --" << std::endl;
-        res[0] = st.key_comp()(*it1, *it2);
-        res[1] = st.value_comp()(*it1, *it2);
-        std::cout << "with [" << *it1 << " and " << *it2 << "]: ";
-        std::cout << "key_comp: " << res[0] << " | " << "value_comp: " << res[1] << std::endl;
-}
+//         std::cout << "\t-- [" << ++i << "] --" << std::endl;
+//         res[0] = st.key_comp()(*it1, *it2);
+//         res[1] = st.value_comp()(*it1, *it2);
+//         std::cout << "with [" << *it1 << " and " << *it2 << "]: ";
+//         std::cout << "key_comp: " << res[0] << " | " << "value_comp: " << res[1] << std::endl;
+// }
 
-typedef ft::set<std::string>::iterator iterator;
-static int iter = 0;
-template <typename BLEH, typename U>
-void    ft_insert(BLEH &st, U param)
-{
-        ft::pair<iterator, bool> tmp;
+// typedef ft::set<std::string>::iterator iterator;
+// static int iter = 0;
+// template <typename BLEH, typename U>
+// void    ft_insert(BLEH &st, U param)
+// {
+//         ft::pair<iterator, bool> tmp;
 
-        std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-        tmp = st.insert(param);
-        std::cout << "Created new node: " << tmp.second << std::endl;
-}
-template <typename BLEH, typename U, typename V>
-void    ft_insert(BLEH &st, U param, V param2)
-{
-        iterator tst;
+//         std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+//         tmp = st.insert(param);
+//         std::cout << "Created new node: " << tmp.second << std::endl;
+// }
+// template <typename BLEH, typename U, typename V>
+// void    ft_insert(BLEH &st, U param, V param2)
+// {
+//         iterator tst;
 
-        std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-        tst = st.insert(param, param2);
-}
-//DEBUG Y TAL Y CUAL
+//         std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+//         tst = st.insert(param, param2);
+// }
+// //DEBUG Y TAL Y CUAL
 
 int main(void)
 {	
@@ -1485,23 +1485,38 @@ int main(void)
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 
-        ft::set<std::string> st, st2;
+        std::list<char> lst;
+        unsigned int lst_size = 7;
+        for (unsigned int i = 0; i < lst_size; ++i)
+                lst.push_back('a' + i);
 
-        ft_insert(st, "lol");
-        ft_insert(st, "mdr");
+        ft::set<char> st(lst.begin(), lst.end()), st2;
+        ft::set<char>::iterator it;
 
-        ft_insert(st, "mdr");
-        ft_insert(st, "funny");
+        lst.clear();
+        
+        std::cout << st.size();
+		std::cout << st.empty();
 
-        ft_insert(st, "bunny");
-        ft_insert(st, "fizz");
-        ft_insert(st, "buzz");
+        
+        st2 = st;
+        
 
-        ft_insert(st, st.begin(), "fuzzy");
+        it = st.begin();
+        for (unsigned long int i = 3; i < 6; ++i)
+                st.insert(i * 7);
 
-        ft_insert(st2, st2.begin(), "beauty");
-        ft_insert(st2, st2.end(), "Hello");
-        ft_insert(st2, st2.end(), "World");
+        std::cout << st2.size();
+		std::cout << st2.empty();
+        
+
+        st2.clear();
+        
+
+        // ft::set<int> st;
+
+        // ft::set<int>::iterator ite = st.begin();
+        // *ite = 42; // < -- error as well ; T is always const, even with regular iterator
 
 
 		// typedef ft::pair<int const, int>	Bleh;

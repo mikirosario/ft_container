@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 23:09:09 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/11 23:57:07 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ namespace ft
 		Key const									*key; //should ideally be pointer consts, but then how to instantiate at runtime??
 		Value										*value;
 		
-		BintreeNode(void) {}
+		BintreeNode(void) : data(Data()) {}
 		BintreeNode(t_bstnode * parent, Data const & src_data) : parent(parent), left(NULL), right(NULL), next(NULL), prev(NULL), assoc_lst_node(NULL), color(RED), data(src_data) {}
 		// ~BintreeNode(void) {
 		// 	std::memset(this, 0, sizeof(BintreeNode<Data, Key, Value>));

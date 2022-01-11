@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:16:48 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/11 20:54:30 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 00:04:45 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 
 namespace ft
 {
-	template<typename Value, typename Compare = ft::less<Value>, typename Alloc = std::allocator<typename ft::bintree<Value>::t_bstnode> >
+	template<typename Value, typename Compare = ft::less<Value>, typename Alloc = std::allocator<typename ft::bintree<Value const>::t_bstnode> >
 	class set
 	{
 		private:
@@ -45,14 +45,14 @@ namespace ft
 			{
 				//friend class ft::set<Value, Compare, Alloc>;
 
-				typedef Value const													const_val_t;
-				typedef typename ft::bintree<Value, Compare, Alloc>::const_iterator	const_tree_it;
-				typedef Iterator<const_val_t, Category, const_tree_it>				const_it;
+				typedef Value const															const_val_t;
+				typedef typename ft::bintree<Value const, Compare, Alloc>::const_iterator	const_tree_it;
+				typedef Iterator<const_val_t, Category, const_tree_it>						const_it;
 				//Constructible
 				Iterator(void) {}
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
-				Iterator(typename ft::bintree<Value, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
-				Iterator(typename ft::bintree<Value, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
+				Iterator(typename ft::bintree<Value const, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
+				Iterator(typename ft::bintree<Value const, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
 				//Destructible
 				~Iterator(void) {}
 				//Assignment Operator Overload
@@ -61,8 +61,8 @@ namespace ft
 					return (*this);
 				}
 				//Conversion Operator - Iterator is always convertible to const_iterator
-				operator	Iterator<iT const, Category, typename ft::bintree<Value, Compare, Alloc>::const_iterator>() const {
-					return(Iterator<iT const, Category, typename ft::bintree<Value, Compare, Alloc>::const_iterator>(this->_tree_it));
+				operator	Iterator<iT const, Category, typename ft::bintree<Value const, Compare, Alloc>::const_iterator>() const {
+					return(Iterator<iT const, Category, typename ft::bintree<Value const, Compare, Alloc>::const_iterator>(this->_tree_it));
 				}
 				//Relational Operator Overloads
 				// bool	operator==(Iterator const & rhs) const {
@@ -115,10 +115,10 @@ namespace ft
 			};
 
 		public:
-			typedef ft::bintree<Value, Compare, Alloc>																t_tree;
-			typedef Value																							key_type;
-			typedef Value																							mapped_type;
-			typedef Value																							value_type;
+			typedef ft::bintree<Value const, Compare, Alloc>														t_tree;
+			typedef Value const																						key_type;
+			typedef Value const																						mapped_type;
+			typedef Value const																						value_type;
 			typedef Compare																							key_compare;
 			typedef Compare																							value_compare;
 			typedef Alloc																							allocator_type;

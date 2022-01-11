@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 13:32:30 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 15:53:13 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -384,7 +384,7 @@ namespace ft
 			template<typename iT, typename Category, typename lstNodeT = t_lstnode>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
-				friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
+				//friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
 				typedef	typename ft::Abintree<Data, Key, Value, Compare, Alloc>	Abintree;
 				typedef Iterator<iT, Category, lstNodeT const>	const_it;
 				//Constructors and Destructor
@@ -747,8 +747,8 @@ namespace ft
 			** false is returned.
 			*/
 			bool is_valid_position(iterator const & position, key_type const & key) const {
-				if (position._lst_node == _end_lst || position._lst_node == _rend_lst
-				|| position._lst_node == _root->assoc_lst_node
+				if (position.base() == _end_lst || position.base() == _rend_lst
+				|| position.base() == _root->assoc_lst_node
 				|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
 				|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
 					return false;
@@ -2091,7 +2091,7 @@ namespace ft
 			** root pointer of the tree instance to which it belongs.
 			*/
 			void		erase(iterator position) {
-				if (position._end_ptr_addr == _end_lst)
+				if (position.get_end_lst_addr() == _end_lst)
 					bintree_delete(&(*position));
 			}
 

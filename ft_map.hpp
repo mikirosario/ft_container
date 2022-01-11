@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 13:36:45 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 16:03:55 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ namespace ft
 			template<typename iT, typename Category, typename tiT>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
-				friend class ft::map<Key, Value, Compare, Alloc>;
+				//friend class ft::map<Key, Value, Compare, Alloc>;
 
 				typedef typename ft::pair<Key const, Value> const								val_t;
 				typedef typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator	const_tree_it;
@@ -155,10 +155,10 @@ namespace ft
 			
 			/* RANGE CONSTRUCTOR */
 			map(const_iterator first, const_iterator last, const key_compare & comp = key_compare(),
-			const allocator_type & alloc = allocator_type()) : _tree(first._tree_it, last._tree_it, comp, alloc) {} 
+			const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
 
 			map(iterator first, iterator last, const key_compare & comp = key_compare(),
-			const allocator_type & alloc = allocator_type()) : _tree(first._tree_it, last._tree_it, comp, alloc) {} 
+			const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
 			
 			template<class InputIt>
 			map(InputIt first, InputIt last, const key_compare & comp = key_compare(),
@@ -248,16 +248,16 @@ namespace ft
 
 			/* INSERT BY KEY-VALUE PAIR WITH HINT */
 			iterator				insert(iterator position, value_type const & key_value_pair) {
-				return (iterator(_tree.insert(position._tree_it, key_value_pair)));
+				return (iterator(_tree.insert(position.base(), key_value_pair)));
 			}
 
 			/* INSERT BY RANGE OF KEY-VALUE PAIRS */
 			void					insert(const_iterator first, const_iterator last) {
-				_tree.insert(first._tree_it, last._tree_it);
+				_tree.insert(first.base(), last.base());
 			}
 
 			void					insert(iterator first, iterator last) {
-				_tree.insert(first._tree_it, last._tree_it);
+				_tree.insert(first.base(), last.base());
 			}
 
 			template<typename InputIt>
@@ -268,7 +268,7 @@ namespace ft
 
 			/* ERASE BY POSITION */
 			void					erase(iterator position) {
-				_tree.erase(position._tree_it);
+				_tree.erase(position.base());
 			}
 
 			/* ERASE BY KEY */
@@ -278,7 +278,7 @@ namespace ft
 
 			/* ERASE BY RANGE */
 			void					erase(iterator first, iterator last) {
-				_tree.erase(first._tree_it, last._tree_it);
+				_tree.erase(first.base(), last.base());
 			}
 
 			/* SWAP */

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/11 14:38:15 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 16:03:06 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1452,22 +1452,24 @@ int main(void)
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 
-        std::vector<int>  ctnr;
+		typedef ft::pair<int const, int>	Bleh;
+		std::list<Bleh> lst;
+        unsigned int lst_size = 7;
+        for (unsigned int i = 0; i < lst_size; ++i)
+                lst.push_back(Bleh(lst_size - i, i));
 
-        ctnr.push_back(21);
-        ctnr.push_back(42);
-        ctnr.push_back(1337);
-        ctnr.push_back(19);
-        ctnr.push_back(0);
-        ctnr.push_back(183792);
+        ft::map<int, int> mp(lst.begin(), lst.end());
+        ft::map<int, int>::iterator it = mp.begin(), ite = mp.end();
 
-        ft::stack<int, std::vector<int> >               stck(ctnr);
-        std::cout << "empty: " << stck.empty() << std::endl;
-        std::cout << "size: " << stck.size() << std::endl;
+        ft::map<int, int> mp_range(it, --(--ite));
+        for (int i = 0; it != ite; ++it)
+                it->second = ++i * 5;
 
-		std::cout << "eq: " << (stck == stck) << " | ne: " << (stck != stck) << std::endl;
-        std::cout << "lt: " << (stck <  stck) << " | le: " << (stck <= stck) << std::endl;
-        std::cout << "gt: " << (stck >  stck) << " | ge: " << (stck >= stck) << std::endl;
+        it = mp.begin(); ite = --(--mp.end());
+        ft::map<int, int> mp_copy(mp);
+        for (int i = 0; it != ite; ++it)
+                it->second = ++i * 7;
+
 
 
 

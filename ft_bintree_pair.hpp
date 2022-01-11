@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_pair.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2022/01/06 19:37:29 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2022/01/11 19:51:06 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,11 @@ namespace ft
 			typedef typename bintree_pair::reverse_iterator			reverse_iterator;
 			typedef typename bintree_pair::const_reverse_iterator	const_reverse_iterator;
 			/* STL CONTAINER STYLE TYPEDEFS */
-			typedef Alloc														allocator_type;
-			typedef T1															key_type;
-			typedef T2															mapped_type;
-			typedef data_type													value_type;
-			typedef Compare														key_compare;
-
+			typedef Alloc											allocator_type;
+			typedef T1												key_type;
+			typedef T2												mapped_type;
+			typedef data_type										value_type;
+			typedef Compare											key_compare;
 
 		protected:
 			void	assign_key_value_pointers(t_bstnode * node) const {
@@ -104,30 +103,18 @@ namespace ft
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 			
 			/* DEFAULT CONSTRUCTOR */
-			bintree_pair(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {};
+			explicit bintree_pair(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {};
 			/* RANGE CONSTRUCTOR */
-			bintree_pair(iterator first, iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
-				this->insert(first, last);
-			}
-			bintree_pair(const_iterator first, const_iterator last, key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
-				this->insert(first, last);
-			}
-			
 			template<class InputIt>
 			bintree_pair(InputIt first, InputIt last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type(),
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(comp, alloc) {
 				this->insert(first, last);
-			} 
-
+			}
 			/* COPY CONSTRUCTOR */
-			// bintree_pair(bintree_pair const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src._is_less, src._alloc) {
-			// 	this->insert(src.begin(), src.end());
-			// }
 			bintree_pair(bintree_pair const & src) : Abintree<data_type, key_type, mapped_type, key_compare, allocator_type>(src._is_less, src._alloc) {
 				this->insert(src.begin(), src.end());
 			}
-
 			/* DESTRUCTOR */
 			~bintree_pair(void) {
 				this->lst_clr(this->_list_head, this->_list_tail);
@@ -195,7 +182,7 @@ namespace ft
 			}
 
 			//DEBUG
-			/* INSERT SINGLE ELEMENT WITH HINT */ //MAY NOW BE WORKING; NEEDS TESTING
+			/* INSERT SINGLE ELEMENT WITH HINT */
 			/*
 			** The 'position' iterator serves as a hint, if you more or less
 			** know where in the tree your data will be inserted.
@@ -267,7 +254,7 @@ namespace ft
 					// //DEBUG	
 					t_bstnode * node = &(*hint);
 					//return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, _end_lst)); //constant time insertion
-					return (iterator( static_cast<t_lstnode *>((this->bintree_add(node, data, data.first))->assoc_lst_node)  , _end_lst)); //constant time insertion
+					return (iterator(static_cast<t_lstnode *>((this->bintree_add(node, data, data.first))->assoc_lst_node), _end_lst)); //constant time insertion
 				}
 				// //DEBUG
 				// std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;

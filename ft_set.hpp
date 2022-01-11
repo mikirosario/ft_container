@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_map.hpp                                         :+:      :+:    :+:   */
+/*   ft_set.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 20:29:32 by mrosario         ###   ########.fr       */
+/*   Created: 2022/01/11 19:16:48 by mrosario          #+#    #+#             */
+/*   Updated: 2022/01/11 20:54:30 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_MAP_H
-# define FT_MAP_H
+#ifndef FT_SET_H
+# define FT_SET_H
 
 //precompiled header?
 #include <memory>
@@ -25,7 +25,7 @@
 #include "type_traits.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
-#include "ft_bintree_pair.hpp"
+#include "ft_bintree.hpp"
 #include "utility.hpp"
 
 //DEBUG CODE
@@ -35,24 +35,24 @@
 
 namespace ft
 {
-	template<typename Key, typename Value, typename Compare = ft::less<Key>, typename Alloc = std::allocator<typename ft::bintree_pair<Key, Value>::t_bstnode> >
-	class map
+	template<typename Value, typename Compare = ft::less<Value>, typename Alloc = std::allocator<typename ft::bintree<Value>::t_bstnode> >
+	class set
 	{
 		private:
 
 			template<typename iT, typename Category, typename tiT>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
-				//friend class ft::map<Key, Value, Compare, Alloc>;
+				//friend class ft::set<Value, Compare, Alloc>;
 
-				typedef typename ft::pair<Key const, Value> const								val_t;
-				typedef typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator	const_tree_it;
-				typedef Iterator<val_t, Category, const_tree_it>								const_it;
+				typedef Value const													const_val_t;
+				typedef typename ft::bintree<Value, Compare, Alloc>::const_iterator	const_tree_it;
+				typedef Iterator<const_val_t, Category, const_tree_it>				const_it;
 				//Constructible
 				Iterator(void) {}
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
-				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
-				Iterator(typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
+				Iterator(typename ft::bintree<Value, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
+				Iterator(typename ft::bintree<Value, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
 				//Destructible
 				~Iterator(void) {}
 				//Assignment Operator Overload
@@ -61,8 +61,8 @@ namespace ft
 					return (*this);
 				}
 				//Conversion Operator - Iterator is always convertible to const_iterator
-				operator	Iterator<iT const, Category, typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator>() const {
-					return(Iterator<iT const, Category, typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator>(this->_tree_it));
+				operator	Iterator<iT const, Category, typename ft::bintree<Value, Compare, Alloc>::const_iterator>() const {
+					return(Iterator<iT const, Category, typename ft::bintree<Value, Compare, Alloc>::const_iterator>(this->_tree_it));
 				}
 				//Relational Operator Overloads
 				// bool	operator==(Iterator const & rhs) const {
@@ -115,12 +115,12 @@ namespace ft
 			};
 
 		public:
-			typedef ft::bintree_pair<Key, Value, Compare, Alloc>													t_tree;
-			typedef Key																								key_type;
+			typedef ft::bintree<Value, Compare, Alloc>																t_tree;
+			typedef Value																							key_type;
 			typedef Value																							mapped_type;
-			typedef typename ft::pair<Key const, Value>																value_type;
+			typedef Value																							value_type;
 			typedef Compare																							key_compare;
-			//typedef typename ft::bintree_pair<Key const, Value, Compare>::value_compare								value_compare;
+			typedef Compare																							value_compare;
 			typedef Alloc																							allocator_type;
 			typedef std::size_t																						size_type;
 			typedef std::ptrdiff_t																					difference_type;
@@ -133,52 +133,37 @@ namespace ft
 			typedef ft::reverse_iterator<iterator>																	reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>															const_reverse_iterator;
 
-			class value_compare : std::binary_function<value_type, value_type, bool>
-			{
-				friend class ft::map<Key, Value, Compare, Alloc>;
-				protected:
-					Compare	_comp;
-					value_compare (Compare src) : _comp(src) {} //DEBUG This should be protected with a friend class, but it's technically a comparison object containing an operator rather than an operator, so I'm scared it could be considered against the subject...
-				public:
-					typedef bool		result_type;
-					typedef value_type	first_argument_type;
-					typedef value_type	second_argument_type;
-					bool operator()(value_type const & x, value_type const & y) const {
-						return _comp(x.first, y.first);
-					}
-			};
-
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 
 			/* DEFAULT CONSTRUCTOR */
-			explicit map(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : _tree(comp, alloc) {}
+			explicit set(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : _tree(comp, alloc) {}
 			
 			/* RANGE CONSTRUCTOR */
-			map(const_iterator first, const_iterator last, const key_compare & comp = key_compare(),
+			set(const_iterator first, const_iterator last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
 
-			map(iterator first, iterator last, const key_compare & comp = key_compare(),
+			set(iterator first, iterator last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
 			
 			template<class InputIt>
-			map(InputIt first, InputIt last, const key_compare & comp = key_compare(),
+			set(InputIt first, InputIt last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type(),
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first, last, comp, alloc) {} 
 			
 			// //Conversion Operator - Iterator is always convertible to const_iterator
-			// operator	map<Key, Value, Compare, Alloc> const() const {
+			// operator	set<Key, Value, Compare, Alloc> const() const {
 			// 		return(*this);
 			// 	}
 
 			/* COPY CONSTRUCTOR */
-			map(map const & src) : _tree(src._tree) {}
-			//map(map & src) : _tree(src._tree) {}
+			set(set const & src) : _tree(src._tree) {}
+			//set(set & src) : _tree(src._tree) {}
 			
 			/* DESTRUCTOR */
-			~map(void) {}
+			~set(void) {}
 			
 			/* ASSIGNMENT OPERATOR OVERLOAD */
-			map const &	operator=(map const & src) {
+			set const &	operator=(set const & src) {
 					_tree = src._tree;
 					return (*this);
 			}
@@ -239,19 +224,19 @@ namespace ft
 
 			/* ---- MODIFIERS ---- */
 
-			/* INSERT BY KEY-VALUE PAIR */
+			/* INSERT BY VALUE */
 										//value_type == ft::pair
-			ft::pair<iterator, bool> insert(value_type const & key_value_pair) {
-				ft::pair<typename t_tree::iterator, bool> res = _tree.insert(key_value_pair);
+			ft::pair<iterator, bool> insert(value_type const & value) {
+				ft::pair<typename t_tree::iterator, bool> res = _tree.insert(value);
 				return (ft::pair<iterator, bool>(iterator(res.first), res.second));
 			}
 
-			/* INSERT BY KEY-VALUE PAIR WITH HINT */
-			iterator				insert(iterator position, value_type const & key_value_pair) {
-				return (iterator(_tree.insert(position.base(), key_value_pair)));
+			/* INSERT BY VALUE WITH HINT */
+			iterator				insert(iterator position, value_type const & value) {
+				return (iterator(_tree.insert(position.base(), value)));
 			}
 
-			/* INSERT BY RANGE OF KEY-VALUE PAIRS */
+			/* INSERT BY RANGE OF VALUES */
 			void					insert(const_iterator first, const_iterator last) {
 				_tree.insert(first.base(), last.base());
 			}
@@ -282,7 +267,7 @@ namespace ft
 			}
 
 			/* SWAP */
-			void					swap(map & src) {
+			void					swap(set & src) {
 				ft::swap(_tree, src._tree);
 			}
 
@@ -298,8 +283,7 @@ namespace ft
 			}
 
 			value_compare	value_comp(void) const {
-				//return (_tree.value_comp());
-				return (value_compare(_tree.key_comp()));
+				return (_tree.value_comp());
 			}
 
 			/* ---- OPERATIONS ---- */
@@ -374,42 +358,42 @@ namespace ft
 	** concludes, "oh, then the programmer probably wants that swap in ft:: that
 	** takes two parameters exactly like these".
 	*/
-	template<typename Key, typename Value, typename Compare, typename Alloc>
-	void	swap(map<Key, Value, Compare, Alloc> & x, map<Key, Value, Compare, Alloc> & y) {
+	template<typename Value, typename Compare, typename Alloc>
+	void	swap(set<Value, Compare, Alloc> & x, set<Value, Compare, Alloc> & y) {
 		x.swap(y);
 	}
 
 	/* ---- RELATIONAL OPERATOR OVERLOADS ---- */
 
-	template<typename Key, typename Value, typename Compare, typename Alloc>
-	bool	operator==(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+	template<typename Value, typename Compare, typename Alloc>
+	bool	operator==(set<Value, Compare, Alloc> const & lhs, set<Value, Compare, Alloc> const & rhs) {
 		if (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()))
 			return (true);
 		return (false);
 	}
 
-	template<typename Key, typename Value, typename Compare, typename Alloc>
-	bool	operator!=(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+	template<typename Value, typename Compare, typename Alloc>
+	bool	operator!=(set<Value, Compare, Alloc> const & lhs, set<Value, Compare, Alloc> const & rhs) {
 		return(!operator==(lhs, rhs)); //a!=b == !a==b
 	}
 
-	template<typename Key, typename Value, typename Compare, typename Alloc>
-	bool	operator<(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+	template<typename Value, typename Compare, typename Alloc>
+	bool	operator<(set<Value, Compare, Alloc> const & lhs, set<Value, Compare, Alloc> const & rhs) {
 		return(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
-	template<typename Key, typename Value, typename Compare, typename Alloc>
-	bool	operator>(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+	template<typename Value, typename Compare, typename Alloc>
+	bool	operator>(set<Value, Compare, Alloc> const & lhs, set<Value, Compare, Alloc> const & rhs) {
 		return(operator<(rhs, lhs)); //a>b == b<a
 	}
 
-	template<typename Key, typename Value, typename Compare, typename Alloc>
-	bool	operator<=(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+	template<typename Value, typename Compare, typename Alloc>
+	bool	operator<=(set<Value, Compare, Alloc> const & lhs, set<Value, Compare, Alloc> const & rhs) {
 		return(!operator<(rhs, lhs)); //a<=b == !b<a
 	}
 	
-	template<typename Key, typename Value, typename Compare, typename Alloc>
-	bool	operator>=(map<Key, Value, Compare, Alloc> const & lhs, map<Key, Value, Compare, Alloc> const & rhs) {
+	template<typename Value, typename Compare, typename Alloc>
+	bool	operator>=(set<Value, Compare, Alloc> const & lhs, set<Value, Compare, Alloc> const & rhs) {
 		return(!operator<(lhs, rhs)); //a>=b == !a<b
 	}
 };

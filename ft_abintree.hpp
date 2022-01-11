@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 15:53:13 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 20:58:41 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <cstring>
 #include <list>
+#include "utility.hpp"
 
 namespace ft
 {
@@ -2186,10 +2187,10 @@ namespace ft
 				return (_is_less);
 			}
 
-			// I don't really need this here, only ft::map does...
-			// value_compare	value_comp(void) const {
-			// 	return (value_compare(_is_less));
-			// }		
+			// For ft::set, not used with ft::map...
+			Compare	value_comp(void) const {
+				return (value_compare(_is_less));
+			}
 
 			/* ---- OPERATIONS ---- */
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/11 16:03:06 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 20:55:17 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "ft_bintree_pair.hpp"
 #include "ft_map.hpp"
 #include "ft_stack.hpp"
+#include "ft_set.hpp"
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -1452,23 +1453,26 @@ int main(void)
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 
-		typedef ft::pair<int const, int>	Bleh;
-		std::list<Bleh> lst;
-        unsigned int lst_size = 7;
-        for (unsigned int i = 0; i < lst_size; ++i)
-                lst.push_back(Bleh(lst_size - i, i));
+ft::set<int> paco;
+(void)paco;
 
-        ft::map<int, int> mp(lst.begin(), lst.end());
-        ft::map<int, int>::iterator it = mp.begin(), ite = mp.end();
+		// typedef ft::pair<int const, int>	Bleh;
+		// std::list<Bleh> lst;
+        // unsigned int lst_size = 7;
+        // for (unsigned int i = 0; i < lst_size; ++i)
+        //         lst.push_back(Bleh(lst_size - i, i));
 
-        ft::map<int, int> mp_range(it, --(--ite));
-        for (int i = 0; it != ite; ++it)
-                it->second = ++i * 5;
+        // ft::map<int, int> mp(lst.begin(), lst.end());
+        // ft::map<int, int>::iterator it = mp.begin(), ite = mp.end();
 
-        it = mp.begin(); ite = --(--mp.end());
-        ft::map<int, int> mp_copy(mp);
-        for (int i = 0; it != ite; ++it)
-                it->second = ++i * 7;
+        // ft::map<int, int> mp_range(it, --(--ite));
+        // for (int i = 0; it != ite; ++it)
+        //         it->second = ++i * 5;
+
+        // it = mp.begin(); ite = --(--mp.end());
+        // ft::map<int, int> mp_copy(mp);
+        // for (int i = 0; it != ite; ++it)
+        //         it->second = ++i * 7;
 
 
 

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 22:04:40 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 14:20:46 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,9 +279,12 @@ bool iterator_tests(void)
 ** testing routine to confirm whether std:: and ft:: versions of the same
 ** container type behave equally under the same conditions. If sizes and
 ** ranges are equal, it returns true, otherwise it returns false.
+**
+** The MY_Container::const_iterator thing is just a SFINAE trick to stop the
+** compiler from sending non-iterable-container types in here. :P
 */
-template<class STD_Container, class MY_Container>
-static bool	operator==(STD_Container const & lhs, MY_Container const & rhs)
+template<class STD_Container, class MY_Container, typename MY_Container::const_iterator>
+static bool operator==(STD_Container const & lhs, MY_Container const & rhs)
 {
 	return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin()));
 }
@@ -1418,6 +1421,15 @@ void    prepost_incdec(std::vector<int> &vct)
         std::cout << "###############################################" << std::endl;
 }
 
+template <typename T>
+T       dec(T it, int n)
+{
+        while (n-- > 0)
+                --it;
+        return (it);
+}
+
+
 int main(void)
 {	
 	std::map<std::string, std::string>	seed_map;
@@ -1439,49 +1451,6 @@ int main(void)
 //debug
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
-
-const int size = 5;
-        ft::vector<int> vct(size);
-        ft::vector<int>::reverse_iterator it(vct.rbegin());
-        ft::vector<int>::const_reverse_iterator ite(vct.rend());
-
-        for (int i = 1; it != ite; ++i)
-                *it++ = (i * 7);
-        // printSize(vct, 1);
-
-        // it = vct.rbegin();
-        // ite = vct.rbegin();
-
-        // std::cout << *(++ite) << std::endl;
-        // std::cout << *(ite++) << std::endl;
-        // std::cout << *ite++ << std::endl;
-        // std::cout << *++ite << std::endl;
-
-        // it->m();
-        // ite->m();
-
-        // std::cout << *(++it) << std::endl;
-        // std::cout << *(it++) << std::endl;
-        // std::cout << *it++ << std::endl;
-        // std::cout << *++it << std::endl;
-
-        // std::cout << *(--ite) << std::endl;
-        // std::cout << *(ite--) << std::endl;
-        // std::cout << *--ite << std::endl;
-        // std::cout << *ite-- << std::endl;
-
-        // (*it).m();
-        // (*ite).m();
-
-        // std::cout << *(--it) << std::endl;
-        // std::cout << *(it--) << std::endl;
-        // std::cout << *it-- << std::endl;
-        // std::cout << *--it << std::endl;
-
-        // std::list<int> lst;
-        // std::list<int>::iterator lst_it;
-        // for (int i = 1; i < 5; ++i)
-        //         lst.push_back(i * 3);
 
         // ft::vector<int> vct(lst.begin(), lst.end());
 		// std::vector<int> svct(lst.begin(), lst.end());

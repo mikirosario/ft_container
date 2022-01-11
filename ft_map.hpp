@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_map.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2021/12/19 01:47:59 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/11 13:36:45 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,16 @@ namespace ft
 					return(Iterator<iT const, Category, typename ft::bintree_pair<Key, Value, Compare, Alloc>::const_iterator>(this->_tree_it));
 				}
 				//Relational Operator Overloads
-				bool	operator==(Iterator const & rhs) const {
-					return (this->_tree_it == rhs._tree_it);
+				// bool	operator==(Iterator const & rhs) const {
+				// 	return (this->_tree_it == rhs._tree_it);
+				// }
+				// bool	operator!=(Iterator const & rhs) const {
+				// 	return (!operator==(rhs)); //a!=b == !(a==b)
+				// }
+				bool	operator==(const_it const & rhs) const {
+					return (this->_tree_it == rhs.base());
 				}
-				bool	operator!=(Iterator const & rhs) const {
+				bool	operator!=(const_it const & rhs) const {
 					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
 				//Arithmetic Operator Overloads
@@ -101,6 +107,9 @@ namespace ft
 				typename Iterator::pointer		operator->(void) const {
 					return (&this->_tree_it->data);
 				}
+				tiT	base(void) const {
+					return (_tree_it);
+				};
 				protected:
 					tiT	_tree_it;
 			};

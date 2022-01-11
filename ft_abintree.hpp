@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/06 19:41:10 by mikiencolor      ###   ########.fr       */
+/*   Updated: 2022/01/11 13:32:30 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,6 +386,7 @@ namespace ft
 			{
 				friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
 				typedef	typename ft::Abintree<Data, Key, Value, Compare, Alloc>	Abintree;
+				typedef Iterator<iT, Category, lstNodeT const>	const_it;
 				//Constructors and Destructor
 				public:
 				Iterator(void) : _lst_node(NULL), _end_ptr_addr(NULL) {}
@@ -409,22 +410,40 @@ namespace ft
 				}
 
 				//Relational Operator Overloads
-				bool	operator==(Iterator const & rhs) const {
-					return (this->_lst_node == rhs._lst_node);
+				// bool	operator==(Iterator const & rhs) const {
+				// 	return (this->_lst_node == rhs._lst_node);
+				// }
+				// bool	operator!=(Iterator const & rhs) const {
+				// 	return (!operator==(rhs)); //a!=b == !(a==b)
+				// }
+				// bool	operator<(Iterator const & rhs) const {
+				// 	return (C_key(*this->_lst_node->tree_node->key) < C_key(*rhs._lst_node->tree_node->key));
+				// }
+				// bool	operator>(Iterator const & rhs) const {
+				// 	return (rhs < *this); //a>b == b<a
+				// }
+				// bool	operator<=(Iterator const & rhs) const {
+				// 	return (!(rhs < *this)); //a<=b == !(b<a)
+				// }
+				// bool	operator>=(Iterator const & rhs) const {
+				// 	return (!(*this < rhs)); //a>=b == !(a<b)
+				// }
+				bool	operator==(const_it const & rhs) const {
+					return (this->_lst_node == rhs.base());
 				}
-				bool	operator!=(Iterator const & rhs) const {
+				bool	operator!=(const_it const & rhs) const {
 					return (!operator==(rhs)); //a!=b == !(a==b)
 				}
-				bool	operator<(Iterator const & rhs) const {
+				bool	operator<(const_it const & rhs) const {
 					return (C_key(*this->_lst_node->tree_node->key) < C_key(*rhs._lst_node->tree_node->key));
 				}
-				bool	operator>(Iterator const & rhs) const {
+				bool	operator>(const_it const & rhs) const {
 					return (rhs < *this); //a>b == b<a
 				}
-				bool	operator<=(Iterator const & rhs) const {
+				bool	operator<=(const_it const & rhs) const {
 					return (!(rhs < *this)); //a<=b == !(b<a)
 				}
-				bool	operator>=(Iterator const & rhs) const {
+				bool	operator>=(const_it const & rhs) const {
 					return (!(*this < rhs)); //a>=b == !(a<b)
 				}
 				//Arithmetic Operator Overloads
@@ -485,7 +504,9 @@ namespace ft
 				lstNodeT const *	get_end_lst_addr(void) const {
 					return (_end_ptr_addr);
 				}
-				
+				lstNodeT *			base(void) const {
+					return (_lst_node);
+				}
 				protected:
 					lstNodeT *						_lst_node;
 					//t_bstnode * const *				_root_ptr_addr;

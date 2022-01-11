@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/11 14:20:46 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 14:34:41 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1451,6 +1451,20 @@ int main(void)
 //debug
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
+
+        std::vector<int>  ctnr;
+
+        ctnr.push_back(21);
+        ctnr.push_back(42);
+        ctnr.push_back(1337);
+        ctnr.push_back(19);
+        ctnr.push_back(0);
+        ctnr.push_back(183792);
+
+        ft::stack<int, std::vector<int> >               stck(ctnr);
+        std::cout << "empty: " << stck.empty() << std::endl;
+        std::cout << "size: " << stck.size() << std::endl;
+
 
         // ft::vector<int> vct(lst.begin(), lst.end());
 		// std::vector<int> svct(lst.begin(), lst.end());

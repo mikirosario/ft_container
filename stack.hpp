@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 09:36:06 by miki              #+#    #+#             */
-/*   Updated: 2021/12/13 10:04:08 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 14:35:18 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ namespace ft
 				return (_ctnr.empty());
 			}
 			
-			bool	size(void) const {
+			size_type	size(void) const {
 				return (_ctnr.size());
 			}
 

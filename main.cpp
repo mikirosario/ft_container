@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/11 14:34:41 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 14:38:15 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1464,6 +1464,11 @@ PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
         ft::stack<int, std::vector<int> >               stck(ctnr);
         std::cout << "empty: " << stck.empty() << std::endl;
         std::cout << "size: " << stck.size() << std::endl;
+
+		std::cout << "eq: " << (stck == stck) << " | ne: " << (stck != stck) << std::endl;
+        std::cout << "lt: " << (stck <  stck) << " | le: " << (stck <= stck) << std::endl;
+        std::cout << "gt: " << (stck >  stck) << " | ge: " << (stck >= stck) << std::endl;
+
 
 
         // ft::vector<int> vct(lst.begin(), lst.end());

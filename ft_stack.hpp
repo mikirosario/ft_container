@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 09:36:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 14:35:18 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 14:55:20 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,23 @@ namespace ft
 				_ctnr.pop_back();
 			}
 
-			friend bool	operator==(stack const & lhs, stack const & rhs);
-			friend bool	operator!=(stack const & lhs, stack const & rhs);
-			friend bool	operator<(stack const & lhs, stack const & rhs);
-			friend bool	operator<=(stack const & lhs, stack const & rhs);
-			friend bool	operator>(stack const & lhs, stack const & rhs);
-			friend bool	operator>=(stack const & lhs, stack const & rhs);
+			template<typename T_op, typename Container_op>
+			friend bool	operator==(stack<T_op, Container_op> const & lhs, stack<T_op, Container_op> const & rhs);
+
+			template<typename T_op, typename Container_op>
+			friend bool	operator!=(stack<T_op, Container_op> const & lhs, stack<T_op, Container_op> const & rhs);
+
+			template<typename T_op, typename Container_op>
+			friend bool	operator<(stack<T_op, Container_op> const & lhs, stack<T_op, Container_op> const & rhs);
+
+			template<typename T_op, typename Container_op>
+			friend bool	operator<=(stack<T_op, Container_op> const & lhs, stack<T_op, Container_op> const & rhs);
+
+			template<typename T_op, typename Container_op>
+			friend bool	operator>(stack<T_op, Container_op> const & lhs, stack<T_op, Container_op> const & rhs);
+
+			template<typename T_op, typename Container_op>
+			friend bool	operator>=(stack<T_op, Container_op> const & lhs, stack<T_op, Container_op> const & rhs);
 		private:
 				private:
 			container_type	_ctnr;
@@ -69,7 +80,7 @@ namespace ft
 
 	template<class T, class Container>
 	bool	operator!=(ft::stack<T, Container> const & lhs, ft::stack<T, Container> const & rhs) {
-		return (lhs._ctnr != rhs.ctnr);
+		return (lhs._ctnr != rhs._ctnr);
 	}
 
 	template<class T, class Container>

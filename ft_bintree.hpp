@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 21:01:06 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/11 23:22:55 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,7 @@ namespace ft
 				// //DEBUG
 				// std::cerr << "CONFIRMO GILIPOLLAS INSERT" << std::endl;
 				// //DEBUG
-				return (insert(data)); //log time insertion (if the insertion point is _root, constant tme)
+				return (insert(data).first); //log time insertion (if the insertion point is _root, constant tme)
 			}
 
 			/* INSERT RANGE WITH CONTAINER ITERATORS */

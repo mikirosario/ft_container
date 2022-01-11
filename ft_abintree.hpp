@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 20:58:41 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/11 23:09:09 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -2189,7 +2189,7 @@ namespace ft
 
 			// For ft::set, not used with ft::map...
 			Compare	value_comp(void) const {
-				return (value_compare(_is_less));
+				return (Compare(_is_less));
 			}
 
 			/* ---- OPERATIONS ---- */

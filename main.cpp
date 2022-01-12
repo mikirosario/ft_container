@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/12 20:06:11 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 22:08:51 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -905,22 +905,15 @@ bool	my_veritable_vector(void)
 	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
 	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
 
-	//WITH DEFAULT STD::SWAP
+	//WITH DEFAULT STD::SWAP ON FT::VECTOR
 	//THIS DOES A BYTE-FOR-BYTE SWAP OF THE INSTANCE USING THE COPY-CONSTRUCTOR TO CREATE A THIRD TEMPORARY INSTANCE
 	//VERY INEFFICIENT! BUT... FOR SCIENCE! xD
 	PRINT	<< TXT_NL
 			<< TXT_TAB << TXT_BYEL "Swapping with default std::swap" << TXT_NL
 			<< TXT_TAB << "  std::swap(mi_fill_cont, mi_swappable_cont)" << TXT_NL
 			<< TXT_TAB << "  std::swap(su_fill_cont, su_swappable_cont)" << END;
-	//Start Exec Timer
-	start_timer(&start);
 	std::swap(mi_fill_cont, mi_swappable_cont);
-	ft_time = stop_timer_nanosec(&start);
-	start_timer(&start);
 	std::swap(su_fill_cont, su_swappable_cont);
-	stl_time = stop_timer_nanosec(&start);
-	check_exec_time(ft_time, stl_time, ret);
-	//End Exec Timer
 	//fill_cont swapped with swappable_cont again!
 	PRINT	<< TXT_TAB << TXT_BYEL "  fill_cont:" << END;
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -1830,14 +1823,14 @@ void    prepost_incdec(std::vector<int> &vct)
 
 int main(void)
 {	
-	if (iterator_tests())
-		PRINT << TXT_BGRN "OK" << END;
-	else
-		PRINT << TXT_BRED "KO" << END;
-	if (my_veritable_vector<ft::vector<int>, std::vector<int> >())
-		PRINT << TXT_BGRN "OK" << END;
-	else
-		PRINT << TXT_BRED "KO" << END;
+	// if (iterator_tests())
+	// 	PRINT << TXT_BGRN "OK" << END;
+	// else
+	// 	PRINT << TXT_BRED "KO" << END;
+	// if (my_veritable_vector<ft::vector<int>, std::vector<int> >())
+	// 	PRINT << TXT_BGRN "OK" << END;
+	// else
+	// 	PRINT << TXT_BRED "KO" << END;
 	std::map<std::string, std::string>	seed_map;
 	seed_map.insert(std::make_pair("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
 	seed_map.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));
@@ -1852,7 +1845,7 @@ int main(void)
 	seed_map.insert(std::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
 	seed_map.insert(std::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\tÚnico profesor en activo de 42."));
 
-	//my_magnificent_map<std::string, std::string>(seed_map);
+	my_magnificent_map<std::string, std::string>(seed_map);
 
 //debug
 

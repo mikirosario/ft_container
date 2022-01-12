@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/12 01:26:54 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 23:10:36 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -931,7 +931,7 @@ namespace ft
 				return (it);
 			}
 
-			/* BINTREE SEARCH */
+			/* BINTREE SEARCH - OBSOLETE */
 			/*
 			** This function will search the binary tree whose 'root' is passed
 			** as the first argument for the value passed as 'key' in the second
@@ -949,14 +949,52 @@ namespace ft
 			** a pointer to the node containing the key is returned. If it is
 			** not present in the tree, a NULL pointer is returned.	
 			*/
-			t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
-			{
-				if (root == NULL || C_key(*root->key) == C_key(key))
-					return (root);
-				else if (C_key(key) <= C_key(*root->key))
-					return (bintree_search(root->left, key));
-				else
-					return (bintree_search(root->right, key));
+			// t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
+			// {
+			// 	if (root == NULL || C_key(*root->key) == C_key(key))
+			// 		return (root);
+			// 	else if (C_key(key) <= C_key(*root->key))
+			// 		return (bintree_search(root->left, key));
+			// 	else
+			// 		return (bintree_search(root->right, key));
+			// }
+			// t_bstnode *	bintree_search(t_bstnode *root, key_type const & key, typename iterator::difference_type & hops) const
+			// {
+			// 	if (root == NULL || C_key(*root->key) == C_key(key))
+			// 		return (root);
+			// 	else if (C_key(key) <= C_key(*root->key))
+			// 		return (bintree_search(root->left, key, ++hops));
+			// 	else
+			// 		return (bintree_search(root->right, key, ++hops));
+			// }
+
+			/* BINTREE SEARCH */
+			/*
+			** This function will search the binary tree whose 'root' is passed
+			** as the first argument for the value passed as 'key' in the second
+			** argument.
+			**
+			** If the root node pointer is not NULL and the key is not present
+			** in that node, then if the key value is less than or equal to the
+			** value present in that node, the node pointer will move to the
+			** left child, otherwise the node pointer will move to the right
+			** child, and the node will be checked again iteratively until
+			** either the desired key is found or a NULL node is found.
+			**
+			** -- RETURN VALUE --
+			** If the 'key' passed as the second argument is found in the tree,
+			** a pointer to the node containing the key is returned. If it is
+			** not present in the tree, a NULL pointer is returned.	
+			*/
+			t_bstnode *	bintree_search(t_bstnode * root, key_type const & key) const {
+				while (root != NULL && C_key(*root->key) != C_key(key))
+				{
+					if (C_key(key) <= C_key(*root->key))
+						root = root->left;
+					else
+						root = root->right;
+				}
+				return (root);
 			}
 
 			/* BINTREE SEARCH WITH HOP COUNTER */
@@ -965,16 +1003,23 @@ namespace ft
 			** many node hops were needed to find the matching key, or leaf
 			** child of the closest node, and save the result in 'hops'.
 			**
+			** The number of hops will be equal to the absolute difference
+			** between the value of hops after the function is called and the
+			** value of hops before the function was called. But you should
+			** really probably just send it a zeroed value. ;)
+			**
 			** I dunno. It seemed like it might come in handy. xD
 			*/
-			t_bstnode *	bintree_search(t_bstnode *root, key_type const & key, typename iterator::difference_type & hops) const
-			{
-				if (root == NULL || C_key(*root->key) == C_key(key))
-					return (root);
-				else if (C_key(key) <= C_key(*root->key))
-					return (bintree_search(root->left, key, ++hops));
-				else
-					return (bintree_search(root->right, key, ++hops));
+			t_bstnode *	bintree_search(t_bstnode * root, key_type const & key, typename iterator::difference_type & hops) const {
+				while (root != NULL && C_key(*root->key) != C_key(key))
+				{
+					if (C_key(key) <= C_key(*root->key))
+						root = root->left;
+					else
+						root = root->right;
+					++hops;
+				}
+				return (root);
 			}
 
 			/* ASSIGN KEY VALUE POINTERS */

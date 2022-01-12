@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 21:01:02 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/12 01:42:39 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 03:43:06 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,10 @@ namespace ft
 	** type. However, by implicitly calling our remove_const here, I have the
 	** compiler use type deduction to deduce the unconsted type of the pointer,
 	** so now I can return an unconsted pointer to my rebalancing function. :)
+	**
+	** Additionally, sets have the mad property of allowing const_iterators to
+	** be implicitly unconsted. I also use this function in the set iterator to
+	** do the dirty deed...
 	*/
 	template <typename T>
 	T *		remove_const(T const * value)

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/12 00:11:35 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 03:15:24 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1443,7 +1443,7 @@ void    prepost_incdec(std::vector<int> &vct)
 // }
 
 // typedef ft::set<std::string>::iterator iterator;
-static int iter = 0;
+// static int iter = 0;
 // template <typename BLEH, typename U>
 // void    ft_insert(BLEH &st, U param)
 // {
@@ -1462,21 +1462,21 @@ static int iter = 0;
 //         tst = st.insert(param, param2);
 // }
 
-template <typename BLEH, typename U>
-void    ft_erase(BLEH &st, U param)
-{
-        std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-        st.erase(param);
+// template <typename BLEH, typename U>
+// void    ft_erase(BLEH &st, U param)
+// {
+//         std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+//         st.erase(param);
         
-}
+// }
 
-template <typename BLEH, typename U, typename V>
-void    ft_erase(BLEH &st, U param, V param2)
-{
-        std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-        st.erase(param, param2);
+// template <typename BLEH, typename U, typename V>
+// void    ft_erase(BLEH &st, U param, V param2)
+// {
+//         std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+//         st.erase(param, param2);
        
-}
+// }
 // //DEBUG Y TAL Y CUAL
 
 int main(void)
@@ -1501,30 +1501,33 @@ int main(void)
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 
-        std::list<std::string> lst;
-        unsigned int lst_size = 10;
-        for (unsigned int i = 0; i < lst_size; ++i)
-                lst.push_back(std::string((lst_size - i), i + 65));
-        ft::set<std::string> st(lst.begin(), lst.end());
-        //printSize(st);
+		ft::set<int> const st;
+        ft::set<int>::iterator it = st.begin(); // <-- no error, actually ! set allows for const_iterator => iterator conversion
 
-        ft_erase(st, ++st.begin());
+        // std::list<std::string> lst;
+        // unsigned int lst_size = 10;
+        // for (unsigned int i = 0; i < lst_size; ++i)
+        //         lst.push_back(std::string((lst_size - i), i + 65));
+        // ft::set<std::string> st(lst.begin(), lst.end());
+        // //printSize(st);
 
-        ft_erase(st, st.begin());
-        ft_erase(st, --st.end());
+        // ft_erase(st, ++st.begin());
 
-        ft_erase(st, st.begin(), ++(++(++st.begin())));
-        ft_erase(st, --(--(--st.end())), --st.end());
+        // ft_erase(st, st.begin());
+        // ft_erase(st, --st.end());
 
-        st.insert("Hello");
-        st.insert("Hi there");
-        ft_erase(st, --(--(--st.end())), st.end());
+        // ft_erase(st, st.begin(), ++(++(++st.begin())));
+        // ft_erase(st, --(--(--st.end())), --st.end());
 
-        st.insert("ONE");
-        st.insert("TWO");
-        st.insert("THREE");
-        st.insert("FOUR");
-        ft_erase(st, st.begin(), st.end());
+        // st.insert("Hello");
+        // st.insert("Hi there");
+        // ft_erase(st, --(--(--st.end())), st.end());
+
+        // st.insert("ONE");
+        // st.insert("TWO");
+        // st.insert("THREE");
+        // st.insert("FOUR");
+        // ft_erase(st, st.begin(), st.end());
 
         // std::list<char> lst;
         // unsigned int lst_size = 7;

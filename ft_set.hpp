@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:16:48 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/12 00:04:45 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 03:43:17 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ namespace ft
 				Iterator(void) {}
 				Iterator(Iterator const & src) : _tree_it(src._tree_it) {}
 				Iterator(typename ft::bintree<Value const, Compare, Alloc>::iterator const & tree_it) : _tree_it(tree_it) {}
-				Iterator(typename ft::bintree<Value const, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(tree_it) {}
+				Iterator(typename ft::bintree<Value const, Compare, Alloc>::const_iterator const & tree_it) : _tree_it(ft::remove_const(tree_it.base()), tree_it.get_end_lst_addr()) {}
 				//Destructible
 				~Iterator(void) {}
 				//Assignment Operator Overload
@@ -115,23 +115,28 @@ namespace ft
 			};
 
 		public:
-			typedef ft::bintree<Value const, Compare, Alloc>														t_tree;
-			typedef Value const																						key_type;
-			typedef Value const																						mapped_type;
-			typedef Value const																						value_type;
-			typedef Compare																							key_compare;
-			typedef Compare																							value_compare;
-			typedef Alloc																							allocator_type;
-			typedef std::size_t																						size_type;
-			typedef std::ptrdiff_t																					difference_type;
-			typedef value_type&																						reference;
-			typedef const value_type&																				const_reference;
-			typedef value_type*																						pointer;
-			typedef const value_type*																				const_pointer;
-			typedef Iterator<value_type, std::bidirectional_iterator_tag, typename t_tree::iterator>				iterator;
-			typedef Iterator<value_type const, std::bidirectional_iterator_tag, typename t_tree::const_iterator>	const_iterator; //Iterator formed with const tree iterator, so tree iterator value_type, pointers to value_type, references to value_type, etc, also all refer to const value
-			typedef ft::reverse_iterator<iterator>																	reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>															const_reverse_iterator;
+			typedef ft::bintree<Value const, Compare, Alloc>											t_tree;
+			typedef Value const																			key_type;
+			typedef Value const																			mapped_type;
+			typedef Value const																			value_type;
+			typedef Compare																				key_compare;
+			typedef Compare																				value_compare;
+			typedef Alloc																				allocator_type;
+			typedef std::size_t																			size_type;
+			typedef std::ptrdiff_t																		difference_type;
+			typedef value_type&																			reference;
+			typedef const value_type&																	const_reference;
+			typedef value_type*																			pointer;
+			typedef const value_type*																	const_pointer;
+			typedef Iterator<value_type, std::bidirectional_iterator_tag, typename t_tree::iterator>	iterator;
+			//In set, const_iterator is a lie xD The value type is ALWAYS consted, by definition, regardless of iterator
+			//type.  In sets, const_iterators can be implicitly unconsted. Yes, the gods MUST be crazy! I try to contain
+			//the crazy to the set itself. Therefore, we always use an unconsted tree iterator as our underlying iterator
+			//to avoid having to do the bonkers const_iterator to iterator conversion on the underlying iterator and its
+			//data, or basically ANYWHERE outside of this insane container class. ::◔_◔::
+			typedef Iterator<value_type, std::bidirectional_iterator_tag, typename t_tree::iterator>	const_iterator;
+			typedef ft::reverse_iterator<iterator>														reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>												const_reverse_iterator;
 
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
 
@@ -139,11 +144,11 @@ namespace ft
 			explicit set(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : _tree(comp, alloc) {}
 			
 			/* RANGE CONSTRUCTOR */
-			set(const_iterator first, const_iterator last, const key_compare & comp = key_compare(),
-			const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
+			// set(const_iterator first, const_iterator last, const key_compare & comp = key_compare(),
+			// const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
 
-			set(iterator first, iterator last, const key_compare & comp = key_compare(),
-			const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
+			// set(iterator first, iterator last, const key_compare & comp = key_compare(),
+			// const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
 			
 			template<class InputIt>
 			set(InputIt first, InputIt last, const key_compare & comp = key_compare(),
@@ -237,13 +242,13 @@ namespace ft
 			}
 
 			/* INSERT BY RANGE OF VALUES */
-			void					insert(const_iterator first, const_iterator last) {
-				_tree.insert(first.base(), last.base());
-			}
+			// void					insert(const_iterator first, const_iterator last) {
+			// 	_tree.insert(first.base(), last.base());
+			// }
 
-			void					insert(iterator first, iterator last) {
-				_tree.insert(first.base(), last.base());
-			}
+			// void					insert(iterator first, iterator last) {
+			// 	_tree.insert(first.base(), last.base());
+			// }
 
 			template<typename InputIt>
 			void					insert(InputIt first, InputIt last,

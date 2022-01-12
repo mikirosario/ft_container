@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/12 18:59:34 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 20:06:11 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -479,6 +479,9 @@ bool	my_veritable_vector(void)
 {
 	bool			ret = true;
 	size_t			msg_offset;
+	struct timespec	start;
+	int64_t			ft_time;
+	int64_t			stl_time;
 
 	/* CONSTRUCTOR TESTS */
 	//FILL CONSTRUCTOR TEST
@@ -490,8 +493,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Fill-constructing: " << TXT_NL
 			<< TXT_TAB << "  ft::container mi_fill_cont(4, 42)" << TXT_NL
 			<< TXT_TAB << "  std::container su_fill_cont(4, 42)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	MY_Container	mi_fill_cont(4, 42);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	STD_Container	su_fill_cont(4, 42);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//Stop Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 
@@ -501,8 +511,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Range-constructing: " << TXT_NL
 			<< TXT_TAB << "  ft::container mi_range_cont(mi_fill_cont.begin(), mi_fill_cont.end())" << TXT_NL
 			<< TXT_TAB << "  std::container su_range_cont(su_fill_cont.begin(), su_fill_cont.end())" << END;
-			MY_Container	mi_range_cont(mi_fill_cont.begin(), mi_fill_cont.end());
-			STD_Container 	su_range_cont(su_fill_cont.begin(), su_fill_cont.end());
+	//Start Exec Timer
+	start_timer(&start);
+	MY_Container	mi_range_cont(mi_fill_cont.begin(), mi_fill_cont.end());
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
+	STD_Container 	su_range_cont(su_fill_cont.begin(), su_fill_cont.end());
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//Stop Exec Timer
 	elemc_compare_log(su_range_cont, mi_range_cont);
 	cont_check_log(su_range_cont, mi_range_cont, ret);
 
@@ -512,8 +529,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Copy-constructing: " << TXT_NL
 			<< TXT_TAB << "  ft::container mi_copied_cont(mi_fill_cont)" << TXT_NL
 			<< TXT_TAB << "  std::container su_copied_cont(su_fill_cont)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	MY_Container	mi_copied_cont(mi_fill_cont);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	STD_Container	su_copied_cont(su_fill_cont);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_copied_cont, mi_copied_cont);
 	cont_check_log(su_copied_cont, mi_copied_cont, ret);
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
@@ -524,8 +548,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Copying via assignment: " << TXT_NL
 			<< TXT_TAB << "  ft::container(0) mi_assigned_cont = mi_fill_cont" << TXT_NL
 			<< TXT_TAB << "  std::container(0) su_assigned_cont = su_fill_cont" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	MY_Container	mi_assigned_cont = mi_fill_cont;
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	STD_Container	su_assigned_cont = su_fill_cont;
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_assigned_cont, mi_assigned_cont);
 	cont_check_log(su_assigned_cont, mi_assigned_cont, ret);
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
@@ -541,11 +572,18 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "  su_fill_cont" << END;
 
 	PRINT	<< TXT_TAB << TXT_BYEL "MY Reverse Printed Container: " << END;
+	//Start Exec Timer
+	start_timer(&start);
 	for (typename MY_Container::reverse_iterator rit = mi_fill_cont.rbegin(), rend = mi_fill_cont.rend(); rit != rend; ++rit)
 		PRINT << TXT_TAB << *rit << END;
+	ft_time = stop_timer_nanosec(&start);
 	PRINT	<< TXT_TAB << TXT_BYEL "STD Reverse Printed Container: " << END;
+	start_timer(&start);
 	for (typename STD_Container::reverse_iterator rit = su_fill_cont.rbegin(), rend = su_fill_cont.rend(); rit != rend; ++rit)
 		PRINT << TXT_TAB << *rit << END;
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
 			<< "-------------------------------------------------------------------------------------" << END;
 
@@ -577,24 +615,37 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Adding 84, 168 and 69 via push_back to: " << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.push_back(84...)" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.push_back(84...)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_fill_cont.push_back(84);
 	mi_fill_cont.push_back(168);
 	mi_fill_cont.push_back(69);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_fill_cont.push_back(84);
 	su_fill_cont.push_back(168);
 	su_fill_cont.push_back(69);
+	stl_time = stop_timer_nanosec(&start);
+	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	PRINT	<< TXT_NL
 			<< TXT_TAB << TXT_BYEL "Adding -42 and -21 via push_back to: " << TXT_NL
 			<< TXT_TAB << "  mi_copied_cont.push_back(-42...)" << TXT_NL
 			<< TXT_TAB << "  su_copied_cont.push_back(-42...)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_copied_cont.push_back(-42);
 	mi_copied_cont.push_back(-21);
+	ft_time += stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_copied_cont.push_back(-42);
 	su_copied_cont.push_back(-21);
+	stl_time += stop_timer_nanosec(&start);
+	//End Exec Timer
 	elemc_compare_log(su_copied_cont, mi_copied_cont);
 	cont_check_log(su_copied_cont, mi_copied_cont, ret);
+	check_exec_time(ft_time, stl_time, ret);
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
 			<< "-------------------------------------------------------------------------------------" << END;
 	
@@ -616,8 +667,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Popping back last element: " << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.pop_back()" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.pop_back()" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_fill_cont.pop_back();
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_fill_cont.pop_back();
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
@@ -661,8 +719,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "  mi_fill_cont.erase(mi_fill_cont.begin() + 2)" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.erase(su_fill_cont.begin() + 2)" << END;
 	{
+		//Start Exec Timer
+		start_timer(&start);
 		typename MY_Container::iterator mi_erase_res = mi_fill_cont.erase(mi_fill_cont.begin() + 2);
+		ft_time = stop_timer_nanosec(&start);
+		start_timer(&start);
 		typename STD_Container::iterator su_erase_res = su_fill_cont.erase(su_fill_cont.begin() + 2);
+		stl_time = stop_timer_nanosec(&start);
+		check_exec_time(ft_time, stl_time, ret);
+		//End Exec Timer
 		size_t	mi_res_pos = mi_erase_res - mi_fill_cont.begin();
 		size_t	su_res_pos = su_erase_res - su_fill_cont.begin();
 
@@ -679,8 +744,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "  mi_fill_cont.erase(mi_fill_cont.end() - 1)" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.erase(su_fill_cont.end() - 1)" << END;
 	{
+		//Start Exec Timer
+		start_timer(&start);
 		typename MY_Container::iterator mi_erase_res = mi_fill_cont.erase(mi_fill_cont.end() - 1);
+		ft_time = stop_timer_nanosec(&start);
+		start_timer(&start);
 		typename STD_Container::iterator su_erase_res = su_fill_cont.erase(su_fill_cont.end() - 1);
+		stl_time = stop_timer_nanosec(&start);
+		check_exec_time(ft_time, stl_time, ret);
+		//End Exec Timer
 		size_t	mi_res_pos = mi_erase_res - mi_fill_cont.begin();
 		size_t	su_res_pos = su_erase_res - su_fill_cont.begin();
 	
@@ -700,8 +772,15 @@ bool	my_veritable_vector(void)
 				<< TXT_TAB << "  mi_fill_cont.erase(mi_fill_cont.begin() + 1, mi_fill_cont.end())" << TXT_NL
 				<< TXT_TAB << "  su_fill_cont.erase(su_fill_cont.begin() + 1, su_fill_cont.end())" << END;
 		//THESE RETURN VOID IN C++98
+		//Start Exec Timer
+		start_timer(&start);
 		mi_fill_cont.erase(mi_fill_cont.begin() + 1, mi_fill_cont.end());
+		ft_time = stop_timer_nanosec(&start);
+		start_timer(&start);
 		su_fill_cont.erase(su_fill_cont.begin() + 1, su_fill_cont.end());
+		stl_time = stop_timer_nanosec(&start);
+		check_exec_time(ft_time, stl_time, ret);
+		//End Exec Timer
 		elemc_compare_log(su_fill_cont, mi_fill_cont);
 		cont_check_log(su_fill_cont, mi_fill_cont, ret);
 		PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
@@ -713,8 +792,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Inserting by position:" << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.insert(mi_fill_cont.begin(), 1984)" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.insert(su_fill_cont.begin(), 1984)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_fill_cont.insert(mi_fill_cont.begin(), 1984);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_fill_cont.insert(su_fill_cont.begin(), 1984);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	//INSERT BY POSITION AND CLONE N TIMES
@@ -722,21 +808,42 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << TXT_BYEL "Inserting by position and cloning n times:" << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.insert(mi_fill_cont.begin(), 2, 1970)" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.insert(su_fill_cont.begin(), 2, 1970)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_fill_cont.insert(mi_fill_cont.begin(), 2, 1970);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_fill_cont.insert(su_fill_cont.begin(), 2, 1970);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	//Creating new containers for swap test
 	PRINT	<< TXT_TAB << TXT_BYEL "Fill-creating new containers:" << TXT_NL
 			<< TXT_TAB << "  ft::container mi_swappable_cont(4, 1)" << TXT_NL
 			<< TXT_TAB << "  std::container su_swappable_cont(4, 1)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	MY_Container	mi_swappable_cont(4, 1);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	STD_Container	su_swappable_cont(4, 1);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	PRINT	<< TXT_TAB << TXT_BYEL "Inserting by position and cloning n times:" << TXT_NL
 			<< TXT_TAB << "  mi_swappable_cont.insert(mi_swappable_cont.begin() + 1, 1, 9)" << TXT_NL
 			<< TXT_TAB << "  su_swappable_cont.insert(su_swappable_cont.begin() + 1, 1, 9)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_swappable_cont.insert(mi_swappable_cont.begin() + 1, 1, 9);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_swappable_cont.insert(su_swappable_cont.begin() + 1, 1, 9);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
 	cont_check_log(su_swappable_cont, mi_swappable_cont, ret);
 	
@@ -745,8 +852,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << TXT_BYEL "Inserting by range:" << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.insert(mi_fill_cont.begin(), mi_swappable_cont.begin(), mi_swappable_cont.end())" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.insert(su_fill_cont.begin(), su_swappable_cont.begin(), su_swappable_cont.end())" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_fill_cont.insert(mi_fill_cont.begin(), mi_swappable_cont.begin(), mi_swappable_cont.end());
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_fill_cont.insert(su_fill_cont.begin(), su_swappable_cont.begin(), su_swappable_cont.end());
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 
@@ -754,8 +868,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << TXT_BYEL "Inserting by range with reverse iterators:" << TXT_NL
 			<< TXT_TAB << "  mi_assigned_cont.insert(mi_assigned_cont.begin(), mi_fill_cont.rbegin(), mi_fill_cont.rend())" << TXT_NL
 			<< TXT_TAB << "  su_assigned_cont.insert(su_assigned_cont.begin(), su_fill_cont.rbegin(), su_fill_cont.rend())" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_assigned_cont.insert(mi_assigned_cont.begin(), mi_fill_cont.rbegin(), mi_fill_cont.rend());
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_assigned_cont.insert(su_assigned_cont.begin(), su_fill_cont.rbegin(), su_fill_cont.rend());
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_assigned_cont, mi_assigned_cont);
 	cont_check_log(su_assigned_cont, mi_assigned_cont, ret);
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
@@ -767,8 +888,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Swapping with class function:" << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.swap(mi_swappable_cont)" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.swap(su_swappable_cont)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_fill_cont.swap(mi_swappable_cont);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_fill_cont.swap(su_swappable_cont);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	//fill_cont swapped with swappable_cont
 	PRINT	<< TXT_TAB << TXT_BYEL "  fill_cont:" << END;
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -784,8 +912,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << TXT_BYEL "Swapping with default std::swap" << TXT_NL
 			<< TXT_TAB << "  std::swap(mi_fill_cont, mi_swappable_cont)" << TXT_NL
 			<< TXT_TAB << "  std::swap(su_fill_cont, su_swappable_cont)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	std::swap(mi_fill_cont, mi_swappable_cont);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	std::swap(su_fill_cont, su_swappable_cont);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	//fill_cont swapped with swappable_cont again!
 	PRINT	<< TXT_TAB << TXT_BYEL "  fill_cont:" << END;
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -801,8 +936,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << TXT_BYEL "Swapping with class function via ADL:" << TXT_NL
 			<< TXT_TAB << "  std::swap(mi_fill_cont, mi_swappable_cont)" << TXT_NL
 			<< TXT_TAB << "  std::swap(su_fill_cont, su_swappable_cont)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	swap(mi_fill_cont, mi_swappable_cont); //why does this activate ADL? no feckin idea!
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	swap(su_fill_cont, su_swappable_cont);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	//fill_cont swapped with swappable_cont yet again!
 	PRINT	<< TXT_TAB << TXT_BYEL "  fill_cont:" << END;
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -821,8 +963,15 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "  std::swap(mi_fill_cont, mi_swappable_cont)" << TXT_NL
 			<< TXT_TAB << "  std::swap(su_fill_cont, su_swappable_cont)" << END;
 	using std::swap; //why does this activate ADL too? no feckin idea!
+	//Start Exec Timer
+	start_timer(&start);
 	swap(mi_fill_cont, mi_swappable_cont);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	swap(su_fill_cont, su_swappable_cont);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	//fill_cont swapped with swappable_cont yet another time!
 	PRINT	<< TXT_TAB << TXT_BYEL "  fill_cont:" << END;
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -908,16 +1057,30 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Assigning by fill:" << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.assign(8, 42)" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.assign(8, 42)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_fill_cont.assign(8, 42);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_fill_cont.assign(8, 42);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	PRINT	<< TXT_NL
 			<< TXT_TAB << TXT_BYEL "Assigning by range:" << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.assign(mi_copied_cont.begin(), mi_copied_cont.end())" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.assign(su_copied_cont.begin(), su_copied_cont.end())" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_fill_cont.assign(mi_copied_cont.begin(), mi_copied_cont.end());
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_fill_cont.assign(su_copied_cont.begin(), su_copied_cont.end());
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
@@ -1689,7 +1852,7 @@ int main(void)
 	seed_map.insert(std::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
 	seed_map.insert(std::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\tÚnico profesor en activo de 42."));
 
-	my_magnificent_map<std::string, std::string>(seed_map);
+	//my_magnificent_map<std::string, std::string>(seed_map);
 
 //debug
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   type_traits.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 16:20:31 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/21 22:41:18 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/12 18:53:27 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,20 @@ namespace ft
 
 		template<typename C>
 		static yes & test(typename C::iterator_category *);
+		
+		template<typename C>
+		static no & test(...);
+
+		static const bool value = sizeof(test<T>(NULL)) == sizeof(yes);
+	};
+
+	template<typename T>
+	struct	has_iterator {
+		typedef char yes[1];
+		typedef char no[2];
+
+		template<typename C>
+		static yes & test(typename C::iterator *);
 		
 		template<typename C>
 		static no & test(...);

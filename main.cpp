@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/12 03:15:24 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 18:59:34 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <iomanip>
 #include <vector>
 #include <cstring>
+#include <time.h>
 
 
 #include <map>
@@ -32,6 +33,19 @@
 #define ALN std::left << std::setw(30)
 #define END TXT_RST << std::endl
 #define SET std::setw(9) << color
+
+void	start_timer(struct timespec * start)
+{
+	clock_gettime(CLOCK_MONOTONIC, start);
+}
+
+int64_t	stop_timer_nanosec(struct timespec *start)
+{
+	struct timespec	end;
+	clock_gettime(CLOCK_MONOTONIC, &end);
+	return ((end.tv_sec * 1000000000 + end.tv_nsec) - (start->tv_sec * 1000000000 + start->tv_nsec));
+}
+
 									//reference to pointer
 void	check(bool result, char const *& color, bool & ret)
 {
@@ -43,6 +57,43 @@ void	check(bool result, char const *& color, bool & ret)
 		color = TXT_BRED;
 		ret = false;
 	}
+}
+
+/*
+** This function checks FT execution time against STL execution time. If the
+** difference is greater than 20 times the STL execution time, we consider it
+** an error. Otherwise, we consider the test successful. This test isn't called
+** for ALL container functions, just the obvious ones, insert,
+** insert with hint, erase, access, etc. We don't call it for stuff like size,
+** for example.
+**
+** IMPORTANT NOTE:
+** Though the time value I use is in nanoseconds, in practice on the school Macs
+** the monoclock seems to only have a resolution in the MICROSECONDS. It changes
+** in 1000 nanosecond increments. Sometimes the CPU is so fast that this
+** resolution is not enough and the clock reports 0 seconds of execution time.
+** This actually happens reliably in the swap test. In such cases we round up to
+** the nearest MICROSECOND and report 1 microsecond of execution time.
+*/
+
+void	check_exec_time(int64_t & ft_time, int64_t & stl_time, bool & ret)
+{
+	char const *	color;
+	if (stl_time == 0)
+		stl_time += 1000; //Round to nearest microsecond
+	if (ft_time == 0)
+		ft_time += 1000; //Round to the nearest microsecond
+	if (ft_time > stl_time * 20)
+	{
+		color = TXT_BRED;
+		ret = false;
+	}
+	else
+		color = TXT_BGRN;
+	PRINT	<< TXT_TAB << TXT_BYEL << "STL Time" << TXT_TAB << "My Time"
+			<< TXT_NL << TXT_TAB << color << stl_time << TXT_TAB TXT_TAB << ft_time << END;
+	ft_time = -1;
+	stl_time = -1;
 }
 
 //TODO ESTO PARA DECIR	(&a == &b) :_( :_(
@@ -281,11 +332,12 @@ bool iterator_tests(void)
 ** container type behave equally under the same conditions. If sizes and
 ** ranges are equal, it returns true, otherwise it returns false.
 **
-** The MY_Container::const_iterator thing is just a SFINAE trick to stop the
-** compiler from sending non-iterable-container types in here. :P
+** The MY_Container has_iterator thing is just a SFINAE trick to stop the
+** compiler from sending non-iterable-container types in here where we clearly
+** only want iterable containers. :P
 */
-template<class STD_Container, class MY_Container, typename MY_Container::const_iterator>
-static bool operator==(STD_Container const & lhs, MY_Container const & rhs)
+template<class STD_Container, class MY_Container >
+typename ft::enable_if<ft::has_iterator<MY_Container>::value, bool>::type operator==(STD_Container const & lhs, MY_Container const & rhs)
 {
 	return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin()));
 }
@@ -1095,9 +1147,14 @@ template<typename Key, typename Value>
 bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 {
 	char const *	color = TXT_BGRN;
-	bool	ret = true;
+	bool			ret = true;
+	struct timespec	start;
+	int64_t			ft_time;
+	int64_t			stl_time;
+
 	typedef ft::map<Key, Value>		ft_map;
 	typedef std::map<Key, Value>	std_map;
+
 	//DEFAULT CONSTRUCTOR
 	PRINT	<< TXT_BYEL << "DEFAULT INSTANTIATION TEST" << END;
 	ft_map		mi_map_default;
@@ -1107,18 +1164,33 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 
 	PRINT	<< TXT_NL << TXT_BYEL << "RANGE CONSTRUCTION TESTS" << END;
 	//RANGE CONSTRUCTOR
+	start_timer(&start);
 	ft_map		mi_map_range(seed_map.begin(), seed_map.end());
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	std_map		su_map_range(seed_map.begin(), seed_map.end());
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
 	print_map_comp<ft_map, std_map >(mi_map_range, su_map_range, color, ret);
 
 	PRINT	<< TXT_NL << TXT_BYEL << "COPY CONSTRUCTION TESTS" << END;
+	start_timer(&start);
 	ft_map		mi_map_copy(mi_map_range);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	std_map		su_map_copy(su_map_range);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
 	print_map_comp<ft_map, std_map >(mi_map_copy, su_map_copy, color, ret);
 
 	PRINT	<< TXT_NL << TXT_BYEL << "ASSIGNMENT OVERLOAD TESTS" << END;
+	start_timer(&start);
 	mi_map_default = mi_map_copy;
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default = su_map_copy;
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
 	print_map_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
 
 	PRINT	<< TXT_NL << TXT_BYEL << "REVERSE ITERATOR TESTS" << END;
@@ -1159,27 +1231,58 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 
 	PRINT	<< TXT_NL << TXT_BYEL << "ACCESS ELEMENT BY KEY REFERENCE TEST" << TXT_NL
 			<< TXT_TAB << "Find Reference to Existent Element ('norminette')" << END;
+	//Start Exec Timer
+	start_timer(&start);
+	mi_map_default["norminette"];
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
+	su_map_default["norminette"];
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mi_map_default["norminette"] == su_map_default["norminette"], color, ret);
 	PRINT	<< color << mi_map_default["norminette"] << TXT_NL
 			<< su_map_default["norminette"] << END;
-	
 	PRINT	<< TXT_BYEL << TXT_TAB << "Insert New Key and Default-Instantiated Value ('aguafiestas')" << TXT_NL;
+	//Start Exec Timer
+	start_timer(&start);
+	mi_map_default["aguafiestas"];
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
+	su_map_default["aguafiestas"];
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
 			PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
 			<< su_map_default["aguafiestas"] << END;
 
 	PRINT	<< TXT_BYEL << TXT_TAB << "Insert Value by Key Reference ('miyamoto')" << TXT_NL;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default["miyamoto"] = "MIYAMOTO: \t\t\tEminencia de los videojuegos que descubrió que la constante gravitacional está más guapa como variable.";
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default["miyamoto"] = "MIYAMOTO: \t\t\tEminencia de los videojuegos que descubrió que la constante gravitacional está más guapa como variable.";
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mi_map_default["miyamoto"] == su_map_default["miyamoto"], color, ret);
 	PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	PRINT	<< color << mi_map_default["miyamoto"] << TXT_NL
 			<< su_map_default["miyamoto"] << END;
 
 	PRINT	<< TXT_BYEL << TXT_TAB << "Replace Value by Key Reference ('aguafiestas')" << TXT_NL;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default["aguafiestas"] = "AGUAFIESTAS: \t\t\tSinónimo de Marvin (véase 'marvin').";
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default["aguafiestas"] = "AGUAFIESTAS: \t\t\tSinónimo de Marvin (véase 'marvin').";
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
 	PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	PRINT	<< color << mi_map_default["aguafiestas"] << TXT_NL
@@ -1192,16 +1295,30 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< TXT_NL << TXT_BYEL << "OPERATIONS TESTS" << TXT_NL
 			<< TXT_TAB << "Find by Key ('marvin')" << END;
 	{
+	//Start Exec Timer
+	start_timer(&start);
 	typename ft_map::iterator mit = mi_map_default.find("marvin");
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	typename std_map::iterator sit = su_map_default.find("marvin");
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mit->first == sit->first & mit->second == sit->second, color, ret);
 	PRINT	<< color << mit->second << TXT_NL
 			<< sit->second << END;
 	}
 	PRINT	<< TXT_TAB << TXT_BYEL << "Find by Key Non-Existent ('marvine')" << END; //must return end()
 	{
+	//Start Exec Timer
+	start_timer(&start);
 	typename ft_map::iterator mit = mi_map_default.find("marvine");
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	typename std_map::iterator sit = su_map_default.find("marvine");
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mit == mi_map_default.end() & sit == su_map_default.end(), color, ret);
 	PRINT	<< ((isGreen(color) == true) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
 	}
@@ -1276,31 +1393,58 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "INSERT TESTS" << TXT_NL
 			<< TXT_TAB << "Insert Single Element and Access by Key Reference" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default.insert(ft::pair<std::string const, std::string>("santana", "SANTANA: \t\t\t\tCanario estepario."));
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default.insert(std::pair<std::string const, std::string>("santana", "SANTANA: \t\t\t\tCanario estepario."));
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
 	check(mi_map_default["santana"] == su_map_default["santana"], color, ret);
 	PRINT	<< color << mi_map_default["santana"] << TXT_NL
 			<< su_map_default["santana"] << END;
 	
 	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element ('alex') with GOOD Hint (aka. constant time insert, aka. DE GUAYS INSERT)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default.insert(mi_map_default.lower_bound("alex"), ft::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default.insert(su_map_default.lower_bound("alex"), std::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mi_map_default["alex"] == su_map_default["alex"], color, ret);
 	PRINT	<< color << mi_map_default["alex"] << TXT_NL
 			<< su_map_default["alex"] << END;
 	//print_map_comp(mi_map_default, su_map_default, color, ret);
 
 	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element ('a') with GOOD Hint (aka. constant time insert, aka. DE GUAYS INSERT)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default.insert(mi_map_default.lower_bound("a"), ft::make_pair<std::string, std::string>("a", "A: \t\t\t\tPrimera letra del alafabeto latino."));
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default.insert(su_map_default.lower_bound("a"), std::make_pair<std::string, std::string>("a", "A: \t\t\t\tPrimera letra del alafabeto latino."));
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mi_map_default["a"] == su_map_default["a"], color, ret);
 	PRINT	<< color << mi_map_default["a"] << TXT_NL
 			<< su_map_default["a"] << END;
 	//print_map_comp(mi_map_default, su_map_default, color, ret);
 
 	PRINT	<< TXT_TAB << TXT_BYEL << "Insert Single Element ('rorozco') with BAD Hint (aka. logarithmic time + correction time insert, aka. GILIPOLLAS INSERT)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default.insert(mi_map_default.begin(), ft::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default.insert(su_map_default.begin(), std::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	check(mi_map_default["rorozco"] == su_map_default["rorozco"], color, ret);
 	PRINT	<< color << mi_map_default["rorozco"] << TXT_NL
 			<< su_map_default["rorozco"] << END;
@@ -1309,29 +1453,56 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 
 	PRINT	<< TXT_TAB << TXT_BYEL << "Insert by Range to map_copy (from agua to tig, including alex, santana and rorozco, excluding a)" << END; //insert range from agua to tig, including alex, santana and rorozco
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_copy.insert(++mi_map_default.begin(), --mi_map_default.end());
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_copy.insert(++su_map_default.begin(), --su_map_default.end());
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	print_map_comp(mi_map_copy, su_map_copy, color, ret);
 	
 	PRINT	<< TXT_NL << TXT_BYEL << "ERASE TESTS" << TXT_NL
 			<< TXT_TAB << "Erase by Position (begin())" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default.erase(mi_map_default.begin()); //should erase 'a'
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default.erase(su_map_default.begin()); //should erase 'a'
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 
 	PRINT << TXT_BYEL << TXT_TAB << "Erase by Key ('marvin')" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default.erase("marvin"); //should erase 'marvin'
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default.erase("marvin"); //should erase 'marvin'
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	print_map_comp(mi_map_default, su_map_default, color, ret);
-
 	{
 	PRINT << TXT_BYEL << TXT_TAB << "Erase by Range ('norminette' to 'santana')" << END;
 	typename ft_map::iterator mit = mi_map_default.find("norminette");
 	typename ft_map::iterator mend = mi_map_default.find("santana");
 	typename std_map::iterator sit = su_map_default.find("norminette");
 	typename std_map::iterator send = su_map_default.find("santana");
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_default.erase(mit, mend);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_default.erase(sit, send);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//Stop Exec Timer
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 	}
 
@@ -1355,14 +1526,29 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	// PRINT << NL << "SU AFTER" << END;
 	// for (typename std_map::iterator it(sit_d); it != send_d; ++it)
 	// 	PRINT << it->second << NL;
+
+	//Start Exec Timer
+	start_timer(&start);
 	swap(mi_map_default, mi_map_range);
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	swap(su_map_default, su_map_range);
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	print_map_comp(mi_map_default, su_map_default, color, ret);
 	}
 
 	PRINT << TXT_NL << TXT_BYEL << "CLEAR TEST (map_range)" << END;
+	//Start Exec Timer
+	start_timer(&start);
 	mi_map_range.clear();
+	ft_time = stop_timer_nanosec(&start);
+	start_timer(&start);
 	su_map_range.clear();
+	stl_time = stop_timer_nanosec(&start);
+	check_exec_time(ft_time, stl_time, ret);
+	//End Exec Timer
 	print_map_comp(mi_map_range, su_map_range, color, ret);
 
 	PRINT	<< TXT_NL << TXT_BYEL << "COMP OBJECT TESTS" << END;
@@ -1481,6 +1667,14 @@ void    prepost_incdec(std::vector<int> &vct)
 
 int main(void)
 {	
+	if (iterator_tests())
+		PRINT << TXT_BGRN "OK" << END;
+	else
+		PRINT << TXT_BRED "KO" << END;
+	if (my_veritable_vector<ft::vector<int>, std::vector<int> >())
+		PRINT << TXT_BGRN "OK" << END;
+	else
+		PRINT << TXT_BRED "KO" << END;
 	std::map<std::string, std::string>	seed_map;
 	seed_map.insert(std::make_pair("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
 	seed_map.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));

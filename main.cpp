@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/11 23:53:22 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 00:11:35 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1443,7 +1443,7 @@ void    prepost_incdec(std::vector<int> &vct)
 // }
 
 // typedef ft::set<std::string>::iterator iterator;
-// static int iter = 0;
+static int iter = 0;
 // template <typename BLEH, typename U>
 // void    ft_insert(BLEH &st, U param)
 // {
@@ -1461,6 +1461,22 @@ void    prepost_incdec(std::vector<int> &vct)
 //         std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 //         tst = st.insert(param, param2);
 // }
+
+template <typename BLEH, typename U>
+void    ft_erase(BLEH &st, U param)
+{
+        std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+        st.erase(param);
+        
+}
+
+template <typename BLEH, typename U, typename V>
+void    ft_erase(BLEH &st, U param, V param2)
+{
+        std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+        st.erase(param, param2);
+       
+}
 // //DEBUG Y TAL Y CUAL
 
 int main(void)
@@ -1485,32 +1501,57 @@ int main(void)
 
 PRINT << '\n' << "QUECHTAPACHANDO" << std::endl;
 
-        std::list<char> lst;
-        unsigned int lst_size = 7;
+        std::list<std::string> lst;
+        unsigned int lst_size = 10;
         for (unsigned int i = 0; i < lst_size; ++i)
-                lst.push_back('a' + i);
+                lst.push_back(std::string((lst_size - i), i + 65));
+        ft::set<std::string> st(lst.begin(), lst.end());
+        //printSize(st);
 
-        ft::set<char> st(lst.begin(), lst.end()), st2;
-        ft::set<char>::iterator it;
+        ft_erase(st, ++st.begin());
 
-        lst.clear();
+        ft_erase(st, st.begin());
+        ft_erase(st, --st.end());
+
+        ft_erase(st, st.begin(), ++(++(++st.begin())));
+        ft_erase(st, --(--(--st.end())), --st.end());
+
+        st.insert("Hello");
+        st.insert("Hi there");
+        ft_erase(st, --(--(--st.end())), st.end());
+
+        st.insert("ONE");
+        st.insert("TWO");
+        st.insert("THREE");
+        st.insert("FOUR");
+        ft_erase(st, st.begin(), st.end());
+
+        // std::list<char> lst;
+        // unsigned int lst_size = 7;
+        // for (unsigned int i = 0; i < lst_size; ++i)
+        //         lst.push_back('a' + i);
+
+        // ft::set<char> st(lst.begin(), lst.end()), st2;
+        // ft::set<char>::iterator it;
+
+        // lst.clear();
         
-        std::cout << st.size();
-		std::cout << st.empty();
+        // std::cout << st.size();
+		// std::cout << st.empty();
 
         
-        st2 = st;
+        // st2 = st;
         
 
-        it = st.begin();
-        for (unsigned long int i = 3; i < 6; ++i)
-                st.insert(i * 7);
+        // it = st.begin();
+        // for (unsigned long int i = 3; i < 6; ++i)
+        //         st.insert(i * 7);
 
-        std::cout << st2.size();
-		std::cout << st2.empty();
+        // std::cout << st2.size();
+		// std::cout << st2.empty();
         
 
-        st2.clear();
+        // st2.clear();
         
 
         // ft::set<int> st;

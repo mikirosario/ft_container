@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 23:57:07 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 01:26:54 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1347,8 +1347,9 @@ namespace ft
 			*/
 				void	node_replace(t_bstnode * original, t_bstnode * successor) {
 				//copy successor data to original data
-				*const_cast<key_type *>(original->key) = *successor->key; //got to play rough with the consted key in the pair :P
-				*original->value = *successor->value;
+				//*const_cast<key_type *>(original->key) = *successor->key; 
+				*ft::remove_const(original->key) = *successor->key; //got to play rough with the consted key in the pair :P
+				*ft::remove_const(original->value) = *successor->value;
 				
 				if (original->next == successor)
 				{

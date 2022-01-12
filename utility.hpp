@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 21:01:02 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/12/18 13:24:05 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/12 01:42:39 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,37 @@ namespace ft
 			return (lhs < rhs);
 		}
 	};
+
+	/* REMOVE CONST */
+	/*
+	** This function uses type deduction and const_cast to remove the constness
+	** of a pointer.
+	**
+	** The ft::set made this necessary for me to make it work with my bintree.
+	** To have the value in my set's bintree consted, as required by set, I
+	** explicitly const the type when defining the tree. This consts all the
+	** typedefs in the tree that refer to the type and consts the type in the
+	** tree node.
+	**
+	** Unfortunately, there is an exceptional case where we HAVE to violate the
+	** constness: when erasing a node from a binary tree, sometimes we need to
+	** rebalance the tree. Tree node addresses are fixed, so this means data
+	** MUST be copied from one node to another to enable rebalancing. This only
+	** happens at the implementation level, not at the user level.
+	**
+	** Exceptionally, to perform those copies, we need to ignore the constness.
+	**
+	** A const_cast from inside the tree won't work, because inside the tree the
+	** type is const by definition, so we have no reference to the unconsted
+	** type. However, by implicitly calling our remove_const here, I have the
+	** compiler use type deduction to deduce the unconsted type of the pointer,
+	** so now I can return an unconsted pointer to my rebalancing function. :)
+	*/
+	template <typename T>
+	T *		remove_const(T const * value)
+	{
+		return (const_cast<T *>(value));
+	}
 };
 
 #endif

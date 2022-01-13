@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/13 01:38:40 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/13 01:50:27 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -994,10 +994,8 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "Allocating heap memory using returned allocator instance:" << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.get_allocator().allocate(4)" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont.get_allocator().allocate(4)" << END;
-	mi_fill_cont.get_allocator().allocate(4); //allocators are stateful, and remember what type they are allocating
-	su_fill_cont.get_allocator().allocate(4); //so this is NOT 4 bytes, but rather 4 * sizeof(SourceContainer::value_type)
-	typename MY_Container::value_type * 	mi_allocated_array = mi_fill_cont.get_allocator().allocate(4);
-	typename STD_Container::value_type *	su_allocated_array = su_fill_cont.get_allocator().allocate(4);
+	typename MY_Container::value_type * 	mi_allocated_array = mi_fill_cont.get_allocator().allocate(4); //allocators are stateful, and remember what type they are allocating
+	typename STD_Container::value_type *	su_allocated_array = su_fill_cont.get_allocator().allocate(4); //so this is NOT 4 bytes, but rather 4 * sizeof(SourceContainer::value_type)
 	PRINT	<< TXT_NL
 			<< TXT_TAB << TXT_BYEL "Assigning values to each allocation using constructor of returned allocator instance:" << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont.get_allocator().construct(arr, val)" << TXT_NL
@@ -1714,7 +1712,6 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 	PRINT	<< std::boolalpha << (su_map_default > su_map_copy) << END;
 	PRINT	<< std::boolalpha << (mi_map_default > mi_map_copy) << END;
 
-	system("leaks ft_container");
 	return (ret);
 }
 
@@ -1851,6 +1848,8 @@ int main(void)
 		else
 			PRINT << TXT_BRED "KO" << END;
 	}
+
+	system("leaks ft_container");
 
 //debug
 

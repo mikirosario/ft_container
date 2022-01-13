@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/13 01:50:27 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/13 22:52:10 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,40 +24,50 @@
 #include <iomanip>
 #include <vector>
 #include <cstring>
-#include <time.h>
-
-
 #include <map>
+#ifdef __MACH__
+# include <sys/time.h>
+# include <mach/mach_time.h>
+# include <mach/clock.h>
+# include <mach/mach.h> //check without this
+#elif __Linux__
+# include <time.h>
+#endif
 
 #define PRINT std::cout
 #define ALN std::left << std::setw(30)
 #define END TXT_RST << std::endl
 #define SET std::setw(9) << color
 
-void	start_timer(struct timespec * start)
+#ifdef __MACH__
+void	start_timer(uint64_t * start)
 {
-	clock_gettime(CLOCK_MONOTONIC, start);
+	*start = mach_absolute_time();
 }
 
-int64_t	stop_timer_nanosec(struct timespec *start)
+int64_t	stop_timer_nanosec(uint64_t * start)
 {
-	struct timespec	end;
-	clock_gettime(CLOCK_MONOTONIC, &end);
-	return ((end.tv_sec * 1000000000 + end.tv_nsec) - (start->tv_sec * 1000000000 + start->tv_nsec));
+	uint64_t end;
+	end = mach_absolute_time();
+	return (end - *start);
+}
+#elif __Linux__
+void	start_timer(uint64_t * start)
+{
+	struct timespec	time;
+	clock_gettime(CLOCK_MONOTONIC, &time);
+	return (time.tv_sec * 1000000000 + time.tv_nsec)
 }
 
-									//reference to pointer
-void	check(bool result, char const *& color, bool & ret)
+int64_t	stop_timer_nanosec(uint64_t * start)
 {
-	//Return check
-	if (result == true)
-		color = TXT_BGRN;
-	else
-	{
-		color = TXT_BRED;
-		ret = false;
-	}
+	struct timespec	ts_end;
+	clock_gettime(CLOCK_MONOTONIC, &time);
+	uint64_t		end = ts_end.tv_sec * 1000000000 + ts_end.tv_nsec;
+	return (end - *start);
 }
+#endif
+
 
 /*
 ** This function checks FT execution time against STL execution time. If the
@@ -75,14 +85,13 @@ void	check(bool result, char const *& color, bool & ret)
 ** This actually happens reliably in the swap test. In such cases we round up to
 ** the nearest MICROSECOND and report 1 microsecond of execution time.
 */
-
 void	check_exec_time(int64_t & ft_time, int64_t & stl_time, bool & ret)
 {
 	char const *	color;
 	if (stl_time == 0)
-		stl_time += 1000; //Round to nearest microsecond
+		stl_time += 1; //Round to nearest microsecond
 	if (ft_time == 0)
-		ft_time += 1000; //Round to the nearest microsecond
+		ft_time += 1; //Round to the nearest microsecond
 	if (ft_time > stl_time * 20)
 	{
 		color = TXT_BRED;
@@ -95,6 +104,20 @@ void	check_exec_time(int64_t & ft_time, int64_t & stl_time, bool & ret)
 	ft_time = -1;
 	stl_time = -1;
 }
+									//reference to pointer
+void	check(bool result, char const *& color, bool & ret)
+{
+	//Return check
+	if (result == true)
+		color = TXT_BGRN;
+	else
+	{
+		color = TXT_BRED;
+		ret = false;
+	}
+}
+
+
 
 //TODO ESTO PARA DECIR	(&a == &b) :_( :_(
 bool iterator_tests(void)
@@ -479,7 +502,8 @@ bool	my_veritable_vector(void)
 {
 	bool			ret = true;
 	size_t			msg_offset;
-	struct timespec	start;
+	//struct timespec	start;
+	uint64_t		start;
 	int64_t			ft_time;
 	int64_t			stl_time;
 
@@ -1302,7 +1326,8 @@ bool	my_magnificent_map(std::map<Key, Value> const & seed_map)
 {
 	char const *	color = TXT_BGRN;
 	bool			ret = true;
-	struct timespec	start;
+	//struct timespec	start;
+	uint64_t		start;
 	int64_t			ft_time;
 	int64_t			stl_time;
 

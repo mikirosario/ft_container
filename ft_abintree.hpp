@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/12 23:10:36 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/12 23:35:23 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,10 +194,11 @@ namespace ft
 			*/
 			t_lstnode *	lst_new(t_bstnode * tree_node) throw (std::bad_alloc, std::exception) {
 				t_lstnode * new_node;
+				t_lstnode * hint_node = tree_node && tree_node->prev ? static_cast<t_lstnode *>(tree_node->prev->assoc_lst_node) : 0;
 
 				try
 				{
-					new_node = _list_alloc.allocate(1);
+					new_node = _list_alloc.allocate(1, hint_node);
 					_list_alloc.construct(new_node, t_lstnode(_end_lst, _rend_lst));
 					new_node->tree_node = tree_node;
 				}

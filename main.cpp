@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/12 22:08:51 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/13 01:38:40 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1823,14 +1823,6 @@ void    prepost_incdec(std::vector<int> &vct)
 
 int main(void)
 {	
-	// if (iterator_tests())
-	// 	PRINT << TXT_BGRN "OK" << END;
-	// else
-	// 	PRINT << TXT_BRED "KO" << END;
-	// if (my_veritable_vector<ft::vector<int>, std::vector<int> >())
-	// 	PRINT << TXT_BGRN "OK" << END;
-	// else
-	// 	PRINT << TXT_BRED "KO" << END;
 	std::map<std::string, std::string>	seed_map;
 	seed_map.insert(std::make_pair("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
 	seed_map.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));
@@ -1845,7 +1837,20 @@ int main(void)
 	seed_map.insert(std::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
 	seed_map.insert(std::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\tÚnico profesor en activo de 42."));
 
-	my_magnificent_map<std::string, std::string>(seed_map);
+	ft::vector<bool>	results;
+	
+
+	results.push_back(iterator_tests());
+	results.push_back(my_veritable_vector<ft::vector<int>, std::vector<int> >());
+	results.push_back(my_magnificent_map<std::string, std::string>(seed_map));
+		
+	for (ft::vector<bool>::iterator it = results.begin(), end = results.end(); it != end; ++it)
+	{
+		if (*it == true)
+			PRINT << TXT_BGRN "OK" << END;
+		else
+			PRINT << TXT_BRED "KO" << END;
+	}
 
 //debug
 

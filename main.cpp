@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/13 22:52:10 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/14 02:33:44 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # include <mach/mach_time.h>
 # include <mach/clock.h>
 # include <mach/mach.h> //check without this
-#elif __Linux__
+#elif __linux__
 # include <time.h>
 #endif
 
@@ -51,18 +51,18 @@ int64_t	stop_timer_nanosec(uint64_t * start)
 	end = mach_absolute_time();
 	return (end - *start);
 }
-#elif __Linux__
+#elif __linux__
 void	start_timer(uint64_t * start)
 {
 	struct timespec	time;
 	clock_gettime(CLOCK_MONOTONIC, &time);
-	return (time.tv_sec * 1000000000 + time.tv_nsec)
+	*start = time.tv_sec * 1000000000 + time.tv_nsec;
 }
 
 int64_t	stop_timer_nanosec(uint64_t * start)
 {
 	struct timespec	ts_end;
-	clock_gettime(CLOCK_MONOTONIC, &time);
+	clock_gettime(CLOCK_MONOTONIC, &ts_end);
 	uint64_t		end = ts_end.tv_sec * 1000000000 + ts_end.tv_nsec;
 	return (end - *start);
 }

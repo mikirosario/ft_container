@@ -3,16 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mikiencolor <mikiencolor@student.42.fr>    +#+  +:+       +#+         #
+#    By: miki <miki@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/06 18:21:39 by mrosario          #+#    #+#              #
-#    Updated: 2021/12/28 00:31:38 by mikiencolor      ###   ########.fr        #
+#    Updated: 2022/01/15 20:23:55 by miki             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_container
 
 SRCDIR = .
+TESTDIR = $(SRCDIR)/testers
 
 GRN = \e[1;32m
 RED = \e[1;31m
@@ -22,7 +23,9 @@ RST = \e[0m
 
 CXX = clang++
 
-SRCFILES = $(SRCDIR)/main.cpp
+SRCFILES =	$(SRCDIR)/main.cpp $(TESTDIR)/tester_utils.cpp \
+			$(TESTDIR)/iterator_tester.cpp $(TESTDIR)/my_veritable_vector.cpp \
+			$(TESTDIR)/my_magnificent_map.cpp
 
 OBJS = $(SRCFILES:.cpp=.o)
 

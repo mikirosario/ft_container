@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_map.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 16:03:55 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/11 20:29:32 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ namespace ft
 				friend class ft::map<Key, Value, Compare, Alloc>;
 				protected:
 					Compare	_comp;
-					value_compare (Compare src) : _comp(src) {}
+					value_compare (Compare src) : _comp(src) {} //DEBUG This should be protected with a friend class, but it's technically a comparison object containing an operator rather than an operator, so I'm scared it could be considered against the subject...
 				public:
 					typedef bool		result_type;
 					typedef value_type	first_argument_type;

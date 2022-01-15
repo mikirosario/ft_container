@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 21:35:45 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/08 21:56:53 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1113,14 +1113,16 @@ namespace ft
 		return(!operator<(lhs, rhs)); //a>=b == !a<b
 	}
 
-	/* INVERSE ITERATOR OPERATOR OVERLOAD */
+	/* INVERSE ITERATOR + OPERATOR OVERLOAD */
 	/*
 	** The equation iterator = iterator + 1 is resolved by the overloads present
-	** in the iterator itself. But what about 1 + iterator? Bet you never
-	** thought of THAT! xD Yeah, neither did I. :_(
+	** in the iterator itself. But what about 1 + iterator? Eh? EH? I bet you
+	** never thought of THAT! xD Yeah, neither did I. :_(
 	**
-	** This unholy abomination resolves 1 + iterator without resorting to
-	** separating the iterator from the structure. xD
+	** This unholy abomination resolves int + iterator without resorting to
+	** separating the iterator from the data structure by exploiting the
+	** unfathomable ways of argument-dependent lookup and the always helpful
+	** commutative property of addition.
 	*/
 	template<typename InputIt>
 	InputIt	operator+(int const val, InputIt const & it) {
@@ -1128,17 +1130,6 @@ namespace ft
 		tonti = NULL;
 		return (it + val);
 	}
-	template<typename InputIt>
-	InputIt	operator-(int const val, InputIt const & it) {
-		typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * tonti = NULL;
-		tonti = NULL;
-		return (it - val);
-	}
 };
-
-// namespace std
-// {
-
-// };
 
 #endif

@@ -3,32 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vector.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 21:56:53 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/17 23:42:47 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_VECTOR_H
 # define FT_VECTOR_H
 
-//precompiled header?
 #include <memory>
 #include <algorithm>
 #include <exception>
-//#include <stdexcept> //for length_error. Linux only, or Mac also?
 #include <iostream>
-//precompiled header?
-
 #include "type_traits.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
-
-//DEBUG CODE
-#include <vector>
-//#include <type_traits>
-//DEBUG CODE
 
 #define TXT_BRED "\e[1;31m"
 #define TXT_RST "\e[0m"
@@ -36,7 +27,6 @@
 #define NL "\n"
 #define TAB "\t"
 #define END TXT_RST << std::endl
-
 #define GROWTH_FACTOR 2
 /* This catch block is used to catch reserve exceptions */
 #define CATCH_RESERVE_EXCEPTIONS	catch (std::length_error & e) \
@@ -52,7 +42,6 @@
 										PRNTERR << TXT_BRED << e.what() << END; \
 									} \
 
-
 namespace ft
 {
 	template<typename T, typename Alloc = std::allocator<T> >
@@ -62,7 +51,6 @@ namespace ft
 			template<typename iT, typename Category>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
-				//typedef iT const					val_t;
 				typedef Iterator<iT const, Category>	const_it;
 
 				//Constructible
@@ -79,24 +67,6 @@ namespace ft
 					return(Iterator<iT const, Category>(this->_m_ptr));
 				}
 				//Relational Operator Overloads
-				// bool	operator==(Iterator const & rhs) const {
-				// 	return (this->_m_ptr == rhs._m_ptr);
-				// }
-				// bool	operator!=(Iterator const & rhs) const {
-				// 	return (!operator==(rhs)); //a!=b == !(a==b)
-				// }
-				// bool	operator<(Iterator const & rhs) const {
-				// 	return (this->_m_ptr < rhs._m_ptr);
-				// }
-				// bool	operator>(Iterator const & rhs) const {
-				// 	return (rhs < *this); //a>b == b<a
-				// }
-				// bool	operator<=(Iterator const & rhs) const {
-				// 	return (!(rhs < *this)); //a<=b == !(b<a)
-				// }
-				// bool	operator>=(Iterator const & rhs) const {
-				// 	return (!(*this < rhs)); //a>=b == !(a<b)
-				// }
 				bool	operator==(const_it const & rhs) const {
 					return (this->_m_ptr == rhs.base());
 				}
@@ -169,7 +139,6 @@ namespace ft
 				typename Iterator::reference	operator[](typename Iterator::difference_type pos) const {
 					return (*(this->_m_ptr + pos));
 				}
-				//aaaaah!!!! -> . ... claro!!!! :D
 				typename Iterator::pointer		operator->(void) const {
 					return (this->_m_ptr);
 				}
@@ -257,6 +226,9 @@ namespace ft
 			** Sorry, I've recovered somewhat from the shock of SFINAE. xD
 			**
 			** This constructor will allocate memory for last - first elements.
+			** We can't actually do last - first since this must work for
+			** iterators that don't have it, so hop through a for loop from
+			** first to last and count the elements to determine capacity.
 			**
 			** The values in the passed iterator range will be copied to the
 			** vector. If allocation fails, allocation exceptions will be
@@ -268,12 +240,10 @@ namespace ft
 			_capacity(0), _size(0), _alloc(alloc), _arr(NULL) {	
 				try
 				{
-					//size_type	new_capacity = last - first;
 					size_type	new_capacity = 0;
 
 					for (InputIt it = first; it != last; ++it)
 						++new_capacity;
-
 					_arr = _alloc.allocate(new_capacity); //may throw bad_alloc
 					_capacity = new_capacity;
 					this->insert(this->begin(), first, last);
@@ -291,37 +261,6 @@ namespace ft
 					PRNTERR << TXT_BRED << e.what() << END;
 				}
 			}
-
-			// /*
-			// ** The !is_integral version. I don't get this either. What if it's
-			// ** a vector of doubles? A vector of instantiated classes? But this
-			// ** apparently was an official implementation?? O_O What is this
-			// ** language!?
-			// */
-			// template<typename InputIt> //it's taking my int!!!! :O must do some enable_if is_iterator or something
-			// vector(InputIt first, InputIt last, const allocator_type & alloc = allocator_type(),
-			// typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = NULL) :
-			// _capacity(last - first), _size(0), _alloc(alloc), _arr(_alloc.allocate(_capacity)) {
-			// 		for ( ; _size < _capacity; ++first, ++_size)
-			// 		{
-			// 			this->_alloc.construct(_arr + _size, *first);
-			// 		}
-			// }
-			// /*
-			// ** The actual, official implementation from my own Linux library.
-			// ** WTF is this!? Is this check performed at run-time inside the
-			// ** _M_initialize_dispatch function? What does it do if it turns out
-			// ** to be an integer, throw an exception? What is this MADNESS!? o_O
-			// */
-     		// template<typename _InputIterator>
-			// vector(_InputIterator __first, _InputIterator __last,
-			// const allocator_type& __a = allocator_type())
-			// : _Base(__a)
-			// {
-			// 	// Check whether it's an integral type.  If so, it's not an iterator.
-			// 	typedef typename std::__is_integer<_InputIterator>::__type _Integral;
-			// 	_M_initialize_dispatch(__first, __last, _Integral());
-			// }
 
 			/* COPY CONSTRUCTOR */
 			/*
@@ -490,7 +429,7 @@ namespace ft
 			** (the iterators themselves can be modified).
 			*/
 			iterator			begin(void) {
-				return (iterator(_arr)); //valid only for vectors
+				return (iterator(_arr));
 			}
 
 			//A note on const_iterators.
@@ -506,15 +445,15 @@ namespace ft
 			//them just fine).
 
 			const_iterator		begin(void) const {
-				return (const_iterator(_arr)); //valid only for vectors
+				return (const_iterator(_arr));
 			}
 
 			iterator			end(void) {
-				return (iterator(_arr + _size)); //valid only for vectors
+				return (iterator(_arr + _size));
 			}
 
 			const_iterator		end(void) const {
-				return (const_iterator(_arr + _size)); //valid only for vectors
+				return (const_iterator(_arr + _size));
 			}
 			
 			/* RBEGIN AND REND METHODS */
@@ -565,11 +504,9 @@ namespace ft
 			template<typename InputIt>
 			void				assign(InputIt first, InputIt last,
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type* = NULL) {
-				//size_type	new_size = last - first;
 				size_type new_size = 0;
 				for (InputIt it = first; it != last; ++it)
 					++new_size;
-
 				try
 				{
 					reserve(new_size); 	//reserve will do nothing if new_size is not greater than capacity; reserve throws
@@ -580,6 +517,7 @@ namespace ft
 				}
 				CATCH_RESERVE_EXCEPTIONS
 			}
+
 			/* FILL ASSIGN */
 			/*
 			** This function replaces the container's elements with n instances
@@ -642,7 +580,7 @@ namespace ft
 			*/
 			void				pop_back(void) {
 				if (_size)
-					_alloc.destroy(&(_arr[--_size])); //valid for vector only; only place _size decrements
+					_alloc.destroy(&(_arr[--_size]));
 			}
 
 			/* CLEAR */
@@ -799,29 +737,15 @@ namespace ft
 
 					this->resize(_size + n); //iterators invalidated here
 					iterator first(this->begin() + pos_index);
-					//if (n > 0)	//stop self-copying when n == 0 and _size > 0, or not worth extra check ?
-									//other ways of approaching the right shift ?
-					//{
-						//right shift all values after and including _arr[pos_index] by n
-						for (iterator it(this->end() - 1); it != first + n - 1; --it)
-							*it = *(it - n);
-						//copy val to positions before shifted values
-						for (iterator it(first); it != first + n; ++it)
-							*it = val;
-					//}
+					//right shift all values after and including _arr[pos_index] by n
+					for (iterator it(this->end() - 1); it != first + n - 1; --it)
+						*it = *(it - n);
+					//copy val to positions before shifted values
+					for (iterator it(first); it != first + n; ++it)
+						*it = val;
 				}
 				CATCH_RESERVE_EXCEPTIONS
 			}
-			
-			//c++98 isn't actually type-safe if InputIt is an integer, instead
-			//it interprets the same thing as the last overload (first is 'n'
-			// and last is 'val'). I can see why, I mean they are very similar,
-			//but... do I REALLY have to implement that?? I WANT to type check
-			//the thing!! It doesn't even really make much sense, T and
-			// size_type are still probably different integers. :p I might get
-			//annoyed enough to do a run-time type check and call insert2
-			//overload, which is awful. Wait, that isn't what they originally
-			//did, is it...? IS IT? O_O
 
 			/* RANGE INSERT */
 			/*
@@ -834,7 +758,6 @@ namespace ft
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) {
 				try
 				{
-					//size_type	grow_by = last - first;
 					size_type	grow_by = 0;
 					size_type	pos_index = (pos - this->begin());
 
@@ -870,13 +793,6 @@ namespace ft
 				this->_capacity = src._capacity;
 				src._capacity = org_cap;
 			}
-
-			// This works too for the template specialization, but in STL it's a
-			// free function, so...
-			// template<typename _Tp>
-			// friend void	swap(ft::vector<_Tp> & x, ft::vector<_Tp> & y) {
-			// 	x.swap(y);
-			// }
 
 			/* ---- CAPACITY ---- */
 			
@@ -1028,14 +944,8 @@ namespace ft
 			size_type		_capacity;
 			size_type		_size; //object count
 			allocator_type	_alloc;
-			T	*_arr;
+			T *				_arr;
 	};
-
-	// both of these methods seem to work for swap
-	// except if it's not a free function i obviously can't use ft::swap.
-	// maybe i'll free it. i don't know. maybe not. aren't some containers not
-	// swappable? i wouldn't have to enable_if them, would I?? :O because I'm
-	// leaving them as friends if THAT's the case.
 
 	/* SWAP TEMPLATE SPECIALIZATION */
 	/*

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_magnificent_map.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 20:20:24 by miki              #+#    #+#             */
-/*   Updated: 2022/01/15 20:51:33 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/17 15:52:43 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -446,9 +446,26 @@ bool	my_magnificent_map(std::map<std::string, std::string> const & seed_map)
 	//End Exec Timer
 	print_map_comp(mi_map_range, su_map_range, color, ret);
 
-	//COMPARISON OBJECT //DEBUG, pending comparison test
-	PRINT	<< TXT_NL << TXT_BYEL << "COMP OBJECT TESTS" << END;
-	PRINT	<< std::boolalpha << mi_map_default.value_comp()(*mi_map_default.begin(), *(++mi_map_default.begin())) << END;
+	//COMPARISON OBJECT
+	//Both mi_map_default and su_map_default value comps should return same
+	//comparison result. Comparison by default checks if lhs is less than rhs,
+	//returning true or false as appropriate.
+	PRINT	<< TXT_NL << TXT_BYEL << "COMP OBJECT TESTS"
+			<< TXT_NL << TXT_TAB << "value_comp(map_default.begin(), map_default.begin())" << END;
+	{
+	size_t	msg_offset;
+	bool	my_res = mi_map_default.value_comp()(*mi_map_default.begin(), *mi_map_default.begin());
+	bool	stl_res = su_map_default.value_comp()(*su_map_default.begin(), *su_map_default.begin());
+	compare_log(my_res == stl_res, ret, "result", msg_offset);
+	PRINT	<< std::boolalpha << std::setw(msg_offset) << my_res << TXT_TAB << std::setw(msg_offset) << stl_res << END;
+	}
+	{
+	size_t	msg_offset;
+	bool	my_res = mi_map_default.value_comp()(*mi_map_default.begin(), *++mi_map_default.begin());
+	bool	stl_res = su_map_default.value_comp()(*su_map_default.begin(), *++su_map_default.begin());
+	compare_log(my_res == stl_res, ret, "result", msg_offset);
+	PRINT	<< std::boolalpha << std::setw(msg_offset) << my_res << TXT_TAB << std::setw(msg_offset) << stl_res << END;
+	}
 
 	PRINT	<< TXT_NL << TXT_BYEL << "RELATIONAL OPERATORS" << END;
 	comparison_operator_log<std::map< std::string, std::string>, ft::map<std::string, std::string> >(su_map_default, su_map_copy, mi_map_default, mi_map_copy, ret);

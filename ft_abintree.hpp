@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/12 23:35:23 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/17 22:28:05 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,28 +19,6 @@
 
 namespace ft
 {
-	// struct ABintreeNode
-	// {
-	// 	/*
-	// 	** This enum field will define a node color as red or black.
-	// 	*/
-	// 	typedef enum	e_bstcolor
-	// 	{
-	// 		BLK = 0, RED
-	// 	}				t_bstcolor;
-	// 	struct ABintreeNode				*parent;
-	// 	struct ABintreeNode				*left;
-	// 	struct ABintreeNode				*right;
-	// 	struct ABintreeNode				*next;
-	// 	struct ABintreeNode				*prev;
-	// 	//C_key							key; //store in C_key?? could it be consted then??
-	// 	t_bstcolor						color;
-		
-	// 	private:
-	// 		//struct ABintreeNode &	operator=(struct ABintreeNode const & src) { *this = src; return *this; } //nodes can't be assigned
-	// };
-	//pair specialization
-
 	template<typename Data, typename Key, typename Value>
 	struct	BintreeNode
 	{
@@ -59,7 +37,6 @@ namespace ft
 		struct BintreeNode							*next;
 		struct BintreeNode							*prev;
 		void										*assoc_lst_node;
-		//C_key										key; //store in C_key?? could it be consted then??
 		t_bstcolor									color;
 		Data										data;
 		Key const									*key; //should ideally be pointer consts, but then how to instantiate at runtime??
@@ -67,9 +44,6 @@ namespace ft
 		
 		BintreeNode(void) : data(Data()) {}
 		BintreeNode(t_bstnode * parent, Data const & src_data) : parent(parent), left(NULL), right(NULL), next(NULL), prev(NULL), assoc_lst_node(NULL), color(RED), data(src_data) {}
-		// ~BintreeNode(void) {
-		// 	std::memset(this, 0, sizeof(BintreeNode<Data, Key, Value>));
-		// }
 		struct BintreeNode &	operator=(struct BintreeNode const & src) { *this = src; return *this; }
 	};
 
@@ -83,18 +57,14 @@ namespace ft
 			** a synonym for value_type so I don't confuse it with the
 			** mapped_type.
 			*/
-			typedef Data	data_type;
-			typedef Data	value_type;
-			typedef Key		key_type;
-			typedef Value	mapped_type;
-			typedef Alloc	allocator_type;
-			/*
-			** For the double-value implementation of ft::bintree the data type
-			** will be ft::pair<X,Y>.
-			*/
-			typedef std::size_t	size_type;
-			
-			typedef Compare		key_compare;
+			typedef Data										data_type;
+			typedef Data										value_type;
+			typedef Key											key_type;
+			typedef Value										mapped_type;
+			typedef Alloc										allocator_type;
+			typedef std::size_t									size_type;
+			typedef Compare										key_compare;
+			typedef struct ft::BintreeNode<Data, Key, Value>	t_bstnode;
 			class	C_key
 			{
 				private:
@@ -113,7 +83,6 @@ namespace ft
 					}
 
 					bool	operator<(C_key const & src) const {
-						//std::cerr << "WUZ HERE!!!!" << std::endl;
 						return (_is_less(this->_key, src._key));
 					}
 					bool	operator>(C_key const & src) const {
@@ -132,22 +101,6 @@ namespace ft
 						return (!(*this != src));
 					}
 			};
-
-			// class value_compare : std::binary_function<value_type, value_type, bool>
-			// {
-			// 	protected:
-			// 		key_compare	_comp;
-			// 		value_compare (key_compare src) : _comp(src) {}
-			// 	public:
-			// 		typedef bool		result_type;
-			// 		typedef value_type	first_argument_type;
-			// 		typedef value_type	second_argument_type;
-			// 		bool operator()(value_type const & x, value_type const & y) const {
-			// 			return _comp(x.first, y.first);
-			// 		}
-			// };
-
-			typedef struct ft::BintreeNode<Data, Key, Value>	t_bstnode;
 
 		protected:
 			/* VARIABLES */
@@ -237,16 +190,6 @@ namespace ft
 					node->prev = last_node;
 				}
 				_end_lst->prev = list_tail;
-				// if (list_head != NULL)
-				// {
-				// 	t_lstnode * last_node = list_head;
-				// 	while (last_node->next != _end_lst)
-				// 		last_node = last_node->next;
-				// 	last_node->next = node;
-				// 	node->prev = last_node;
-				// }
-				// else
-				// 	list_head = node;
 			}
 
 			/* LST_DEL_ONE */
@@ -386,50 +329,28 @@ namespace ft
 			template<typename iT, typename Category, typename lstNodeT = t_lstnode>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
-				//friend class ft::Abintree<Data, Key, Value, Compare, Alloc>;
 				typedef	typename ft::Abintree<Data, Key, Value, Compare, Alloc>	Abintree;
 				typedef Iterator<iT, Category, lstNodeT const>	const_it;
 				//Constructors and Destructor
 				public:
 				Iterator(void) : _lst_node(NULL), _end_ptr_addr(NULL) {}
-				//Iterator(lstNodeT * lst_node, t_bstnode * const * root_ptr_addr) : _lst_node(lst_node), _root_ptr_addr(root_ptr_addr) {}
 				Iterator(lstNodeT * lst_node, t_lstnode const * end_ptr_addr) : _lst_node(lst_node), _end_ptr_addr(end_ptr_addr) {}
 				Iterator(Iterator const & src) : _lst_node(src._lst_node), _end_ptr_addr(src._end_ptr_addr) {}
 				~Iterator(void) {}
 
 				//Assignment Operator Overload
 				Iterator &	operator=(Iterator const & rhs) {
-					//if(_end_ptr_addr != rhs.end_ptr_addr) // ??????
 					this->_lst_node = rhs._lst_node;
-					this->_end_ptr_addr = rhs._end_ptr_addr; //should I allow this????
+					this->_end_ptr_addr = rhs._end_ptr_addr;
 					return (*this);
 				}
 
-				//Conversion Overload OBSOLETE?? Trivial pointer to const pointer should be handled automatically by compiler.
-				//NOT OBSOLETE!!!! NOT OBSOLETE!!!!!!!!!!
+				//Conversion Overload
 				operator	Iterator<t_bstnode, std::bidirectional_iterator_tag, lstNodeT const>() const {
 					return (Iterator<t_bstnode, std::bidirectional_iterator_tag, lstNodeT const>(this->_lst_node, this->_end_ptr_addr));
 				}
 
 				//Relational Operator Overloads
-				// bool	operator==(Iterator const & rhs) const {
-				// 	return (this->_lst_node == rhs._lst_node);
-				// }
-				// bool	operator!=(Iterator const & rhs) const {
-				// 	return (!operator==(rhs)); //a!=b == !(a==b)
-				// }
-				// bool	operator<(Iterator const & rhs) const {
-				// 	return (C_key(*this->_lst_node->tree_node->key) < C_key(*rhs._lst_node->tree_node->key));
-				// }
-				// bool	operator>(Iterator const & rhs) const {
-				// 	return (rhs < *this); //a>b == b<a
-				// }
-				// bool	operator<=(Iterator const & rhs) const {
-				// 	return (!(rhs < *this)); //a<=b == !(b<a)
-				// }
-				// bool	operator>=(Iterator const & rhs) const {
-				// 	return (!(*this < rhs)); //a>=b == !(a<b)
-				// }
 				bool	operator==(const_it const & rhs) const {
 					return (this->_lst_node == rhs.base());
 				}
@@ -448,73 +369,68 @@ namespace ft
 				bool	operator>=(const_it const & rhs) const {
 					return (!(*this < rhs)); //a>=b == !(a<b)
 				}
+
 				//Arithmetic Operator Overloads
-				Iterator &							operator++(void) {
+				Iterator &	operator++(void) {
 					this->_lst_node = this->_lst_node->next;
 					return (*this);
 				}
-				Iterator							operator++(int) {
+				Iterator	operator++(int) {
 					Iterator	ret(*this);
 					operator++();
 					return (ret);
 				}
-				Iterator & 							operator--(void) {
+				Iterator &	operator--(void) {
 					//if (this->_lst_node->prev != NULL) // imitating my Linux compiler's implementation here, probably less efficiently ;p
 						this->_lst_node = this->_lst_node->prev;
 					return (*this);
 				}
-				Iterator							operator--(int) {
+				Iterator	operator--(int) {
 					Iterator	ret(*this);
 					operator--();
 					return (ret);
 				}
-				Iterator &							operator+=(int inc) {
+				Iterator &	operator+=(int inc) {
 					for (int i = 0; i < inc; ++i)
 						operator++();
 					return (*this);
 				}
-				Iterator &							operator-=(int dec) {
+				Iterator &	operator-=(int dec) {
 					for (int i = 0; i < dec; ++i)
 						operator--();
 					return (*this);
 				}
-				Iterator							operator+(int const & rhs) const {
+				Iterator	operator+(int const & rhs) const {
 					Iterator	sum(*this);
 					return (sum += rhs);
 				}
-				Iterator							operator-(int const & rhs) const {
+				Iterator	operator-(int const & rhs) const {
 					Iterator	dif(*this);
 					return (dif -= rhs);
 				}
 				
 				//Referencing Operators
-				//The const references/pointers will be consted by the vector
-				//instantiation for const_iterators, which uses a const lstnodeT.
-				//The function is always consted, as it itself doesn't modify
-				//any class member.
-				typename Iterator::reference	operator*(void) const { //return node ref
+				typename Iterator::reference	operator*(void) const {
 					return (*this->_lst_node->tree_node);
 				}
 				typename Iterator::reference	operator[](typename Iterator::difference_type pos) const {
 					return (*(*this + pos));
 				}
-				//aaaaah!!!! -> . ... claro!!!! :D
-				typename Iterator::pointer		operator->(void) const { //return node pointer
+				typename Iterator::pointer		operator->(void) const {
 					return (this->_lst_node->tree_node);
 				}
 
-				lstNodeT const *	get_end_lst_addr(void) const {
+				//Getters
+				lstNodeT const *				get_end_lst_addr(void) const {
 					return (_end_ptr_addr);
 				}
-				lstNodeT *			base(void) const {
+				lstNodeT *						base(void) const {
 					return (_lst_node);
 				}
+
 				protected:
 					lstNodeT *						_lst_node;
-					//t_bstnode * const *				_root_ptr_addr;
 					lstNodeT const *				_end_ptr_addr;
-				/*this worked*/		//friend bool ft::Abintree<Data, Key, Value, Compare, Alloc>::is_valid_position(Iterator<iT, Category, lstNodeT> const & position, key_type const & key) const;
-				//this did not		//friend void ft::Abintree<Data, Key, Value, Compare, Alloc>::erase(iterator position); //WHY WON'T YOU BE MY FRIEND!???
 			};
 
 			typedef Iterator<t_bstnode, std::bidirectional_iterator_tag, t_lstnode>			iterator;
@@ -523,27 +439,23 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>									const_reverse_iterator;
 
 			/* ---- CONSTRUCTORS AND DESTRUCTOR ---- */
-			
+
 			/* DEFAULT CONSTRUCTOR */	
 			Abintree(key_compare const & comp = key_compare(), allocator_type const & alloc = allocator_type()) :
 			_root(NULL), _size(0), _is_less(comp), _alloc(alloc), _end_lst(NULL), _rend_lst(NULL)/*, _list_head(_end_lst), _list_tail(_end_lst)*/	{
 				try
 				{
 					//_end_lst and _rend_lst dummy list nodes are assigned to a contiguous block of memory
-					_end_lst = _list_alloc.allocate(sizeof(t_lstnode) * 2);
+					_end_lst = _list_alloc.allocate(2);
 					_rend_lst = _end_lst + 1;
 					_list_alloc.construct(_end_lst, t_lstnode(_end_lst, _rend_lst)); //c++98 compatible, Mac-friendly... that is some SEXEEEH code xD
 					_list_alloc.construct(_rend_lst, t_lstnode(_end_lst, _rend_lst));
 					_list_head = _end_lst;
 					_list_tail = _end_lst;
-					//_end_lst->prev = _rend_lst;
-					//_end_lst->next = NULL;
-					//_rend_lst->next = _end_lst;
-					//_rend_lst->prev = NULL;
 					_end_lst->tree_node = &_tonti_tree_node; //the dummy list nodes point to a dummy tree node with default-instantiated value_type
 					_rend_lst->tree_node = &_tonti_tree_node; //this imitates Mac functionality where dereferencing map.end() does not segfault.
 					//Mac seems to instantiate the pair->second to 0 instead of default-instantiating and they don't necessarily compare equal, but whatever.
-					//What maniac dereferences an end iterator anyway? As far as I'm concerned that should SEGFAULT like I had it before. :p
+					//What maniac dereferences an end iterator anyway? As far as I'm concerned that SHOULD segfault, like I had it before. :p
 				}
 				catch (std::bad_alloc const & e)
 				{
@@ -557,13 +469,14 @@ namespace ft
 			//These constructors are defined in the derived classes, which all use the default abstract constructor first and then insert.
 			// /* RANGE CONSTRUCTOR */
 			// /* (DEEP) COPY CONSTRUCTOR */
+
+			//DESTRUCTOR
 			virtual ~Abintree(void) {
 				_list_alloc.destroy(_end_lst);
 				_list_alloc.destroy(_rend_lst);
-				//DEBUG, should be 2, not sizeof * 2, check allocate also
-				_list_alloc.deallocate(_end_lst, sizeof(t_lstnode) * 2);
+				_list_alloc.deallocate(_end_lst, 2);
 				
-				//_list_alloc.deallocate(_rend_lst, sizeof(t_lstnode));
+				//_list_alloc.deallocate(_rend_lst, 1);
 			}
 			
 			/* ---- ASSIGNMENT OPERATOR OVERLOAD ---- */
@@ -693,7 +606,7 @@ namespace ft
 				{
 					t_bstnode * tmp = node->next;
 					_alloc.destroy(node);
-					std::memset(node, 0, sizeof(t_bstnode));
+					std::memset(node, 0, 1);
 					_alloc.deallocate(node, 1);
 					node = tmp;
 				}
@@ -1225,7 +1138,7 @@ namespace ft
 					if (new_lst_node != NULL)
 					{
 						_list_alloc.destroy(new_lst_node);
-						_list_alloc.deallocate(new_lst_node, sizeof(t_lstnode));
+						_list_alloc.deallocate(new_lst_node, 1);
 					}
 					std::cerr << e.what() << std::endl;
 				}
@@ -1234,7 +1147,7 @@ namespace ft
 					if (new_lst_node != NULL)
 					{
 						_list_alloc.destroy(new_lst_node);
-						_list_alloc.deallocate(new_lst_node, sizeof(t_lstnode));
+						_list_alloc.deallocate(new_lst_node, 1);
 					}
 					std::cerr << e.what() << std::endl;
 				}
@@ -1263,7 +1176,7 @@ namespace ft
 					_root = NULL;
 				_alloc.destroy(node);
 				//put this in t_bstnode destructor :p
-				std::memset(node, 0, sizeof(t_bstnode));
+				std::memset(node, 0, 1);
 				_alloc.deallocate(node, 1);
 				--_size;
 				return (NULL);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   algorithm.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 15:23:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2021/11/15 00:58:39 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/17 22:07:01 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ namespace ft
 	** STL-style lexicographical compare. Less nightmare-inducing than my
 	** version (only because I try REALLY hard xD).
 	*/
-
 	template<typename InputIterator1, typename InputIterator2>
 	bool	lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
 									InputIterator2 first2, InputIterator2 last2)
@@ -95,7 +94,6 @@ namespace ft
 	** At least it sets some logical type limits for the compare function,
 	** though, I mean damn! xD
 	*/
-
 	template<typename InputIterator1, typename InputIterator2, typename Comp>
 	bool	lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
 									InputIterator2 first2, InputIterator2 last2, Comp comp)

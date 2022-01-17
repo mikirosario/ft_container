@@ -6,32 +6,23 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:16:48 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/12 03:43:17 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 23:10:42 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_SET_H
 # define FT_SET_H
 
-//precompiled header?
 #include <memory>
 #include <algorithm>
 #include <exception>
-//#include <stdexcept> //for length_error. Linux only, or Mac also?
 #include <iostream>
-//precompiled header?
-
 #include "ansi_codes.hpp"
 #include "type_traits.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
 #include "ft_bintree.hpp"
 #include "utility.hpp"
-
-//DEBUG CODE
-#include <vector>
-//#include <type_traits>
-//DEBUG CODE
 
 namespace ft
 {
@@ -43,8 +34,6 @@ namespace ft
 			template<typename iT, typename Category, typename tiT>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
-				//friend class ft::set<Value, Compare, Alloc>;
-
 				typedef Value const															const_val_t;
 				typedef typename ft::bintree<Value const, Compare, Alloc>::const_iterator	const_tree_it;
 				typedef Iterator<const_val_t, Category, const_tree_it>						const_it;
@@ -65,12 +54,6 @@ namespace ft
 					return(Iterator<iT const, Category, typename ft::bintree<Value const, Compare, Alloc>::const_iterator>(this->_tree_it));
 				}
 				//Relational Operator Overloads
-				// bool	operator==(Iterator const & rhs) const {
-				// 	return (this->_tree_it == rhs._tree_it);
-				// }
-				// bool	operator!=(Iterator const & rhs) const {
-				// 	return (!operator==(rhs)); //a!=b == !(a==b)
-				// }
 				bool	operator==(const_it const & rhs) const {
 					return (this->_tree_it == rhs.base());
 				}
@@ -103,7 +86,6 @@ namespace ft
 				const iT &						operator*(void) const {
 					return(this->_tree_it->data);
 				}
-				//aaaaah!!!! -> . ... claro!!!! :D
 				typename Iterator::pointer		operator->(void) const {
 					return (&this->_tree_it->data);
 				}

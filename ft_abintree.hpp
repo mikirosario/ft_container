@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 22:28:05 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 23:04:14 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -474,9 +474,7 @@ namespace ft
 			virtual ~Abintree(void) {
 				_list_alloc.destroy(_end_lst);
 				_list_alloc.destroy(_rend_lst);
-				_list_alloc.deallocate(_end_lst, 2);
-				
-				//_list_alloc.deallocate(_rend_lst, 1);
+				_list_alloc.deallocate(_end_lst, 2); //_end_lst and _rend_lst are assigned to a single contiguous memory block starting at _end_lst
 			}
 			
 			/* ---- ASSIGNMENT OPERATOR OVERLOAD ---- */
@@ -492,71 +490,6 @@ namespace ft
 			** the old one. Otherwise, we clear the old tree and replace with
 			** the new one.
 			*/
-		//DEBUG OBSOLETE LEAKY VERSION; REPLACEMENT BELOW; DELETE THIS
-		//LEAK
-		//This is leak central right now because of the list. xD Need to protect the old list from the new or something.
-		//I think I'll need to leave this one for when I have a nap and am off the train. xD
-			// Abintree &	operator=(Abintree const & src) {
-			// 	t_bstnode *	new_root = NULL;
-			// 	//want the old list out of the way for now, but not destroyed until I can validate the new tree.
-			// 	//t_lstnode old_end_lst = *_end_lst;
-			// 	//t_lstnode old_rend_lst = *_rend_lst;
-				
-			// 	//lst_clr(_list_head, _list_tail);
-			// 	// _end_lst->prev = _rend_lst;
-			// 	// _rend_lst->next = _end_lst;
-			// 	// _list_head = _end_lst;
-			// 	// _list_tail = _rend_lst;
-				
-				
-				
-			// 	t_lstnode * old_lst_head = _list_head;
-			// 	t_lstnode * old_lst_tail = _list_tail;
-			// 	_list_head = _end_lst;
-			// 	_list_tail = _end_lst;
-			// 	// _end_lst->prev = _rend_lst;
-			// 	// _rend_lst->next = _end_lst;
-			// 	//size_type	new_size = 0;
-			// 	size_type	old_size = _size;
-			// 	_size = 0;
-			// 	Alloc	tmp = _alloc; //save copy of original allocator
-			// 	Alloc	_alloc = src.get_allocator(); //take source allocator
-			// 	//Attempt to build new tree from source nodes
-			// 	for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next/*, ++new_size*/)
-			// 		//attempt allocation using source allocator
-			// 		//add also adds to the list... need to isolate the new list from the old
-			// 		if (bintree_add(new_root, new_node->data, *new_node->key) == NULL) //memory alloc failed
-			// 		{
-			// 			_alloc = tmp; //revert to original allocator
-			// 			bintree_free(new_root); //free all the nodes reserved for the new tree
-			// 			//LEAK
-			// 			lst_clr(_list_head, _list_tail); //clear new list
-			// 			_list_head = old_lst_head; //revert to original lst
-			// 			_list_tail = old_lst_tail;
-			// 			if (old_size > 0)
-			// 			{
-			// 				_end_lst->prev = _list_tail;
-			// 				_rend_lst->next = _list_head;
-			// 				_size = old_size;
-			// 			}
-			// 			return (*this); //return; exception has already been handled internally
-			// 		}
-			// 	bintree_free(_root); //delete existing tree
-			// 	//LEAK
-			// 	lst_clr(old_lst_head, old_lst_tail); //delete old list; this resets _end_lst and _rend_lst pointers
-			// 	if (_size > 0) //if the new tree has content, the new list has content, re-point _end_lst and _rend_lst pointers.
-			// 	{
-			// 		_end_lst->prev = _list_tail;
-			// 		_rend_lst->next = _list_head;
-			// 	}
-			// 	_root = new_root;
-			// 	//_size = new_size;
-			// 	_is_less = src._is_less;
-			// 	return (*this);
-			// }
-			//DEBUG OBSOLETE LEAKY VERSION; REPLACEMENT BELOW; DELETE THIS WHEW
-
-
 			Abintree &	operator=(Abintree const & src) {
 			 	if (this == &src)
 				 	return (*this);
@@ -578,50 +511,47 @@ namespace ft
 				 _end_lst->prev = _rend_lst;
 				 _rend_lst->next = _end_lst;
 				 _alloc = src._alloc;
+				//Attempt to build new tree from source nodes
+				for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next)
+					//attempt allocation using source allocator
+					//add also adds to the list... that's why we needed to isolate the new list from the old
+					if (bintree_add(_root, new_node->data, *new_node->key) == NULL) //memory alloc failed (valgrind approved, leak free)
+					{
+						_alloc = old_alloc; //revert to original allocator
+						bintree_free(_root); //free all the nodes reserved for the new tree
+						lst_clr(_list_head, _list_tail); //clear new list
 
-			//Attempt to build new tree from source nodes
-			for (t_bstnode const * new_node = &src.getMin(); new_node != NULL; new_node = new_node->next/*, ++new_size*/)
-				//attempt allocation using source allocator
-				//add also adds to the list... that's why we needed to isolate the new list from the old
-				if (bintree_add(_root, new_node->data, *new_node->key) == NULL) //memory alloc failed (valgrind approved, leak free)
+						//revert to original tree
+						_root = old_root;
+						_size = old_size;
+						_list_head = old_list_head; //revert to original lst
+						_list_tail = old_list_tail;
+						*_end_lst = old_end_lst;
+						*_rend_lst = old_rend_lst;
+						return (*this); //return; exception has already been handled internally
+					}
+				//new tree build successful
+				if (old_size > 0)
 				{
-					_alloc = old_alloc; //revert to original allocator
-					bintree_free(_root); //free all the nodes reserved for the new tree
-					lst_clr(_list_head, _list_tail); //clear new list
-
-					//revert to original tree
-					_root = old_root;
-					_size = old_size;
-					_list_head = old_list_head; //revert to original lst
-					_list_tail = old_list_tail;
-					*_end_lst = old_end_lst;
-					*_rend_lst = old_rend_lst;
-					return (*this); //return; exception has already been handled internally
-				}
-			//new tree build successful
-			if (old_size > 0)
-			{
-				//delete old tree
-				for (t_bstnode * node = old_list_head->tree_node; node != NULL; )
-				{
-					t_bstnode * tmp = node->next;
-					_alloc.destroy(node);
-					std::memset(node, 0, 1);
-					_alloc.deallocate(node, 1);
-					node = tmp;
-				}
-				//delete old list
-				for (t_lstnode * node = old_list_head; node != _end_lst; )
-				{
-						t_lstnode * tmp = node->next;
-						_list_alloc.destroy(node);
-						_list_alloc.deallocate(node, 1);
+					//delete old tree
+					for (t_bstnode * node = old_list_head->tree_node; node != NULL; )
+					{
+						t_bstnode * tmp = node->next;
+						_alloc.destroy(node);
+						std::memset(node, 0, 1);
+						_alloc.deallocate(node, 1);
 						node = tmp;
+					}
+					//delete old list
+					for (t_lstnode * node = old_list_head; node != _end_lst; )
+					{
+							t_lstnode * tmp = node->next;
+							_list_alloc.destroy(node);
+							_list_alloc.deallocate(node, 1);
+							node = tmp;
+					}
 				}
-			}
-
-			return (*this);
-
+				return (*this);
 			}
 
 			/* ---- PROTECTED BINARY TREE CONTROL FUNCTIONS ---- */
@@ -661,7 +591,7 @@ namespace ft
 			** If the insertion position is valid, true is returned. Otherwise,
 			** false is returned.
 			*/
-			bool is_valid_position(iterator const & position, key_type const & key) const {
+			bool			is_valid_position(iterator const & position, key_type const & key) const {
 				if (position.base() == _end_lst || position.base() == _rend_lst
 				|| position.base() == _root->assoc_lst_node
 				|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
@@ -709,7 +639,7 @@ namespace ft
 			** A pointer to the least of the nodes greater than 'node' is
 			** returned. If 'node' is already the greatest, NULL is returned.
 			*/
-			t_bstnode *	getNextNode(t_bstnode const * node) const {
+			t_bstnode *			getNextNode(t_bstnode const * node) const {
 				if (node->right != NULL)
 				{
 					node = node->right;
@@ -767,7 +697,7 @@ namespace ft
 			** A pointer to the greatest of the nodes lesser than 'node' is
 			** returned. If 'node' is already the least node, NULL is returned.
 			*/
-			t_bstnode * getPrevNode(t_bstnode const * node) const {
+			t_bstnode *			getPrevNode(t_bstnode const * node) const {
 				if (node->left != NULL)
 				{
 					node = node->left;
@@ -828,8 +758,7 @@ namespace ft
 			** the iterator AFTER deleting, on the school Mac it works even
 			** after! Good show, Apple! ;)
 			*/
-
-			t_lstnode *	thread_search(t_bstnode * node) {
+			t_lstnode *			thread_search(t_bstnode * node) {
 				
 				t_lstnode * it = _list_head;
 				while (it != _end_lst && it->tree_node != node)
@@ -844,43 +773,6 @@ namespace ft
 					it = it->next;
 				return (it);
 			}
-
-			/* BINTREE SEARCH - OBSOLETE */
-			/*
-			** This function will search the binary tree whose 'root' is passed
-			** as the first argument for the value passed as 'key' in the second
-			** argument.
-			**
-			** If the root node pointer is not NULL and the key is not present
-			** in that node, this function will recursively call itself, passing
-			** the pointer to the left or right branches of that node, as the
-			** key is less than, equal to or greater than the key within the
-			** node, until either a NULL pointer or a node with matching key is
-			** found.
-			**
-			** -- RETURN VALUE --
-			** If the 'key' passed as the second argument is found in the tree,
-			** a pointer to the node containing the key is returned. If it is
-			** not present in the tree, a NULL pointer is returned.	
-			*/
-			// t_bstnode	*bintree_search(t_bstnode * root, key_type const & key) const
-			// {
-			// 	if (root == NULL || C_key(*root->key) == C_key(key))
-			// 		return (root);
-			// 	else if (C_key(key) <= C_key(*root->key))
-			// 		return (bintree_search(root->left, key));
-			// 	else
-			// 		return (bintree_search(root->right, key));
-			// }
-			// t_bstnode *	bintree_search(t_bstnode *root, key_type const & key, typename iterator::difference_type & hops) const
-			// {
-			// 	if (root == NULL || C_key(*root->key) == C_key(key))
-			// 		return (root);
-			// 	else if (C_key(key) <= C_key(*root->key))
-			// 		return (bintree_search(root->left, key, ++hops));
-			// 	else
-			// 		return (bintree_search(root->right, key, ++hops));
-			// }
 
 			/* BINTREE SEARCH */
 			/*
@@ -938,7 +830,7 @@ namespace ft
 
 			/* ASSIGN KEY VALUE POINTERS */
 			/*
-			** We use this pure virtual function to assign the key value
+			** We use this pure virtual function to assign the key and value
 			** pointers in a new binary tree node depending on the kind of tree
 			** we have. For key-value trees these will point to pair.first and
 			** pair.second, respectively, while for single-value trees they will
@@ -953,8 +845,9 @@ namespace ft
 			** value of the argument. All pointers except parent, key and value
 			** are NULLed by default. Node color is RED by default. The
 			** node->parent and node->data variables must be instantiated by the
-			** constructor. Key and value pointers must be instantiated at runtime
-			** by this->assign_key_value_pointers. 
+			** constructor. Key and value pointers must be instantiated at
+			** runtime by this->assign_key_value_pointers. We suggest the
+			** allocator reserve memory near the parent node.
 			**
 			** -- RETURN VALUE / EXCEPTIONS --
 			** A pointer to the new binary tree node is returned to the caller.
@@ -970,12 +863,6 @@ namespace ft
 					node = _alloc.allocate(1, parent);
 					_alloc.construct(node, t_bstnode(parent, data));
 					this->assign_key_value_pointers(node); //virtual table lookup; don't remove 'this'
-					//node->parent = parent;
-					// node->left = NULL;
-					// node->right = NULL;
-					// node->next = NULL;
-					// node->prev = NULL;
-					// node->color = t_bstnode::RED;
 				}
 				catch (std::bad_alloc const & e)
 				{
@@ -1099,14 +986,6 @@ namespace ft
 				{
 					new_lst_node = lst_new(NULL); //throws
 					root = bintree_insert(NULL, root, data, new_key, (new_node = NULL)); //throws //note: bintree_insert does not NULL new_node if it fails
-					//bintree_balance(_end_lst, new_node); //WHY DID I DO THIS!? THERE MUST HAVE BEEN A REASON AND NOW I CAN'T REMEMBER :_(
-					//OK, I remember now. bintree_balance may change the node pointer address passed as root, but this is irrelevant unless the
-					//pointer is an external reference. There are only two external references to nodes in the binary tree. One is the _thread
-					//list, which is handled separately (see the while loop below). The only other one is the _root pointer itself, probably a bit
-					//superfluous by now tbh, might remove it since _root == _thread[0] anyway... but until then, we need some logic somewhere
-					//that will pass it to balance so it can be updated... for the moment, I modified is_valid_position to reject positions that
-					//point to _root node and use log search (which will still be constant time in that case if valid, since it will be found always
-					//in one examination).
 					bintree_balance(&root, new_node);
 					++_size;
 					t_bstnode *	next_node = getNextNode(new_node);
@@ -1163,8 +1042,9 @@ namespace ft
 			** _size. Rebalancing via node substitution must be performed before
 			** this is done.
 			**
-			** This tree is threaded, so thread pointers are updated here as
-			** needed. The associated memory is zeroed before being freed.
+			** This tree has an associated ordered list, so the associated list
+			** node is also deleted. The associated memory is zeroed before
+			** being freed.
 			**
 			** -- RETURN VALUE --
 			** The function always returns a NULL node pointer.
@@ -1197,7 +1077,7 @@ namespace ft
 			void	stitch_neighbor_nodes(t_bstnode * node) {
 					if (node->prev != NULL)
 						node->prev->next = node->next;
-					if (node->next != NULL) //use of &_end may render this unnecessary
+					if (node->next != NULL)
 						node->next->prev = node->prev;
 			}
 
@@ -1306,9 +1186,8 @@ namespace ft
 			*/
 				void	node_replace(t_bstnode * original, t_bstnode * successor) {
 				//copy successor data to original data
-				//*const_cast<key_type *>(original->key) = *successor->key; 
 				*ft::remove_const(original->key) = *successor->key; //got to play rough with the consted key in the pair :P
-				*ft::remove_const(original->value) = *successor->value;
+				*ft::remove_const(original->value) = *successor->value; //this is needed to make set play nice
 				
 				if (original->next == successor)
 				{
@@ -1818,7 +1697,7 @@ namespace ft
 			** 3. All null nodes (also called 'leaves') are black.
 			** 4. A red node may not have a red child.
 			**
-			** Thus, the outer loop excludes the possibilstNodeTy that the node may
+			** Thus, the outer loop excludes the possibility that the node may
 			** be the root, or otherwise that the node may be black (if it is,
 			** it doesn't matter if its parent is black or red), or otherwise
 			** (if red) that its parent may be black (if it is, it's okay if the
@@ -1845,8 +1724,8 @@ namespace ft
 			**			left child, so it forms a line with the parent and
 			**			grandparent.
 			**
-			** If the offending node's parent is a RIGHT child the cases are the same, but with left
-			** and right switched:
+			** If the offending node's parent is a RIGHT child the cases are the
+			** same, but with left and right switched:
 			**
 			** RIGHT CASE:
 			**
@@ -2135,11 +2014,6 @@ namespace ft
 				src._end_lst = org_end_lst;
 				this->_rend_lst = src._rend_lst;
 				src._rend_lst = org_rend_lst;
-
-				// this->_list_tail->next = this->_end_lst;
-				// this->_end_lst->prev = this->_list_tail;
-				// src._list_tail->next = src._end_lst;
-				// src._end_lst->prev = src._list_tail;
 			}
 
 			/* ---- OBSERVERS ----- */
@@ -2171,7 +2045,7 @@ namespace ft
 			*/
 			iterator		lower_bound(key_type const & key) {
 				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
-				iterator		ret(this->thread_search(nearest_node), _end_lst);
+				iterator		ret(static_cast<t_lstnode *>(nearest_node->assoc_lst_node), _end_lst);
 
 				if (C_key(*nearest_node->key) < C_key(key))
 					++ret;
@@ -2180,7 +2054,7 @@ namespace ft
 
 			const_iterator	lower_bound(key_type const & key) const {
 				t_bstnode *		nearest_node = getNearestNode(_root, NULL, key);
-				const_iterator	ret(this->thread_search(nearest_node), _end_lst);
+				const_iterator	ret(static_cast<t_lstnode *>(nearest_node->assoc_lst_node), _end_lst);
 
 				if (C_key(*nearest_node->key) < C_key(key))
 					++ret;
@@ -2202,8 +2076,8 @@ namespace ft
 			** a node containing 'key'.
 			*/
 			iterator		upper_bound(key_type const & key) {
-				t_bstnode * nearest_node = getNearestNode(_root, NULL, key);
-				iterator	ret(this->thread_search(nearest_node), _end_lst);
+				t_bstnode *	nearest_node = getNearestNode(_root, NULL, key);
+				iterator	ret(static_cast<t_lstnode *>(nearest_node->assoc_lst_node), _end_lst);
 
 				if (C_key(*nearest_node->key) <= C_key(key))
 					++ret;
@@ -2212,7 +2086,7 @@ namespace ft
 
 			const_iterator	upper_bound(key_type const & key) const {
 				t_bstnode * 	nearest_node = getNearestNode(_root, NULL, key);
-				const_iterator	ret(this->thread_search(nearest_node), _end_lst);
+				const_iterator	ret(static_cast<t_lstnode *>(nearest_node->assoc_lst_node), _end_lst);
 
 				if (C_key(*nearest_node->key) <= C_key(key))
 					++ret;

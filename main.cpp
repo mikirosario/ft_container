@@ -6,12 +6,13 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/17 18:40:53 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 20:26:12 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "testers.hpp"
 #include "ft_vector.hpp"
+#include <set>
 
 int main(void)
 {	
@@ -29,6 +30,20 @@ int main(void)
 	seed_map.insert(std::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
 	seed_map.insert(std::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\tÚnico profesor en activo de 42."));
 
+	std::set<std::string>				seed_set;
+	seed_set.insert("cuarenta y dos");
+	seed_set.insert("ordenador");
+	seed_set.insert("piscina");
+	seed_set.insert("arbol binario de rojos y negros");
+	seed_set.insert("tig");
+	seed_set.insert("lista enlazada");
+	seed_set.insert("array");
+	seed_set.insert("marvin");
+	seed_set.insert("norminette");
+	seed_set.insert("cafe");
+	seed_set.insert("agua");
+	seed_set.insert("compilador");
+
 	ft::vector<bool>	results;
 	
 
@@ -36,6 +51,7 @@ int main(void)
 	results.push_back(my_veritable_vector());
 	results.push_back(my_magnificent_map(seed_map));
 	results.push_back(my_stupendous_stack());
+	results.push_back(my_superlative_set(seed_set));
 		
 	for (ft::vector<bool>::iterator it = results.begin(), end = results.end(); it != end; ++it)
 	{

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 18:46:37 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 18:39:04 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 20:27:03 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <iomanip>
 #include <map>
+#include <set>
 #include "ansi_codes.hpp"
 #include "type_traits.hpp"
 
@@ -179,6 +180,20 @@ void	print_map_comp(MyMap const & my_map, StdMap const & std_map, char const *& 
 }
 
 template<typename MyMap, typename StdMap>
+void	print_set_comp(MyMap const & my_map, StdMap const & std_map, char const *& color, bool & ret)
+{
+	typename MyMap::const_iterator mit;
+	typename MyMap::const_iterator mend;
+	typename StdMap::const_iterator sit;
+	typename StdMap::const_iterator send;
+	for (mit = my_map.begin(), mend = my_map.end(), sit = std_map.begin(), send = std_map.end(); sit != send; ++mit, ++sit)
+		{
+			check(*mit == *sit, color, ret);
+			PRINT << color << "MY  > " << *mit << TXT_NL << "STL > " << *sit << END;
+		}
+}
+
+template<typename MyMap, typename StdMap>
 void	print_map_rev_comp(MyMap const & my_map, StdMap const & std_map, char const *& color, bool & ret)
 {
 	typename MyMap::const_reverse_iterator mit;
@@ -193,10 +208,26 @@ void	print_map_rev_comp(MyMap const & my_map, StdMap const & std_map, char const
 		}
 }
 
+template<typename MyMap, typename StdMap>
+void	print_set_rev_comp(MyMap const & my_map, StdMap const & std_map, char const *& color, bool & ret)
+{
+	typename MyMap::const_reverse_iterator mit;
+	typename MyMap::const_reverse_iterator mend;
+	typename StdMap::const_reverse_iterator sit;
+	typename StdMap::const_reverse_iterator send;
+
+	for (mit = my_map.rbegin(), mend = my_map.rend(), sit = std_map.rbegin(), send = std_map.rend(); sit != send; ++mit, ++sit)
+		{
+			check(*mit == *sit, color, ret);
+			PRINT << color << "MY  > " << *mit << TXT_NL << "STL > " << *sit << END;
+		}
+}
+
 /* TESTS */
 bool 	iterator_tests(void);
 bool	my_veritable_vector(void);
 bool	my_magnificent_map(std::map<std::string, std::string> const & seed_map);
 bool	my_stupendous_stack(void);
+bool	my_superlative_set(std::set<std::string> const & seed_set);
 
 #endif

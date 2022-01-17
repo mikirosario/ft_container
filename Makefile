@@ -6,7 +6,7 @@
 #    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/06 18:21:39 by mrosario          #+#    #+#              #
-#    Updated: 2022/01/17 18:40:09 by mrosario         ###   ########.fr        #
+#    Updated: 2022/01/17 20:13:50 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,8 @@ CXX = clang++
 
 SRCFILES =	$(SRCDIR)/main.cpp $(TESTDIR)/tester_utils.cpp \
 			$(TESTDIR)/iterator_tester.cpp $(TESTDIR)/my_veritable_vector.cpp \
-			$(TESTDIR)/my_magnificent_map.cpp $(TESTDIR)/my_stupendous_stack.cpp
+			$(TESTDIR)/my_magnificent_map.cpp $(TESTDIR)/my_stupendous_stack.cpp \
+			$(TESTDIR)/my_superlative_set.cpp
 
 OBJS = $(SRCFILES:.cpp=.o)
 

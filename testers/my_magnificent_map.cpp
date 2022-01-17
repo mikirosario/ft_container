@@ -6,12 +6,12 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 20:20:24 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 21:16:18 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:40:47 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testers.hpp"
-#include "../map.hpp"
+#include "../ft_map.hpp"
 
 static void	make_seed_map(std::map<std::string, std::string> & seed_map)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_pair.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2022/01/15 18:43:36 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/18 00:13:41 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,6 @@
 
 #include "utility.hpp"
 #include "ft_abintree.hpp"
-
-//DEBUG
-#include "ft_bintree_debug.hpp"
-//DEBUG
-//#include <memory>
-
-
 #include <iostream>
 #include <cstring>
 
@@ -29,10 +22,10 @@ namespace ft
 {
 	template< typename T1, typename T2, typename Compare = ft::less<T1>,
 	typename Alloc = std::allocator< typename ft::BintreeNode< ft::pair<T1 const, T2>, T1, T2 >::t_bstnode > >
-	class bintree_pair : public ft::Abintree< ft::pair<T1 const, T2>, T1, T2, Compare, Alloc >, /*DEBUG*/public ft::bintree_printer< typename ft::Abintree< ft::pair<T1, T2>, T1, T2, Compare, Alloc >::t_bstnode, int/*DEBUG*/ >
+	class bintree_pair : public ft::Abintree< ft::pair<T1 const, T2>, T1, T2, Compare, Alloc>
 	{
-		/* NEEDFUL TYPEDEFS */
 		public:
+			/* NEEDFUL TYPEDEFS */
 			/*
 			** Yet more C++ loveliness. These typedefs are defined in the base
 			** class Abintree, but need to be re-typedeffed like this. Why?
@@ -181,7 +174,6 @@ namespace ft
 				return (ft::make_pair(iterator(this->thread_search(new_node), _end_lst), return_status));
 			}
 
-			//DEBUG
 			/* INSERT SINGLE ELEMENT WITH HINT */
 			/*
 			** The 'position' iterator serves as a hint, if you more or less
@@ -243,7 +235,6 @@ namespace ft
 			** and confirming the workaround works has all been a pain in the
 			** arse already, I've decided to give my poor arse a break.
 			*/
-			//DEBUG
 			iterator	insert(iterator hint, data_type const & data) {
 				if (hint == this->end()) //if lower bound of data is end(), data MUST be inserted as a right child of previous node in the sequence
 					--hint;
@@ -253,7 +244,6 @@ namespace ft
 					// std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					// //DEBUG	
 					t_bstnode * node = &(*hint);
-					//return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, _end_lst)); //constant time insertion
 					return (iterator(static_cast<t_lstnode *>((this->bintree_add(node, data, data.first))->assoc_lst_node), _end_lst)); //constant time insertion
 				}
 				// //DEBUG
@@ -296,13 +286,6 @@ namespace ft
 				for ( ; first != last; ++first)
 					insert(first->first, first->second); //pass to key-value insertion method
 			}
-
-			/* THIS IS A DEBUG FUNCTION; REMOVE */
-			//DEBUG
-			void		print(void) {
-				this->ft_bintree_print(_root, 0);
-			}
-			//DEBUG
 	};
 };
 

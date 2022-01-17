@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2022/01/11 23:22:55 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:12:26 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ namespace ft
 			*/
 			mapped_type const &	operator[](key_type const & key) {
 
-				return (((this->insert(key)).first)->data); // a reference to the mapped type of a pair(key, mapped_type()), or of an existing key if one already existed
+				return (((this->insert(key)).first)->data);
 			}
 
 			/* INSERT SINGLE ELEMENT */
@@ -162,8 +162,7 @@ namespace ft
 				bool		return_status = this->size() > old_size ? true : false;
 				return (ft::make_pair(iterator(this->thread_search(new_node), _end_lst), return_status));
 			}
-			
-			//DEBUG
+
 			/* INSERT SINGLE ELEMENT WITH HINT */
 			/*
 			** The 'position' iterator serves as a hint, if you more or less
@@ -225,7 +224,6 @@ namespace ft
 			** and confirming the workaround works has all been a pain in the
 			** arse already, I've decided to give my poor arse a break.
 			*/
-			//DEBUG
 			iterator	insert(iterator hint, data_type const & data) {
 				if (hint == this->end()) //if lower bound of data is end(), data MUST be inserted as a right child of previous node in the sequence
 					--hint;
@@ -235,7 +233,6 @@ namespace ft
 					// std::cerr << "CONFIRMO DE GUAYS INSERT" << std::endl;
 					// //DEBUG	
 					t_bstnode * node = &(*hint);
-					//return (iterator((this->bintree_add(node, data, data.first))->assoc_lst_it, _end_lst)); //constant time insertion
 					return (iterator(static_cast<t_lstnode *>((this->bintree_add(node, data, data))->assoc_lst_node), _end_lst)); //constant time insertion
 				}
 				// //DEBUG
@@ -277,7 +274,7 @@ namespace ft
 					insert(*first);
 			}
 
-			/* THIS IS A DEBUG FUNCTION; REMOVE */
+			/* THIS IS A DEBUG FUNCTION; MAYBE DON'T REMOVE? */
 			//DEBUG
 			void		print(void) {
 				this->ft_bintree_print(_root, 0);

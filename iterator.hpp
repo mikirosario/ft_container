@@ -3,26 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/08 22:17:35 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/17 23:55:08 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ITERATOR_H
 # define ITERATOR_H
 
-//DEBUG CODE
-#include <iostream>
-//DEBUG CODE
-
 namespace ft
 {
 	template<typename T, typename Category>
 	struct iterator_traits
 	{
-		//typedef std::random_access_iterator_tag			iterator_category;
 		typedef Category								iterator_category;
 		typedef std::ptrdiff_t							difference_type;
 		typedef	T										value_type;
@@ -31,11 +26,9 @@ namespace ft
 	};
 	//a copy of the base constructor is stored as current, and retrievable via the base getter
 	template<class Iter>
-	//could inherit from iterator_traits to define traits more locally??
-	struct reverse_iterator {
-		typedef typename Iter::iterator_category				iterator_category; //un poco cutre, pero... ;)
-		typedef reverse_iterator<typename Iter::const_it>		const_rit;
-		//reverse_iterator(void) : current(Iter::_m_ptr) {}
+	struct reverse_iterator : public iterator_traits<typename Iter::value_type, typename Iter::iterator_category> {
+		typedef reverse_iterator<typename Iter::const_it>	const_rit;
+
 		reverse_iterator(void) : current(Iter()) {}
 		reverse_iterator(Iter const & normal_iterator) : current(normal_iterator) {}
 		reverse_iterator(reverse_iterator const & src) : current(src.current) {}
@@ -55,24 +48,6 @@ namespace ft
 			return (*this);
 		}
 		//Relational Operator Overloads
-		// bool	operator==(reverse_iterator const & rhs) const {
-		// 	return (this->current.operator==(rhs.current));
-		// }
-		// bool	operator!=(reverse_iterator const & rhs) const {
-		// 	return (this->current.operator!=(rhs.current));
-		// }
-		// bool	operator<(reverse_iterator const & rhs) const {
-		// 	return (this->current.operator>(rhs.current));
-		// }
-		// bool	operator>(reverse_iterator const & rhs) const {
-		// 	return (this->current.operator<(rhs.current));
-		// }
-		// bool	operator<=(reverse_iterator const & rhs) const {
-		// 	return (this->current.operator>=(rhs.current));
-		// }
-		// bool	operator>=(reverse_iterator const & rhs) const {
-		// 	return (this->current.operator<=(rhs.current));
-		// }
 		bool	operator==(const_rit const & rhs) const {
 			return (this->current.operator==(rhs.base()));
 		}

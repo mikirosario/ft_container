@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/15 20:58:32 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/17 18:40:53 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int main(void)
 	//results.push_back(iterator_tests());
 	results.push_back(my_veritable_vector());
 	results.push_back(my_magnificent_map(seed_map));
+	results.push_back(my_stupendous_stack());
 		
 	for (ft::vector<bool>::iterator it = results.begin(), end = results.end(); it != end; ++it)
 	{

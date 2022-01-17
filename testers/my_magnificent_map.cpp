@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 20:20:24 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 15:52:43 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 19:17:04 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -467,7 +467,8 @@ bool	my_magnificent_map(std::map<std::string, std::string> const & seed_map)
 	PRINT	<< std::boolalpha << std::setw(msg_offset) << my_res << TXT_TAB << std::setw(msg_offset) << stl_res << END;
 	}
 
-	PRINT	<< TXT_NL << TXT_BYEL << "RELATIONAL OPERATORS" << END;
+	//RELATIONAL OPERATORS
+	PRINT << TXT_NL;
 	comparison_operator_log<std::map< std::string, std::string>, ft::map<std::string, std::string> >(su_map_default, su_map_copy, mi_map_default, mi_map_copy, ret);
 
 	return (ret);

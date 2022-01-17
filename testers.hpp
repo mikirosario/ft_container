@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   testers.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 18:46:37 by miki              #+#    #+#             */
-/*   Updated: 2022/01/15 20:40:34 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/17 18:39:04 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,5 +197,6 @@ void	print_map_rev_comp(MyMap const & my_map, StdMap const & std_map, char const
 bool 	iterator_tests(void);
 bool	my_veritable_vector(void);
 bool	my_magnificent_map(std::map<std::string, std::string> const & seed_map);
+bool	my_stupendous_stack(void);
 
 #endif

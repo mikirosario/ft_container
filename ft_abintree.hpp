@@ -6,15 +6,13 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 23:07:30 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:30:27 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_ABINTREE_H
 # define FT_ABINTREE_H
 
-#include <cstring>
-#include <list>
 #include "utility.hpp"
 
 namespace ft

@@ -6,17 +6,14 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2022/01/18 00:13:41 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:30:58 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_BINTREE_PAIR_H
 # define FT_BINTREE_PAIR_H
 
-#include "utility.hpp"
 #include "ft_abintree.hpp"
-#include <iostream>
-#include <cstring>
 
 namespace ft
 {

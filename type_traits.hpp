@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 16:20:31 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/12 18:53:27 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:35:03 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,16 +187,6 @@ namespace ft
 
 		static const bool value = sizeof(test<T>(NULL)) == sizeof(yes);
 	};
-	
-	// template<typename T>
-	// bool	is_iterator(void)
-	// {
-	// 	// if (T::iterator_category)
-	// 	// 	return (true);
-	// 	// else
-	// 	// 	return (false);
-	// 	return (true);
-	// };
 
 	template<typename T>
 	//bool xD xD xD xD

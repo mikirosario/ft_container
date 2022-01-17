@@ -6,18 +6,13 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/17 23:42:47 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:32:53 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_VECTOR_H
 # define FT_VECTOR_H
 
-#include <memory>
-#include <algorithm>
-#include <exception>
-#include <iostream>
-#include "type_traits.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
 

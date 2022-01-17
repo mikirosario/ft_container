@@ -6,23 +6,14 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 23:20:01 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:26:07 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_MAP_H
 # define FT_MAP_H
 
-#include <memory>
-#include <algorithm>
-#include <exception>
-#include <iostream>
-#include "ansi_codes.hpp"
-#include "type_traits.hpp"
-#include "iterator.hpp"
-#include "algorithm.hpp"
 #include "ft_bintree_pair.hpp"
-#include "utility.hpp"
 
 namespace ft
 {

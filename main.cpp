@@ -6,12 +6,11 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/17 21:55:39 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:36:44 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "testers.hpp"
-#include "ft_vector.hpp"
 
 int	print_err(std::string const & msg)
 {

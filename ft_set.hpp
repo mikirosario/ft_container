@@ -6,23 +6,17 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:16:48 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/17 23:24:17 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:31:24 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_SET_H
 # define FT_SET_H
 
-#include <memory>
-#include <algorithm>
-#include <exception>
-#include <iostream>
-#include "ansi_codes.hpp"
 #include "type_traits.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
 #include "ft_bintree.hpp"
-#include "utility.hpp"
 
 namespace ft
 {

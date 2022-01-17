@@ -6,21 +6,17 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 05:41:44 by miki              #+#    #+#             */
-/*   Updated: 2022/01/18 00:12:26 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/18 00:25:29 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_BINTREE_H
 # define FT_BINTREE_H
 
-
 //DEBUG
 #include "ft_bintree_debug.hpp"
 //DEBUG
-
 #include "ft_abintree.hpp"
-#include <iostream>
-#include <exception>
 
 namespace ft
 {

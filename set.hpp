@@ -6,32 +6,23 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:16:48 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/12 03:43:17 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 23:21:10 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_SET_H
 # define FT_SET_H
 
-//precompiled header?
 #include <memory>
 #include <algorithm>
 #include <exception>
-//#include <stdexcept> //for length_error. Linux only, or Mac also?
 #include <iostream>
-//precompiled header?
-
 #include "ansi_codes.hpp"
 #include "type_traits.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
 #include "ft_bintree.hpp"
 #include "utility.hpp"
-
-//DEBUG CODE
-#include <vector>
-//#include <type_traits>
-//DEBUG CODE
 
 namespace ft
 {
@@ -43,8 +34,6 @@ namespace ft
 			template<typename iT, typename Category, typename tiT>
 			struct Iterator : public ft::iterator_traits<iT, Category>
 			{
-				//friend class ft::set<Value, Compare, Alloc>;
-
 				typedef Value const															const_val_t;
 				typedef typename ft::bintree<Value const, Compare, Alloc>::const_iterator	const_tree_it;
 				typedef Iterator<const_val_t, Category, const_tree_it>						const_it;
@@ -65,12 +54,6 @@ namespace ft
 					return(Iterator<iT const, Category, typename ft::bintree<Value const, Compare, Alloc>::const_iterator>(this->_tree_it));
 				}
 				//Relational Operator Overloads
-				// bool	operator==(Iterator const & rhs) const {
-				// 	return (this->_tree_it == rhs._tree_it);
-				// }
-				// bool	operator!=(Iterator const & rhs) const {
-				// 	return (!operator==(rhs)); //a!=b == !(a==b)
-				// }
 				bool	operator==(const_it const & rhs) const {
 					return (this->_tree_it == rhs.base());
 				}
@@ -103,7 +86,6 @@ namespace ft
 				const iT &						operator*(void) const {
 					return(this->_tree_it->data);
 				}
-				//aaaaah!!!! -> . ... claro!!!! :D
 				typename Iterator::pointer		operator->(void) const {
 					return (&this->_tree_it->data);
 				}
@@ -144,25 +126,13 @@ namespace ft
 			explicit set(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : _tree(comp, alloc) {}
 			
 			/* RANGE CONSTRUCTOR */
-			// set(const_iterator first, const_iterator last, const key_compare & comp = key_compare(),
-			// const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
-
-			// set(iterator first, iterator last, const key_compare & comp = key_compare(),
-			// const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
-			
 			template<class InputIt>
 			set(InputIt first, InputIt last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type(),
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first, last, comp, alloc) {} 
-			
-			// //Conversion Operator - Iterator is always convertible to const_iterator
-			// operator	set<Key, Value, Compare, Alloc> const() const {
-			// 		return(*this);
-			// 	}
 
 			/* COPY CONSTRUCTOR */
 			set(set const & src) : _tree(src._tree) {}
-			//set(set & src) : _tree(src._tree) {}
 			
 			/* DESTRUCTOR */
 			~set(void) {}
@@ -173,7 +143,7 @@ namespace ft
 					return (*this);
 			}
 
-			/* ---- Iterators ---- */
+			/* ---- ITERATORS ---- */
 
 			iterator				begin(void) {
 				return (iterator(_tree.begin()));
@@ -242,14 +212,6 @@ namespace ft
 			}
 
 			/* INSERT BY RANGE OF VALUES */
-			// void					insert(const_iterator first, const_iterator last) {
-			// 	_tree.insert(first.base(), last.base());
-			// }
-
-			// void					insert(iterator first, iterator last) {
-			// 	_tree.insert(first.base(), last.base());
-			// }
-
 			template<typename InputIt>
 			void					insert(InputIt first, InputIt last,
 									typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) {
@@ -346,8 +308,6 @@ namespace ft
 			}
 			
 		protected:
-			//size_type		_capacity;
-			//size_type		_size; //object count
 			t_tree			_tree;
 	};
 

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 11:05:31 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 23:13:27 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 23:20:01 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,25 +135,13 @@ namespace ft
 			explicit map(const key_compare & comp = key_compare(), const allocator_type & alloc = allocator_type()) : _tree(comp, alloc) {}
 			
 			/* RANGE CONSTRUCTOR */
-			map(const_iterator first, const_iterator last, const key_compare & comp = key_compare(),
-			const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
-
-			map(iterator first, iterator last, const key_compare & comp = key_compare(),
-			const allocator_type & alloc = allocator_type()) : _tree(first.base(), last.base(), comp, alloc) {} 
-			
 			template<class InputIt>
 			map(InputIt first, InputIt last, const key_compare & comp = key_compare(),
 			const allocator_type & alloc = allocator_type(),
 			typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) : _tree(first, last, comp, alloc) {} 
-			
-			// //Conversion Operator - Iterator is always convertible to const_iterator
-			// operator	map<Key, Value, Compare, Alloc> const() const {
-			// 		return(*this);
-			// 	}
 
 			/* COPY CONSTRUCTOR */
 			map(map const & src) : _tree(src._tree) {}
-			//map(map & src) : _tree(src._tree) {}
 			
 			/* DESTRUCTOR */
 			~map(void) {}
@@ -164,7 +152,7 @@ namespace ft
 					return (*this);
 			}
 
-			/* ---- Iterators ---- */
+			/* ---- ITERATORS ---- */
 
 			iterator				begin(void) {
 				return (iterator(_tree.begin()));
@@ -233,14 +221,6 @@ namespace ft
 			}
 
 			/* INSERT BY RANGE OF KEY-VALUE PAIRS */
-			void					insert(const_iterator first, const_iterator last) {
-				_tree.insert(first.base(), last.base());
-			}
-
-			void					insert(iterator first, iterator last) {
-				_tree.insert(first.base(), last.base());
-			}
-
 			template<typename InputIt>
 			void					insert(InputIt first, InputIt last,
 									typename ft::enable_if<ft::has_iterator_category<InputIt>::value, InputIt>::type * = NULL) {
@@ -279,7 +259,6 @@ namespace ft
 			}
 
 			value_compare	value_comp(void) const {
-				//return (_tree.value_comp());
 				return (value_compare(_tree.key_comp()));
 			}
 
@@ -338,8 +317,6 @@ namespace ft
 			}
 			
 		protected:
-			//size_type		_capacity;
-			//size_type		_size; //object count
 			t_tree			_tree;
 	};
 

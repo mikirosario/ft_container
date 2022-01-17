@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 18:46:37 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 20:27:03 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 21:46:43 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #define ALN std::left << std::setw(30)
 #define END TXT_RST << std::endl
 #define SET std::setw(9) << color
+#define TEST_NUM 5
 
 /* NANOSECOND EXECUTION TIMER */
 void	start_timer(__uint64_t * start);
@@ -226,8 +227,8 @@ void	print_set_rev_comp(MyMap const & my_map, StdMap const & std_map, char const
 /* TESTS */
 bool 	iterator_tests(void);
 bool	my_veritable_vector(void);
-bool	my_magnificent_map(std::map<std::string, std::string> const & seed_map);
+bool	my_magnificent_map(void);
 bool	my_stupendous_stack(void);
-bool	my_superlative_set(std::set<std::string> const & seed_set);
+bool	my_superlative_set(void);
 
 #endif

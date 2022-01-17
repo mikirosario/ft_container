@@ -6,12 +6,28 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 20:20:24 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 19:48:02 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 21:16:18 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testers.hpp"
 #include "../map.hpp"
+
+static void	make_seed_map(std::map<std::string, std::string> & seed_map)
+{
+	seed_map.insert(std::make_pair("cuarenta y dos", "CUARENTA Y DOS: \t\t\tEl significado de la vida, el universo, y todo."));
+	seed_map.insert(std::make_pair<std::string, std::string>("ordenador", "ORDENADOR: \t\t\tDispositivo que ordena e interpreta información almacenada en una serie de dígitos binarios."));
+	seed_map.insert(std::make_pair<std::string, std::string>("piscina", "PISCINA: \t\t\t\tEscabechina de aspirantes a estudiantes."));
+	seed_map.insert(std::make_pair<std::string, std::string>("arbol binario de rojos y negros", "ÁRBOL BINARIO DE ROJOS Y NEGROS: \tEstructura de datos incestuosa que reduce el tiempo de búsqueda a costa de hacer de tu padre el hijo de ti y de tu abuelo."));
+	seed_map.insert(std::make_pair<std::string, std::string>("tig", "TIG: \t\t\t\tTrabajo de interés general."));
+	seed_map.insert(std::make_pair<std::string, std::string>("lista enlazada", "LISTA ENLAZADA: \t\t\tEstructura de datos en la que cada elemento enlaza el siguiente y el anterior. Lentas en comparaciones e iteraciones, pero rápidas en inserciones y borrados."));
+	seed_map.insert(std::make_pair<std::string, std::string>("array", "ARRAY: \t\t\t\tEstructura de datos contiguos en memoria RAM. Rápidos en comparaciones e iteraciones, pero lentos en inserciones y borrados."));
+	seed_map.insert(std::make_pair<std::string, std::string>("marvin", "MARVIN: \t\t\t\tRobot cascarrabias."));
+	seed_map.insert(std::make_pair<std::string, std::string>("norminette", "NORMINETTE: \t\t\tGuía de estilo que asegura que nadie podrá entender tu código."));
+	seed_map.insert(std::make_pair<std::string, std::string>("cafe", "CAFÉ: \t\t\t\tBien de primera necesidad para la supervivencia elaborada a partir de granos de café molidos y agua."));
+	seed_map.insert(std::make_pair<std::string, std::string>("agua", "AGUA: \t\t\t\tBien de primera necesidad por ser necesaria para la elaboración del café (véase: cafe)."));
+	seed_map.insert(std::make_pair<std::string, std::string>("compilador", "COMPILADOR: \t\t\tÚnico profesor en activo de 42."));
+}
 
 /*
 ** This test compares my map with the STL map under the same conditions using
@@ -48,13 +64,16 @@
 ** evaluation purposes. Otherwise, it really makes no sense. I would prefer them
 ** to segfault.
 */
-bool	my_magnificent_map(std::map<std::string, std::string> const & seed_map)
+bool	my_magnificent_map(void)
 {
-	char const *	color = TXT_BGRN;
-	bool			ret = true;
-	uint64_t		start;
-	int64_t			ft_time;
-	int64_t			stl_time;
+	std::map<std::string, std::string>	seed_map;
+	char const *						color = TXT_BGRN;
+	bool								ret = true;
+	uint64_t							start;
+	int64_t								ft_time;
+	int64_t								stl_time;
+
+	make_seed_map(seed_map);
 
 	typedef ft::map<std::string, std::string>	ft_map;
 	typedef std::map<std::string, std::string>	std_map;

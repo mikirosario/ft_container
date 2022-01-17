@@ -6,12 +6,28 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 19:47:39 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/17 20:26:57 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/17 21:17:43 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testers.hpp"
 #include "../ft_set.hpp"
+
+static void	make_seed_set(std::set<std::string> & seed_set)
+{
+	seed_set.insert("cuarenta y dos");
+	seed_set.insert("ordenador");
+	seed_set.insert("piscina");
+	seed_set.insert("arbol binario de rojos y negros");
+	seed_set.insert("tig");
+	seed_set.insert("lista enlazada");
+	seed_set.insert("array");
+	seed_set.insert("marvin");
+	seed_set.insert("norminette");
+	seed_set.insert("cafe");
+	seed_set.insert("agua");
+	seed_set.insert("compilador");
+}
 
 /*
 ** This test compares my set with the STL set under the same conditions using
@@ -48,14 +64,17 @@
 ** evaluation purposes. Otherwise, it really makes no sense. I would prefer them
 ** to segfault.
 */
-bool	my_superlative_set(std::set<std::string> const & seed_set)
+bool	my_superlative_set(void)
 {
-	char const *	color = TXT_BGRN;
-	bool			ret = true;
-	uint64_t		start;
-	int64_t			ft_time;
-	int64_t			stl_time;
+	std::set<std::string>	seed_set;
+	char const *			color = TXT_BGRN;
+	bool					ret = true;
+	uint64_t				start;
+	int64_t					ft_time;
+	int64_t					stl_time;
 
+	make_seed_set(seed_set);
+	
 	typedef ft::set<std::string>	ft_set;
 	typedef std::set<std::string>	std_set;
 

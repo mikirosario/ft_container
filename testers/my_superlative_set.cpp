@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_superlative_set.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 19:47:39 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/17 21:17:43 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/20 23:43:26 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,70 +157,6 @@ bool	my_superlative_set(void)
 	PRINT	<< TXT_BYEL << "Max Size Test: " << TXT_NL
 			<< "MY  " << TXT_TAB << TXT_TAB TXT_TAB << "STD " << END;
 	PRINT	<< TXT_BWHT << mi_set_default.max_size() << TXT_TAB << su_set_default.max_size() << END;
-
-	//DEBUG - REMOVE, no [] overload for set
-	// //ACCESS
-	// PRINT	<< TXT_NL << TXT_BYEL << "ACCESS ELEMENT BY std::string REFERENCE TEST" << TXT_NL
-	// 		<< TXT_TAB << "Find Reference to Existent Element ('norminette')" << END;
-	// //Start Exec Timer
-	// start_timer(&start);
-	// mi_set_default["norminette"];
-	// ft_time = stop_timer_nanosec(&start);
-	// start_timer(&start);
-	// su_set_default["norminette"];
-	// stl_time = stop_timer_nanosec(&start);
-	// check_exec_time(ft_time, stl_time, ret);
-	// //End Exec Timer
-	// check(mi_set_default["norminette"] == su_set_default["norminette"], color, ret);
-	// PRINT	<< color << mi_set_default["norminette"] << TXT_NL
-	// 		<< su_set_default["norminette"] << END;
-	// PRINT	<< TXT_BYEL << TXT_TAB << "Insert New std::string and Default-Instantiated std::string ('aguafiestas')" << TXT_NL;
-	// //Start Exec Timer
-	// start_timer(&start);
-	// mi_set_default["aguafiestas"];
-	// ft_time = stop_timer_nanosec(&start);
-	// start_timer(&start);
-	// su_set_default["aguafiestas"];
-	// stl_time = stop_timer_nanosec(&start);
-	// check_exec_time(ft_time, stl_time, ret);
-	// //End Exec Timer
-	// check(mi_set_default["aguafiestas"] == su_set_default["aguafiestas"], color, ret);
-	// 		PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
-	// PRINT	<< color << mi_set_default["aguafiestas"] << TXT_NL
-	// 		<< su_set_default["aguafiestas"] << END;
-
-	// PRINT	<< TXT_BYEL << TXT_TAB << "Insert std::string by std::string Reference ('miyamoto')" << TXT_NL;
-	// //Start Exec Timer
-	// start_timer(&start);
-	// mi_set_default["miyamoto"] = "MIYAMOTO: \t\t\tEminencia de los videojuegos que descubrió que la constante gravitacional está más guapa como variable.";
-	// ft_time = stop_timer_nanosec(&start);
-	// start_timer(&start);
-	// su_set_default["miyamoto"] = "MIYAMOTO: \t\t\tEminencia de los videojuegos que descubrió que la constante gravitacional está más guapa como variable.";
-	// stl_time = stop_timer_nanosec(&start);
-	// check_exec_time(ft_time, stl_time, ret);
-	// //End Exec Timer
-	// check(mi_set_default["miyamoto"] == su_set_default["miyamoto"], color, ret);
-	// PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
-	// PRINT	<< color << mi_set_default["miyamoto"] << TXT_NL
-	// 		<< su_set_default["miyamoto"] << END;
-
-	// PRINT	<< TXT_BYEL << TXT_TAB << "Replace std::string by std::string Reference ('aguafiestas')" << TXT_NL;
-	// //Start Exec Timer
-	// start_timer(&start);
-	// mi_set_default["aguafiestas"] = "AGUAFIESTAS: \t\t\tSinónimo de Marvin (véase 'marvin').";
-	// ft_time = stop_timer_nanosec(&start);
-	// start_timer(&start);
-	// su_set_default["aguafiestas"] = "AGUAFIESTAS: \t\t\tSinónimo de Marvin (véase 'marvin').";
-	// stl_time = stop_timer_nanosec(&start);
-	// check_exec_time(ft_time, stl_time, ret);
-	// //End Exec Timer
-	// check(mi_set_default["aguafiestas"] == su_set_default["aguafiestas"], color, ret);
-	// PRINT	<< (isGreen(color) ? TXT_BGRN "OK" : TXT_BRED "KO") << END;
-	// PRINT	<< color << mi_set_default["aguafiestas"] << TXT_NL
-	// 		<< su_set_default["aguafiestas"] << END;
-	
-	// PRINT	<< TXT_BYEL << TXT_TAB << "Result:" << END;
-	// print_set_comp(mi_set_default, su_set_default, color, ret);
 
 	//OPERATIONS
 	PRINT	<< TXT_NL << TXT_BYEL << "OPERATIONS TESTS" << TXT_NL

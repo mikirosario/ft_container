@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_set.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:16:48 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/18 00:31:24 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/20 23:42:54 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,12 +183,6 @@ namespace ft
 
 			size_type	max_size(void) const {
 				return (_tree.max_size());
-			}
-
-			/* ---- ELEMENT ACCESS ---- */
-
-			mapped_type &	operator[](key_type const &	key) {
-				return (_tree.operator[](key));
 			}
 
 			/* ---- MODIFIERS ---- */

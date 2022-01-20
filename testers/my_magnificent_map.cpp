@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_magnificent_map.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 20:20:24 by miki              #+#    #+#             */
-/*   Updated: 2022/01/18 00:40:47 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/20 23:26:52 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ bool	my_magnificent_map(void)
 	std::map<std::string, std::string>	seed_map;
 	char const *						color = TXT_BGRN;
 	bool								ret = true;
-	uint64_t							start;
-	int64_t								ft_time;
-	int64_t								stl_time;
+	__uint64_t							start;
+	__int64_t							ft_time;
+	__int64_t							stl_time;
 
 	make_seed_map(seed_map);
 

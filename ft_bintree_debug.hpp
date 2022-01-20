@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:21:31 by miki              #+#    #+#             */
-/*   Updated: 2021/11/21 21:19:00 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/20 23:28:22 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 //DEBUG
 			#ifdef __linux__
 			# include <termcap.h>
+			# include <cstdlib>
 			#endif
 			#include <curses.h>
 			#include <term.h>

@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   type_traits.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 16:20:31 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/18 00:35:03 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/20 23:40:58 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPE_TRAITS_H
 # define TYPE_TRAITS_H
-
-//#include <uchar.h> //?? To be continued...
-
-// //DEBUG CODE
-// #include <type_traits>
-// //DEBUG CODE
 
 /*
 ** This is hands down the most demented, twisted, evil thing I have seen in
@@ -87,10 +81,6 @@ namespace ft
 	struct is_integral<bool> : public true_type {};
 	template <>
 	struct is_integral<char> : public true_type {};
-	// template <>
-	// struct is_integral<char16_t> : public true_type {};
-	// template <>
-	// struct is_integral<char32_t> : public true_type {};
 	template <>
 	struct is_integral<wchar_t> : public true_type {};
 	template <>

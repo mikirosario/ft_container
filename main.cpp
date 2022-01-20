@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/18 00:36:44 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/20 23:23:29 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ int main(int const argc, char const ** argv)
 	}
 	else
 	{
-		system("leaks ft_container");
+		//system("leaks ft_container");
 		return (print_err(TXT_BRED "Pass a single argument indicating the container to test (vector, map, set, stack)"));
 	}
-	system("leaks ft_container");
+	//system("leaks ft_container");
 	return (0);
 }

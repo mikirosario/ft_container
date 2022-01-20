@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_veritable_vector.cpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 19:55:37 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 15:02:17 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 00:10:39 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,27 +120,25 @@ bool	my_veritable_vector(void)
 			<< "-------------------------------------------------------------------------------------" << END;
 
 	//REVERSE ITERATOR PRINT TEST
-	//DEBUG
-	// Change this to output to file and do a diff or something, and include it in the global ret checks and the like
-	//DEBUG
 	PRINT	<< TXT_BYEL "REVERSE ITERATOR PRINT TEST" << TXT_NL
 			<< TXT_TAB << "Printing using reverse iterators: " << TXT_NL
 			<< TXT_TAB << "  mi_fill_cont" << TXT_NL
 			<< TXT_TAB << "  su_fill_cont" << END;
 
-	PRINT	<< TXT_TAB << TXT_BYEL "MY Reverse Printed Container: " << END;
+	PRINT	<< TXT_TAB << TXT_BYEL "MY Reverse Printed Container Timed Check: " << END;
 	//Start Exec Timer
 	start_timer(&start);
 	for (ft::vector<int>::reverse_iterator rit = mi_fill_cont.rbegin(), rend = mi_fill_cont.rend(); rit != rend; ++rit)
 		PRINT << TXT_TAB << *rit << END;
 	ft_time = stop_timer_nanosec(&start);
-	PRINT	<< TXT_TAB << TXT_BYEL "STD Reverse Printed Container: " << END;
+	PRINT	<< TXT_TAB << TXT_BYEL "STD Reverse Printed Container: Timed Check " << END;
 	start_timer(&start);
 	for (std::vector<int>::reverse_iterator rit = su_fill_cont.rbegin(), rend = su_fill_cont.rend(); rit != rend; ++rit)
 		PRINT << TXT_TAB << *rit << END;
 	stl_time = stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
+	print_rev_comp(mi_fill_cont, su_fill_cont, ret);
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
 			<< "-------------------------------------------------------------------------------------" << END;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   testers.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 18:46:37 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 21:46:43 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 00:10:44 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,23 @@ void	comparison_operator_log(STD_Container const & su_cont1, STD_Container const
 	check (((mi_cont1 <= mi_cont1) == (su_cont1 <= su_cont1)), color, ret);
 	PRINT	<< TXT_TAB << ALN << TXT_BYEL "mi_cont1 <= mi_cont1: " << std::boolalpha << SET << (mi_cont1 <= mi_cont1)
 			<< TXT_TAB << ALN << TXT_BYEL "su_cont1 <= su_cont1: " << std::boolalpha << SET << (su_cont1 <= su_cont1) << END;	
+}
+
+template<typename MyCont, typename StdCont>
+void	print_rev_comp(MyCont const & my_map, StdCont const & std_map, bool & ret)
+{
+	char const *	color;
+
+	typename MyCont::const_reverse_iterator mit;
+	typename MyCont::const_reverse_iterator mend;
+	typename StdCont::const_reverse_iterator sit;
+	typename StdCont::const_reverse_iterator send;
+	PRINT << TXT_BYEL << TXT_TAB << "Reverse Iterator Comparison Check" << END;
+	for (mit = my_map.rbegin(), mend = my_map.rend(), sit = std_map.rbegin(), send = std_map.rend(); sit != send; ++mit, ++sit)
+		{
+			check(*mit == *sit, color, ret);
+			PRINT << TXT_TAB << color << "MY  > " << *mit << TXT_NL << TXT_TAB << "STL > " << *sit << END;
+		}
 }
 
 template<typename T>

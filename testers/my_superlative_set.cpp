@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 19:47:39 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/21 07:04:58 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 10:53:32 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ bool	my_superlative_set(void)
 	char const *			color = TXT_BGRN;
 	bool					ret = true;
 	uint64_t				start;
-	int64_t					ft_time;
-	int64_t					stl_time;
+	int64_t					ft_time = 0;
+	int64_t					stl_time = 0;
 
 	make_seed_set(seed_set);
 	
@@ -90,10 +90,10 @@ bool	my_superlative_set(void)
 	//RANGE CONSTRUCTOR
 	start_timer(&start);
 	ft_set		mi_set_range(seed_set.begin(), seed_set.end());
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std_set		su_set_range(seed_set.begin(), seed_set.end());
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	print_set_comp<ft_set, std_set >(mi_set_range, su_set_range, color, ret);
 
@@ -101,10 +101,10 @@ bool	my_superlative_set(void)
 	PRINT	<< TXT_NL << TXT_BYEL << "COPY CONSTRUCTION TESTS" << END;
 	start_timer(&start);
 	ft_set		mi_set_copy(mi_set_range);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std_set		su_set_copy(su_set_range);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	print_set_comp<ft_set, std_set >(mi_set_copy, su_set_copy, color, ret);
 
@@ -112,10 +112,10 @@ bool	my_superlative_set(void)
 	PRINT	<< TXT_NL << TXT_BYEL << "ASSIGNMENT OVERLOAD TESTS" << END;
 	start_timer(&start);
 	mi_set_default = mi_set_copy;
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_default = su_set_copy;
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	print_set_comp<ft_set, std_set>(mi_set_default, su_set_default, color, ret);
 
@@ -165,10 +165,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft_set::iterator mit = mi_set_default.find("marvin");
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std_set::iterator sit = su_set_default.find("marvin");
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(*mit == *sit, color, ret);
@@ -180,10 +180,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft_set::iterator mit = mi_set_default.find("marvine");
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std_set::iterator sit = su_set_default.find("marvine");
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mit == mi_set_default.end() & sit == su_set_default.end(), color, ret);
@@ -260,10 +260,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_default.insert("santana");
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_default.insert("santana");
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	check(*mi_set_default.find("santana") == *su_set_default.find("santana"), color, ret);
 	PRINT	<< color << *mi_set_default.find("santana") << TXT_NL
@@ -273,10 +273,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_default.insert(mi_set_default.lower_bound("alex"), "alex");
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_default.insert(su_set_default.lower_bound("alex"), "alex");
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(*mi_set_default.find("alex") == *su_set_default.find("alex"), color, ret);
@@ -288,10 +288,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_default.insert(mi_set_default.lower_bound("a"), "a");
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_default.insert(su_set_default.lower_bound("a"), "a");
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(*mi_set_default.find("a") == *su_set_default.find("a"), color, ret);
@@ -303,10 +303,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_default.insert(mi_set_default.begin(), "rorozco");
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_default.insert(su_set_default.begin(), "rorozco");
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(*mi_set_default.find("rorozco") == *su_set_default.find("rorozco"), color, ret);
@@ -320,10 +320,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_copy.insert(++mi_set_default.begin(), --mi_set_default.end());
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_copy.insert(++su_set_default.begin(), --su_set_default.end());
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_set_comp(mi_set_copy, su_set_copy, color, ret);
@@ -334,10 +334,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_default.erase(mi_set_default.begin()); //should erase 'a'
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_default.erase(su_set_default.begin()); //should erase 'a'
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_set_comp(mi_set_default, su_set_default, color, ret);
@@ -346,10 +346,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_default.erase("marvin"); //should erase 'marvin'
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_default.erase("marvin"); //should erase 'marvin'
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_set_comp(mi_set_default, su_set_default, color, ret);
@@ -362,10 +362,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_default.erase(mit, mend);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_default.erase(sit, send);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//Stop Exec Timer
 	print_set_comp(mi_set_default, su_set_default, color, ret);
@@ -377,10 +377,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	swap(mi_set_default, mi_set_range);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	swap(su_set_default, su_set_range);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_set_comp(mi_set_default, su_set_default, color, ret);
@@ -391,10 +391,10 @@ bool	my_superlative_set(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_set_range.clear();
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_set_range.clear();
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_set_comp(mi_set_range, su_set_range, color, ret);
@@ -424,5 +424,6 @@ bool	my_superlative_set(void)
 	PRINT << TXT_NL;
 	comparison_operator_log<std::set< std::string>, ft::set<std::string> >(su_set_default, su_set_copy, mi_set_default, mi_set_copy, ret);
 
+	check_exec_time(ft_time, stl_time, ret);
 	return (ret);
 }

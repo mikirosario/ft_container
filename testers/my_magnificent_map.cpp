@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 20:20:24 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 07:04:46 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 10:53:24 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ bool	my_magnificent_map(void)
 	char const *						color = TXT_BGRN;
 	bool								ret = true;
 	__uint64_t							start;
-	__int64_t							ft_time;
-	__int64_t							stl_time;
+	__int64_t							ft_time = 0;
+	__int64_t							stl_time = 0;
 
 	make_seed_map(seed_map);
 
@@ -90,10 +90,10 @@ bool	my_magnificent_map(void)
 	//RANGE CONSTRUCTOR
 	start_timer(&start);
 	ft_map		mi_map_range(seed_map.begin(), seed_map.end());
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std_map		su_map_range(seed_map.begin(), seed_map.end());
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	print_map_comp<ft_map, std_map >(mi_map_range, su_map_range, color, ret);
 
@@ -101,10 +101,10 @@ bool	my_magnificent_map(void)
 	PRINT	<< TXT_NL << TXT_BYEL << "COPY CONSTRUCTION TESTS" << END;
 	start_timer(&start);
 	ft_map		mi_map_copy(mi_map_range);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std_map		su_map_copy(su_map_range);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	print_map_comp<ft_map, std_map >(mi_map_copy, su_map_copy, color, ret);
 
@@ -112,10 +112,10 @@ bool	my_magnificent_map(void)
 	PRINT	<< TXT_NL << TXT_BYEL << "ASSIGNMENT OVERLOAD TESTS" << END;
 	start_timer(&start);
 	mi_map_default = mi_map_copy;
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default = su_map_copy;
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	print_map_comp<ft_map, std_map>(mi_map_default, su_map_default, color, ret);
 
@@ -163,10 +163,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default["norminette"];
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default["norminette"];
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mi_map_default["norminette"] == su_map_default["norminette"], color, ret);
@@ -176,10 +176,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default["aguafiestas"];
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default["aguafiestas"];
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
@@ -191,10 +191,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default["miyamoto"] = "MIYAMOTO: \t\t\tEminencia de los videojuegos que descubrió que la constante gravitacional está más guapa como variable.";
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default["miyamoto"] = "MIYAMOTO: \t\t\tEminencia de los videojuegos que descubrió que la constante gravitacional está más guapa como variable.";
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mi_map_default["miyamoto"] == su_map_default["miyamoto"], color, ret);
@@ -206,10 +206,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default["aguafiestas"] = "AGUAFIESTAS: \t\t\tSinónimo de Marvin (véase 'marvin').";
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default["aguafiestas"] = "AGUAFIESTAS: \t\t\tSinónimo de Marvin (véase 'marvin').";
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mi_map_default["aguafiestas"] == su_map_default["aguafiestas"], color, ret);
@@ -227,10 +227,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft_map::iterator mit = mi_map_default.find("marvin");
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std_map::iterator sit = su_map_default.find("marvin");
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mit->first == sit->first & mit->second == sit->second, color, ret);
@@ -242,10 +242,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft_map::iterator mit = mi_map_default.find("marvine");
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std_map::iterator sit = su_map_default.find("marvine");
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mit == mi_map_default.end() & sit == su_map_default.end(), color, ret);
@@ -326,10 +326,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default.insert(ft::pair<std::string const, std::string>("santana", "SANTANA: \t\t\t\tCanario estepario."));
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default.insert(std::pair<std::string const, std::string>("santana", "SANTANA: \t\t\t\tCanario estepario."));
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	check(mi_map_default["santana"] == su_map_default["santana"], color, ret);
 	PRINT	<< color << mi_map_default["santana"] << TXT_NL
@@ -339,10 +339,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default.insert(mi_map_default.lower_bound("alex"), ft::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default.insert(su_map_default.lower_bound("alex"), std::make_pair<std::string, std::string>("alex", "ALEX: \t\t\t\tCien por cien NO FAKE!"));
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mi_map_default["alex"] == su_map_default["alex"], color, ret);
@@ -354,10 +354,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default.insert(mi_map_default.lower_bound("a"), ft::make_pair<std::string, std::string>("a", "A: \t\t\t\tPrimera letra del alafabeto latino."));
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default.insert(su_map_default.lower_bound("a"), std::make_pair<std::string, std::string>("a", "A: \t\t\t\tPrimera letra del alafabeto latino."));
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mi_map_default["a"] == su_map_default["a"], color, ret);
@@ -369,10 +369,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default.insert(mi_map_default.begin(), ft::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default.insert(su_map_default.begin(), std::make_pair<std::string, std::string>("rorozco", "ROROZCO: \t\t\t\tDueña de la Playstation 4."));
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	check(mi_map_default["rorozco"] == su_map_default["rorozco"], color, ret);
@@ -386,10 +386,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_copy.insert(++mi_map_default.begin(), --mi_map_default.end());
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_copy.insert(++su_map_default.begin(), --su_map_default.end());
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_map_comp(mi_map_copy, su_map_copy, color, ret);
@@ -400,10 +400,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default.erase(mi_map_default.begin()); //should erase 'a'
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default.erase(su_map_default.begin()); //should erase 'a'
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_map_comp(mi_map_default, su_map_default, color, ret);
@@ -412,10 +412,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default.erase("marvin"); //should erase 'marvin'
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default.erase("marvin"); //should erase 'marvin'
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_map_comp(mi_map_default, su_map_default, color, ret);
@@ -428,10 +428,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_default.erase(mit, mend);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_default.erase(sit, send);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//Stop Exec Timer
 	print_map_comp(mi_map_default, su_map_default, color, ret);
@@ -443,10 +443,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	swap(mi_map_default, mi_map_range);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	swap(su_map_default, su_map_range);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_map_comp(mi_map_default, su_map_default, color, ret);
@@ -457,10 +457,10 @@ bool	my_magnificent_map(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_map_range.clear();
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_map_range.clear();
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_map_comp(mi_map_range, su_map_range, color, ret);
@@ -490,5 +490,6 @@ bool	my_magnificent_map(void)
 	PRINT << TXT_NL;
 	comparison_operator_log<std::map< std::string, std::string>, ft::map<std::string, std::string> >(su_map_default, su_map_copy, mi_map_default, mi_map_copy, ret);
 
+	check_exec_time(ft_time, stl_time, ret);
 	return (ret);
 }

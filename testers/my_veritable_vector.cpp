@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 19:55:37 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 07:05:13 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 10:51:21 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ bool	my_veritable_vector(void)
 	bool		ret = true;
 	size_t		msg_offset;
 	__uint64_t	start;
-	__int64_t	ft_time;
-	__int64_t	stl_time;
+	__int64_t	ft_time = 0;
+	__int64_t	stl_time = 0;
 
 	/* CONSTRUCTOR TESTS */
 	//FILL CONSTRUCTOR TEST
@@ -53,10 +53,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft::vector<int>		mi_fill_cont(4, 42);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std::vector<int>	su_fill_cont(4, 42);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//Stop Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -71,10 +71,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft::vector<int>	mi_range_cont(mi_fill_cont.begin(), mi_fill_cont.end());
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std::vector<int> 	su_range_cont(su_fill_cont.begin(), su_fill_cont.end());
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//Stop Exec Timer
 	elemc_compare_log(su_range_cont, mi_range_cont);
@@ -89,10 +89,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft::vector<int>	mi_copied_cont(mi_fill_cont);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std::vector<int>	su_copied_cont(su_fill_cont);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_copied_cont, mi_copied_cont);
@@ -108,10 +108,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft::vector<int>	mi_assigned_cont = mi_fill_cont;
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std::vector<int>	su_assigned_cont = su_fill_cont;
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_assigned_cont, mi_assigned_cont);
@@ -130,12 +130,12 @@ bool	my_veritable_vector(void)
 	start_timer(&start);
 	for (ft::vector<int>::reverse_iterator rit = mi_fill_cont.rbegin(), rend = mi_fill_cont.rend(); rit != rend; ++rit)
 		PRINT << TXT_TAB << *rit << END;
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	PRINT	<< TXT_TAB << TXT_BYEL "STD Reverse Printed Container: Timed Check " << END;
 	start_timer(&start);
 	for (std::vector<int>::reverse_iterator rit = su_fill_cont.rbegin(), rend = su_fill_cont.rend(); rit != rend; ++rit)
 		PRINT << TXT_TAB << *rit << END;
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	print_rev_comp(mi_fill_cont, su_fill_cont, ret);
@@ -175,12 +175,12 @@ bool	my_veritable_vector(void)
 	mi_fill_cont.push_back(84);
 	mi_fill_cont.push_back(168);
 	mi_fill_cont.push_back(69);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_fill_cont.push_back(84);
 	su_fill_cont.push_back(168);
 	su_fill_cont.push_back(69);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
 	cont_check_log(su_fill_cont, mi_fill_cont, ret);
@@ -225,10 +225,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_fill_cont.pop_back();
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_fill_cont.pop_back();
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -277,10 +277,10 @@ bool	my_veritable_vector(void)
 		//Start Exec Timer
 		start_timer(&start);
 		ft::vector<int>::iterator mi_erase_res = mi_fill_cont.erase(mi_fill_cont.begin() + 2);
-		ft_time = stop_timer_nanosec(&start);
+		ft_time += stop_timer_nanosec(&start);
 		start_timer(&start);
 		std::vector<int>::iterator su_erase_res = su_fill_cont.erase(su_fill_cont.begin() + 2);
-		stl_time = stop_timer_nanosec(&start);
+		stl_time += stop_timer_nanosec(&start);
 		check_exec_time(ft_time, stl_time, ret);
 		//End Exec Timer
 		size_t	mi_res_pos = mi_erase_res - mi_fill_cont.begin();
@@ -302,10 +302,10 @@ bool	my_veritable_vector(void)
 		//Start Exec Timer
 		start_timer(&start);
 		ft::vector<int>::iterator mi_erase_res = mi_fill_cont.erase(mi_fill_cont.end() - 1);
-		ft_time = stop_timer_nanosec(&start);
+		ft_time += stop_timer_nanosec(&start);
 		start_timer(&start);
 		std::vector<int>::iterator su_erase_res = su_fill_cont.erase(su_fill_cont.end() - 1);
-		stl_time = stop_timer_nanosec(&start);
+		stl_time += stop_timer_nanosec(&start);
 		check_exec_time(ft_time, stl_time, ret);
 		//End Exec Timer
 		size_t	mi_res_pos = mi_erase_res - mi_fill_cont.begin();
@@ -330,10 +330,10 @@ bool	my_veritable_vector(void)
 		//Start Exec Timer
 		start_timer(&start);
 		mi_fill_cont.erase(mi_fill_cont.begin() + 1, mi_fill_cont.end());
-		ft_time = stop_timer_nanosec(&start);
+		ft_time += stop_timer_nanosec(&start);
 		start_timer(&start);
 		su_fill_cont.erase(su_fill_cont.begin() + 1, su_fill_cont.end());
-		stl_time = stop_timer_nanosec(&start);
+		stl_time += stop_timer_nanosec(&start);
 		check_exec_time(ft_time, stl_time, ret);
 		//End Exec Timer
 		elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -350,10 +350,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_fill_cont.insert(mi_fill_cont.begin(), 1984);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_fill_cont.insert(su_fill_cont.begin(), 1984);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -366,10 +366,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_fill_cont.insert(mi_fill_cont.begin(), 2, 1970);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_fill_cont.insert(su_fill_cont.begin(), 2, 1970);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -381,10 +381,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	ft::vector<int>	mi_swappable_cont(4, 1);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	std::vector<int>	su_swappable_cont(4, 1);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	PRINT	<< TXT_TAB << TXT_BYEL "Inserting by position and cloning n times:" << TXT_NL
@@ -393,10 +393,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_swappable_cont.insert(mi_swappable_cont.begin() + 1, 1, 9);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_swappable_cont.insert(su_swappable_cont.begin() + 1, 1, 9);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_swappable_cont, mi_swappable_cont);
@@ -410,10 +410,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_fill_cont.insert(mi_fill_cont.begin(), mi_swappable_cont.begin(), mi_swappable_cont.end());
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_fill_cont.insert(su_fill_cont.begin(), su_swappable_cont.begin(), su_swappable_cont.end());
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -426,10 +426,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_assigned_cont.insert(mi_assigned_cont.begin(), mi_fill_cont.rbegin(), mi_fill_cont.rend());
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_assigned_cont.insert(su_assigned_cont.begin(), su_fill_cont.rbegin(), su_fill_cont.rend());
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_assigned_cont, mi_assigned_cont);
@@ -446,10 +446,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_fill_cont.swap(mi_swappable_cont);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_fill_cont.swap(su_swappable_cont);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	//fill_cont swapped with swappable_cont
@@ -487,10 +487,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	swap(mi_fill_cont, mi_swappable_cont); //why does this activate ADL? no feckin idea!
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	swap(su_fill_cont, su_swappable_cont);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	//fill_cont swapped with swappable_cont yet again!
@@ -514,10 +514,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	swap(mi_fill_cont, mi_swappable_cont);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	swap(su_fill_cont, su_swappable_cont);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	//fill_cont swapped with swappable_cont yet another time!
@@ -606,10 +606,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_fill_cont.assign(8, 42);
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_fill_cont.assign(8, 42);
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -621,10 +621,10 @@ bool	my_veritable_vector(void)
 	//Start Exec Timer
 	start_timer(&start);
 	mi_fill_cont.assign(mi_copied_cont.begin(), mi_copied_cont.end());
-	ft_time = stop_timer_nanosec(&start);
+	ft_time += stop_timer_nanosec(&start);
 	start_timer(&start);
 	su_fill_cont.assign(su_copied_cont.begin(), su_copied_cont.end());
-	stl_time = stop_timer_nanosec(&start);
+	stl_time += stop_timer_nanosec(&start);
 	check_exec_time(ft_time, stl_time, ret);
 	//End Exec Timer
 	elemc_compare_log(su_fill_cont, mi_fill_cont);
@@ -803,5 +803,6 @@ bool	my_veritable_vector(void)
 	PRINT	<< TXT_BYEL "-------------------------------------------------------------------------------------" << TXT_NL
 			<< "-------------------------------------------------------------------------------------" << END;
 
+	check_exec_time(ft_time, stl_time, ret);
 	return (ret);
 }

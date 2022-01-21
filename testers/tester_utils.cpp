@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 18:49:21 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 06:49:49 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 10:55:25 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,6 @@ void	check_exec_time(__int64_t & ft_time, __int64_t & stl_time, bool & ret)
 		color = TXT_BGRN;
 	PRINT	<< TXT_TAB << TXT_BYEL << "STL Time" << TXT_TAB << "My Time"
 			<< TXT_NL << TXT_TAB << color << stl_time << TXT_TAB TXT_TAB << ft_time << END;
-	ft_time = -1;
-	stl_time = -1;
 }
 									//reference to pointer
 void	check(bool result, char const *& color, bool & ret)

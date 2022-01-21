@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_set.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:16:48 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/20 23:42:54 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 05:39:37 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,7 +294,12 @@ namespace ft
 			allocator_type	get_allocator(void) const {
 				return (_tree.get_allocator());
 			}
-			
+
+			/* SPECIAL EVAL FUNCTION TO USE RB DEBUG TOOL */
+			void	print_underlying_rb_tree(void) {
+				return (_tree.print());
+			}
+
 		protected:
 			t_tree			_tree;
 	};

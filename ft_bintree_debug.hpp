@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_debug.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:21:31 by miki              #+#    #+#             */
-/*   Updated: 2022/01/20 23:28:22 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 05:48:52 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -442,7 +442,8 @@ namespace ft
 				while (((p->wsize.ws_col / depth_limit) - \
 				p->wsize.ws_col / (depth_limit + 1)) < 8)
 					depth_limit--;
-				printf("Tree Depth: %zu\n", depth);
+				std::cout << "Tree Depth: " << depth << "\n";
+				//printf("Tree Depth: %zu\n", depth);
 				p->var.level = 1;
 				p->var.hpos = p->wsize.ws_col / 2;
 				p->var.div = 2;
@@ -455,9 +456,11 @@ namespace ft
 					p->var.level++;
 				}
 				if (depth_limit < user_depth_limit)
-					printf("Stopped at Level %zu due to Lack of Space\n", depth_limit);
+					std::cout << "Stopped at Level " << depth_limit << " due to Lack of Space\n";
+					//printf("Stopped at Level %zu due to Lack of Space\n", depth_limit);
 				else if (user_depth_limit < depth)
-					printf("Stopped at User-Specified Depth Limit %zu\n", depth_limit);
+					std::cout << "Stopped at User-Specified Depth Limit " << depth_limit << "\n";
+					//printf("Stopped at User-Specified Depth Limit %zu\n", depth_limit);
 			}
 
 			/*
@@ -938,7 +941,8 @@ namespace ft
 				while (((p->wsize.ws_col / depth_limit) - \
 				p->wsize.ws_col / (depth_limit + 1)) < 8)
 					depth_limit--;
-				printf("Tree Depth: %zu\n", depth);
+				std::cout << "Tree Depth: " << depth << "\n";
+				//printf("Tree Depth: %zu\n", depth);
 				p->var.level = 1;
 				p->var.hpos = p->wsize.ws_col / 2;
 				p->var.div = 2;
@@ -951,9 +955,11 @@ namespace ft
 					p->var.level++;
 				}
 				if (depth_limit < user_depth_limit)
-					printf("Stopped at Level %zu due to Lack of Space\n", depth_limit);
+					std::cout << "Stopped at Level " << depth_limit << "due to Lack of Space\n";
+					//printf("Stopped at Level %zu due to Lack of Space\n", depth_limit);
 				else if (user_depth_limit < depth)
-					printf("Stopped at User-Specified Depth Limit %zu\n", depth_limit);
+					std::cout << "Stopped at User-Specified Depth Limit " << depth_limit << "\n";
+					//printf("Stopped at User-Specified Depth Limit %zu\n", depth_limit);
 			}
 
 			/*

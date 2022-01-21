@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_veritable_vector.cpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 19:55:37 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 00:10:39 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 05:41:22 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ bool	my_veritable_vector(void)
 			<< TXT_TAB << "  std::container su_fill_cont(4, 42)" << END;
 	//Start Exec Timer
 	start_timer(&start);
-	ft::vector<int>	mi_fill_cont(4, 42);
+	ft::vector<int>		mi_fill_cont(4, 42);
 	ft_time = stop_timer_nanosec(&start);
 	start_timer(&start);
 	std::vector<int>	su_fill_cont(4, 42);

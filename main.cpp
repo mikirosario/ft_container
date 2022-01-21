@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 13:39:21 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/20 23:23:29 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 06:15:14 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ size_t	get_arg_id(std::string const & arg)
 										"vector",
 										"map",
 										"stack",
-										"set"};
+										"set",
+										"treeprint"};
 	for ( ; id < TEST_NUM && arg != valid_args[id]; ++id) {}
 	return (id);
 }
@@ -38,7 +39,8 @@ int main(int const argc, char const ** argv)
 							my_veritable_vector,	//1
 							my_magnificent_map,		//2
 							my_stupendous_stack,	//3
-							my_superlative_set};	//4
+							my_superlative_set,		//4
+							my_talkative_tree};		//5
 
 	if (argc == 2 && (arg_id = get_arg_id(argv[1])) < TEST_NUM)
 	{

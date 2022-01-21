@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   testers.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 18:46:37 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 00:10:44 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 06:10:58 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #define ALN std::left << std::setw(30)
 #define END TXT_RST << std::endl
 #define SET std::setw(9) << color
-#define TEST_NUM 5
+#define TEST_NUM 6
 
 /* NANOSECOND EXECUTION TIMER */
 void	start_timer(__uint64_t * start);
@@ -247,5 +247,6 @@ bool	my_veritable_vector(void);
 bool	my_magnificent_map(void);
 bool	my_stupendous_stack(void);
 bool	my_superlative_set(void);
+bool	my_talkative_tree(void);
 
 #endif

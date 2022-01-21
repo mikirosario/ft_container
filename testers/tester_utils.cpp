@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 18:49:21 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 15:42:31 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 05:00:29 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ void	check_exec_time(__int64_t & ft_time, __int64_t & stl_time, bool & ret)
 		color = TXT_BRED;
 		ret = false;
 	}
+	else if (stl_time > ft_time * 20)
+		color = TXT_BCYN;
 	else
 		color = TXT_BGRN;
 	PRINT	<< TXT_TAB << TXT_BYEL << "STL Time" << TXT_TAB << "My Time"

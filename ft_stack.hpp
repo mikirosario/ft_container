@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 09:36:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/17 23:24:58 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 05:24:57 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,7 @@ namespace ft
 
 			template<typename T_op, typename Container_op>
 			friend bool	operator>=(stack<T_op, Container_op> const & lhs, stack<T_op, Container_op> const & rhs);
-		private:
-				private:
+		protected:
 			container_type	_ctnr;
 	};
 

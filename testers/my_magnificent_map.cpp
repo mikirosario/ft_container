@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   my_magnificent_map.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/15 20:20:24 by miki              #+#    #+#             */
-/*   Updated: 2022/01/20 23:26:52 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 07:04:46 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testers.hpp"
-#include "../ft_map.hpp"
+#include "../map.hpp"
 
 static void	make_seed_map(std::map<std::string, std::string> & seed_map)
 {

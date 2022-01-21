@@ -6,12 +6,12 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 16:04:48 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/17 19:46:14 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 07:05:22 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testers.hpp"
-#include "../ft_stack.hpp"
+#include "../stack.hpp"
 #include <stack>
 
 bool	my_stupendous_stack(void)

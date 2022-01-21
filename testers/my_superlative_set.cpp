@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   my_superlative_set.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 19:47:39 by mrosario          #+#    #+#             */
-/*   Updated: 2022/01/20 23:43:26 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 07:04:58 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testers.hpp"
-#include "../ft_set.hpp"
+#include "../set.hpp"
 
 static void	make_seed_set(std::set<std::string> & seed_set)
 {

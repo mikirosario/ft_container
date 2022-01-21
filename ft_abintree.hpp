@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 04:30:51 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 04:42:19 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1918,7 +1918,6 @@ namespace ft
 				(*root)->color = t_bstnode::BLK;
 			}
 
-			//DEBUG, ITERATIVE VERSION OF THIS
 			/* GET NEAREST NODE */
 			/*
 			** This function traverses the tree to the first key equal to 'key'
@@ -1927,17 +1926,6 @@ namespace ft
 			** PARENT. This can be used to help find an insertion solution, such
 			** as in lower_bound and upper_bound.
 			*/
-			// t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
-			// 	if (node == NULL)
-			// 		return (const_cast<t_bstnode *>(parent));
-			// 	else if (C_key(*node->key) == C_key(key))
-			// 		return (const_cast<t_bstnode *>(node));
-			// 	else if (C_key(*node->key) < C_key(key))
-			// 		return (getNearestNode(node->right, node, key));
-			// 	else
-			// 		return (getNearestNode(node->left, node, key));
-			// }
-
 			t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
 				C_key	node_key;
 				C_key	get_key(key);
@@ -1951,6 +1939,18 @@ namespace ft
 				}
 				return (const_cast<t_bstnode *>(parent));
 			}
+
+			//Recursive version
+			// t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
+			// 	if (node == NULL)
+			// 		return (const_cast<t_bstnode *>(parent));
+			// 	else if (C_key(*node->key) == C_key(key))
+			// 		return (const_cast<t_bstnode *>(node));
+			// 	else if (C_key(*node->key) < C_key(key))
+			// 		return (getNearestNode(node->right, node, key));
+			// 	else
+			// 		return (getNearestNode(node->left, node, key));
+			// }
 
 			/* RECURSIVE COUNT */
 			/*

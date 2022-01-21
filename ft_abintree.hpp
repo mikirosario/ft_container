@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 02:21:56 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 02:32:56 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ namespace ft
 			class	C_key
 			{
 				private:
-					//key_type	_key;
 					key_type const *	_key;
 					key_compare			_is_less;
 				public:
@@ -600,10 +599,11 @@ namespace ft
 			** false is returned.
 			*/
 			bool			is_valid_position(iterator const & position, key_type const & key) const {
+				C_key	check_key(key);
 				if (position.base() == _end_lst || position.base() == _rend_lst
 				|| position.base() == _root->assoc_lst_node
-				|| (position->prev != NULL && C_key(*position->prev->key) > C_key(key))
-				|| (position->next != NULL && C_key(*position->next->key) <= C_key(key)))
+				|| (position->prev != NULL && C_key(*position->prev->key) > check_key)
+				|| (position->next != NULL && C_key(*position->next->key) <= check_key))
 					return false;
 				return true;
 			}
@@ -648,6 +648,9 @@ namespace ft
 			** returned. If 'node' is already the greatest, NULL is returned.
 			*/
 			t_bstnode *			getNextNode(t_bstnode const * node) const {
+				C_key	ascendent_node_key;
+				C_key	node_key;
+
 				if (node->right != NULL)
 				{
 					node = node->right;
@@ -657,7 +660,7 @@ namespace ft
 				else if (node->parent != NULL)
 				{
 					t_bstnode const *	ascendent_node = node->parent;
-					while (ascendent_node != NULL && C_key(*ascendent_node->key) < C_key(*node->key))
+					while (ascendent_node != NULL && (ascendent_node_key = *ascendent_node->key) < (node_key = *node->key))
 						ascendent_node = ascendent_node->parent;
 					node = ascendent_node;
 				}
@@ -706,6 +709,9 @@ namespace ft
 			** returned. If 'node' is already the least node, NULL is returned.
 			*/
 			t_bstnode *			getPrevNode(t_bstnode const * node) const {
+				C_key	ascendent_node_key;
+				C_key	node_key;
+
 				if (node->left != NULL)
 				{
 					node = node->left;
@@ -715,7 +721,7 @@ namespace ft
 				else if (node->parent != NULL)
 				{
 					t_bstnode const *	ascendent_node = node->parent;
-					while (ascendent_node != NULL && C_key(*ascendent_node->key) >= C_key(*node->key))
+					while (ascendent_node != NULL && (ascendent_node_key = *ascendent_node->key) >= (node_key = *node->key))
 						ascendent_node = ascendent_node->parent;
 					node = ascendent_node;
 				}
@@ -801,9 +807,12 @@ namespace ft
 			** not present in the tree, a NULL pointer is returned.	
 			*/
 			t_bstnode *	bintree_search(t_bstnode * root, key_type const & key) const {
-				while (root != NULL && C_key(*root->key) != C_key(key))
+				C_key	current_key;
+				C_key	find_key(key);
+
+				while (root != NULL && (current_key = *root->key) != find_key)
 				{
-					if (C_key(key) <= C_key(*root->key))
+					if (find_key <= current_key)
 						root = root->left;
 					else
 						root = root->right;
@@ -825,9 +834,12 @@ namespace ft
 			** I dunno. It seemed like it might come in handy. xD
 			*/
 			t_bstnode *	bintree_search(t_bstnode * root, key_type const & key, typename iterator::difference_type & hops) const {
-				while (root != NULL && C_key(*root->key) != C_key(key))
+				C_key	current_key;
+				C_key	find_key(key);
+
+				while (root != NULL && (current_key = *root->key) != find_key)
 				{
-					if (C_key(key) <= C_key(*root->key))
+					if (find_key <= current_key)
 						root = root->left;
 					else
 						root = root->right;

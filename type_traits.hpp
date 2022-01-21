@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   type_traits.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 16:20:31 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/20 23:40:58 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 04:28:26 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPE_TRAITS_H
 # define TYPE_TRAITS_H
+
+#include <clocale> //for NULL
 
 /*
 ** This is hands down the most demented, twisted, evil thing I have seen in

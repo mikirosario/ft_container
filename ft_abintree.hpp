@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 02:32:56 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 04:30:51 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_ABINTREE_H
 
 #include "utility.hpp"
+#include <iostream> //for std::cerr
 #ifdef __linux__
 # include <cstring> //for memset
 #endif
@@ -388,8 +389,7 @@ namespace ft
 					return (ret);
 				}
 				Iterator &	operator--(void) {
-					//if (this->_lst_node->prev != NULL) // imitating my Linux compiler's implementation here, probably less efficiently ;p
-						this->_lst_node = this->_lst_node->prev;
+					this->_lst_node = this->_lst_node->prev;
 					return (*this);
 				}
 				Iterator	operator--(int) {
@@ -600,6 +600,7 @@ namespace ft
 			*/
 			bool			is_valid_position(iterator const & position, key_type const & key) const {
 				C_key	check_key(key);
+
 				if (position.base() == _end_lst || position.base() == _rend_lst
 				|| position.base() == _root->assoc_lst_node
 				|| (position->prev != NULL && C_key(*position->prev->key) > check_key)
@@ -939,6 +940,10 @@ namespace ft
 			** arrays for frequent insertions and deletions, but more efficient
 			** for frequent searches, such as of ordered key values.
 			**
+			** Below are two iterative versions of this function, but they did
+			** not turn out to improve performance, so they have been left
+			** unimplemented.
+			**
 			** -- RETURN VALUE / EXCEPTIONS --
 			** This function returns a pointer to the root of the tree passed as
 			** an argument. If memory allocation failed, a bad_alloc exception
@@ -949,6 +954,9 @@ namespace ft
 			t_bstnode *	bintree_insert(t_bstnode * parent, t_bstnode *root, \
 			data_type const & data, key_type const & key, t_bstnode *& new_node) throw (std::bad_alloc, std::exception)
 			{
+				C_key	new_key(key);
+				C_key	current_key;
+
 				if (root == NULL)
 				{
 					try
@@ -965,12 +973,99 @@ namespace ft
 						throw ;
 					}
 				}
-				else if (C_key(key) <= C_key(*root->key))
+				else if (new_key <= (current_key = *root->key))
 					root->left = bintree_insert(root, root->left, data, key, new_node);
 				else
 					root->right = bintree_insert(root, root->right, data, key, new_node);
 				return (root);
 			}
+
+			// // ITERATIVE VERSION 1
+			// t_bstnode *	bintree_insert(t_bstnode * parent, t_bstnode *root, \
+			// data_type const & data, key_type const & key, t_bstnode *& new_node) throw (std::bad_alloc, std::exception)
+			// {
+			// 	enum	Child
+			// 	{
+			// 		NO, LEFT, RIGHT
+			// 	};
+				
+			// 	t_bstnode *	current_node = root;
+			// 	C_key		current_node_key;
+			// 	C_key		new_key(key);
+
+			// 	while (current_node != NULL)
+			// 	{
+			// 		parent = current_node;
+			// 		if (new_key <= (current_node_key = *current_node->key))
+			// 			current_node = current_node->left;
+			// 		else
+			// 			current_node = current_node->right;
+			// 	}
+			// 	try
+			// 	{
+			// 		new_node = create_new_node(parent, data);
+			// 		if (parent == NULL)
+			// 			root = new_node;
+			// 		else if (new_key <= current_node_key)
+			// 			parent->left = new_node;
+			// 		else
+			// 			parent->right = new_node;
+			// 	}
+			// 	catch (std::bad_alloc const & e)
+			// 	{
+			// 		throw ;
+			// 	}
+			// 	catch (std::exception const & e)
+			// 	{
+			// 		throw ;
+			// 	}
+			// 	return (root);
+			// }
+
+			// // ITERATIVE VERSION 2
+			// t_bstnode *	bintree_insert(t_bstnode * parent, t_bstnode *root, \
+			// data_type const & data, key_type const & key, t_bstnode *& new_node) throw (std::bad_alloc, std::exception)
+			// {
+
+			// 	if (root == NULL)
+			// 	{
+			// 		try
+			// 		{
+			// 			root = create_new_node(parent, data);
+			// 			new_node = root;
+			// 		}
+			// 		catch (std::bad_alloc const & e)
+			// 		{
+			// 			throw ;
+			// 		}
+			// 		catch (std::exception const & e)
+			// 		{
+			// 			throw ;
+			// 		}
+			// 	}
+			// 	else
+			// 	{
+			// 		t_bstnode *	insertion_pos = getNearestNode(root, root->parent, key);
+			// 		try
+			// 		{
+			// 			new_node = create_new_node(insertion_pos, data);
+			// 			if (C_key(key) <= C_key(*(insertion_pos->key)))
+			// 				insertion_pos->left = new_node;
+			// 			else
+			// 				insertion_pos->right = new_node;
+			// 			//new_node = current_node;
+			// 		}
+			// 		catch (std::bad_alloc const & e)
+			// 		{
+			// 			throw ;
+			// 		}
+			// 		catch (std::exception const & e)
+			// 		{
+			// 			throw ;
+			// 		}
+			// 	}
+			// 	return (root);
+			// }
 
 			/* BINTREE ADD */
 			/*
@@ -1853,10 +1948,6 @@ namespace ft
 						return (const_cast<t_bstnode *>(node));
 					parent = node;
 					node = node_key < get_key ? node->right : node->left;
-					// if (C_key(*node->key) < C_key(key))
-					// 	node = node->right;
-					// else
-					// 	node = node->left;
 				}
 				return (const_cast<t_bstnode *>(parent));
 			}

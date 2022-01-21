@@ -6,12 +6,14 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 02:07:52 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/17 23:56:11 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 04:30:00 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ITERATOR_H
 # define ITERATOR_H
+
+#include <cstddef> //ptrdiff_t
 
 namespace ft
 {

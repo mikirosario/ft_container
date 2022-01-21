@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 18:15:40 by mikiencolor       #+#    #+#             */
-/*   Updated: 2022/01/18 00:32:53 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 04:37:44 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include "iterator.hpp"
 #include "algorithm.hpp"
+#include "type_traits.hpp" //for enable_if
+#include <iostream> //for cerr and std::allocator
 
 #define TXT_BRED "\e[1;31m"
 #define TXT_RST "\e[0m"

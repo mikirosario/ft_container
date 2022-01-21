@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abintree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/20 23:25:10 by miki             ###   ########.fr       */
+/*   Updated: 2022/01/21 02:13:08 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1813,15 +1813,30 @@ namespace ft
 			** PARENT. This can be used to help find an insertion solution, such
 			** as in lower_bound and upper_bound.
 			*/
+			// t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
+			// 	if (node == NULL)
+			// 		return (const_cast<t_bstnode *>(parent));
+			// 	else if (C_key(*node->key) == C_key(key))
+			// 		return (const_cast<t_bstnode *>(node));
+			// 	else if (C_key(*node->key) < C_key(key))
+			// 		return (getNearestNode(node->right, node, key));
+			// 	else
+			// 		return (getNearestNode(node->left, node, key));
+			// }
+
 			t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
-				if (node == NULL)
-					return (const_cast<t_bstnode *>(parent));
-				else if (C_key(*node->key) == C_key(key))
-					return (const_cast<t_bstnode *>(node));
-				else if (C_key(*node->key) < C_key(key))
-					return (getNearestNode(node->right, node, key));
-				else
-					return (getNearestNode(node->left, node, key));
+				while (node != NULL)
+				{
+					if (C_key(*node->key) == C_key(key))
+						return (const_cast<t_bstnode *>(node));
+					parent = node;
+					node = C_key(*node->key) < C_key(key) ? node->right : node->left;
+					// if (C_key(*node->key) < C_key(key))
+					// 	node = node->right;
+					// else
+					// 	node = node->left;
+				}
+				return (const_cast<t_bstnode *>(parent));
 			}
 
 			/* RECURSIVE COUNT */

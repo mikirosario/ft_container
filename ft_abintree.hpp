@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 04:42:19 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 05:19:36 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,11 +141,11 @@ namespace ft
 				s_lstnode(struct s_lstnode * end_lst, struct s_lstnode *rend_lst) : tree_node(NULL), prev(rend_lst), next(end_lst) {}
 			}				t_lstnode;
 
-			std::allocator<t_lstnode>	_list_alloc;
-			t_lstnode *					_end_lst;
-			t_lstnode *					_rend_lst;
-			t_lstnode *					_list_head;
-			t_lstnode * 				_list_tail;
+			typename allocator_type:: template rebind<t_lstnode>::other	_list_alloc;
+			t_lstnode *													_end_lst;
+			t_lstnode *													_rend_lst;
+			t_lstnode *													_list_head;
+			t_lstnode * 												_list_tail;
 
 			/* LST_NEW */
 			/*

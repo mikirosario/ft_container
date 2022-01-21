@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 14:13:06 by miki              #+#    #+#             */
-/*   Updated: 2022/01/21 02:13:08 by mrosario         ###   ########.fr       */
+/*   Updated: 2022/01/21 02:21:56 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,22 +69,29 @@ namespace ft
 			class	C_key
 			{
 				private:
-					key_type	_key;
-					key_compare	_is_less;
+					//key_type	_key;
+					key_type const *	_key;
+					key_compare			_is_less;
 				public:
-					C_key(void) : _key(key_type()) {
+					C_key(void) : _key(NULL) {
 					}
-					C_key(key_type const & key) : _key(key) {
+					C_key(key_type const & key) : _key(&key) {
 					}
 					~C_key(void) {
 					}
 				
 					C_key operator=(C_key const & src) {
 						this->_key = src._key;
+						return (*this);
+					}
+					
+					C_key operator=(key_type const & key) {
+						this->_key = &key;
+						return (*this);
 					}
 
 					bool	operator<(C_key const & src) const {
-						return (_is_less(this->_key, src._key));
+						return (_is_less(*this->_key, *src._key));
 					}
 					bool	operator>(C_key const & src) const {
 						return (src < *this); //a>b == b<a
@@ -1825,12 +1832,15 @@ namespace ft
 			// }
 
 			t_bstnode	* getNearestNode(t_bstnode const * node, t_bstnode const * parent, key_type const & key) const {
+				C_key	node_key;
+				C_key	get_key(key);
+				
 				while (node != NULL)
 				{
-					if (C_key(*node->key) == C_key(key))
+					if ((node_key = *node->key) == get_key)
 						return (const_cast<t_bstnode *>(node));
 					parent = node;
-					node = C_key(*node->key) < C_key(key) ? node->right : node->left;
+					node = node_key < get_key ? node->right : node->left;
 					// if (C_key(*node->key) < C_key(key))
 					// 	node = node->right;
 					// else
